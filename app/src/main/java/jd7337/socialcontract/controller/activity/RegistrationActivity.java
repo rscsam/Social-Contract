@@ -7,6 +7,8 @@ import android.view.View;
 
 import jd7337.socialcontract.R;
 
+import jd7337.socialcontract.R;
+
 public class RegistrationActivity extends AppCompatActivity {
 
     @Override
