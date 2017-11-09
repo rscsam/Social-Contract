@@ -10,51 +10,59 @@ import android.widget.Button;
 
 import jd7337.socialcontract.R;
 
-public class HomeFragment extends Fragment {
 
-    private HomeFListener mListener;
+public class EditInterestProfilePromptFragment extends Fragment {
 
-    public HomeFragment() {
+    private EditInterestProfilePromptFListener mListener;
+
+    public EditInterestProfilePromptFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container,
+        View view = inflater.inflate(R.layout.fragment_edit_interest_profile_prompt, container,
                 false);
 
-        View growButton = view.findViewById(R.id.grow_button);
-        growButton.setOnClickListener(
+        Button editProfileButton = view.findViewById(R.id.ep_button);
+        editProfileButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mListener.onClickHomeGrow();
+                        mListener.onClickEIPPEditProfile();
                     }
                 }
         );
 
-        View discoverButton = view.findViewById(R.id.discover_button);
-        discoverButton.setOnClickListener(
+        Button skipButton = view.findViewById(R.id.skipep_button);
+        skipButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mListener.onClickHomeDiscover();
+                        mListener.onClickEIPPSkip();
                     }
                 }
         );
+
         return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof HomeFListener) {
-            mListener = (HomeFListener) context;
+        if (context instanceof EditInterestProfilePromptFListener) {
+            mListener = (EditInterestProfilePromptFListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement HomeFListener");
+                    + " must implement EditInterestProfilePromptFListener");
         }
     }
 
@@ -64,8 +72,8 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
-    public interface HomeFListener {
-        void onClickHomeDiscover();
-        void onClickHomeGrow();
+    public interface EditInterestProfilePromptFListener {
+        void onClickEIPPEditProfile();
+        void onClickEIPPSkip();
     }
 }

@@ -3,17 +3,23 @@
               android:orientation="vertical"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context="jd7337.socialcontract.controller.fragment.DiscoverFragment">
+             tools:context="jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Discover Fragment"/>
+        android:text="Edit Interest Profile Prompt Fragment"/>
+
+    <Button
+        android:id="@+id/ep_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Profile"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I'm Done"
-        android:id="@+id/im_done_button"/>
+        android:text="Skip"
+        android:id="@+id/skipep_button"/>
 
 </LinearLayout>
