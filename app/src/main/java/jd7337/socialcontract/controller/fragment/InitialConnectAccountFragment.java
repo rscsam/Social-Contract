@@ -6,12 +6,11 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import jd7337.socialcontract.R;
 
 public class InitialConnectAccountFragment extends Fragment {
-    private OnInitialConnectAccountInteractionListener mListener;
+    private InitialConnectAccountFListener mListener;
 
     public InitialConnectAccountFragment() {
         // Required empty public constructor
@@ -27,7 +26,7 @@ public class InitialConnectAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_initial_connect_account, container, false);
-        Button connectAccountButton = (Button) view.findViewById(R.id.connect_account_button);
+        View connectAccountButton = view.findViewById(R.id.connect_account_button);
         connectAccountButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -42,11 +41,11 @@ public class InitialConnectAccountFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnInitialConnectAccountInteractionListener) {
-            mListener = (OnInitialConnectAccountInteractionListener) context;
+        if (context instanceof InitialConnectAccountFListener) {
+            mListener = (InitialConnectAccountFListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement InitialConnectAccountFListener");
         }
     }
 
@@ -62,7 +61,7 @@ public class InitialConnectAccountFragment extends Fragment {
      * to the activity and potentially other fragments contained in that
      * activity.
      */
-    public interface OnInitialConnectAccountInteractionListener {
+    public interface InitialConnectAccountFListener {
         void onClickICAFConnectAccount();
     }
 }
