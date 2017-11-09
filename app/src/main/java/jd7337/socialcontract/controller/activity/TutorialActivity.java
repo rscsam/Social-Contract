@@ -1,5 +1,7 @@
 package jd7337.socialcontract.controller.activity;
 
+import android.net.Uri;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +12,8 @@ import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragme
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 
 public class TutorialActivity extends AppCompatActivity
-        implements InitialConnectAccountFragment.OnInitialConnectAccountInteractionListener {
+        implements InitialConnectAccountFragment.OnInitialConnectAccountInteractionListener,
+        EditInterestProfilePromptFragment.OnFragmentInteractionListener {
 
     private InitialConnectAccountFragment icaFragment;
     private EditInterestProfilePromptFragment eippFragment;
@@ -42,5 +45,10 @@ public class TutorialActivity extends AppCompatActivity
         transaction.replace(R.id.tutorial_activity, eippFragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
