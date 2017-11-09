@@ -5,11 +5,11 @@ import android.os.Bundle;
 
 import jd7337.socialcontract.R;
 
-public class EditInterestProfileActivity extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_interest_profile);
+        setContentView(R.layout.activity_tutorial);
     }
 }

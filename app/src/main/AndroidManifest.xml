@@ -22,7 +22,7 @@
         </activity>
         <activity android:name=".controller.activity.ForgotPasswordActivity">
         </activity>
-        <activity android:name=".controller.activity.EditInterestProfileActivity">
+        <activity android:name=".controller.activity.TutorialActivity">
         </activity>
     </application>
 
