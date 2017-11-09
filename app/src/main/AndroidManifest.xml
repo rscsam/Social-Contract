@@ -18,7 +18,11 @@
         </activity>
         <activity android:name=".controller.activity.RegistrationActivity">
         </activity>
-        <activity android:name=".controller.activity.HomeActivity">
+        <activity android:name=".controller.activity.MainActivity">
+        </activity>
+        <activity android:name=".controller.activity.ForgotPasswordActivity">
+        </activity>
+        <activity android:name=".controller.activity.EditInterestProfileActivity">
         </activity>
     </application>
 
