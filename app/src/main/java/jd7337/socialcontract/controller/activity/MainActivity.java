@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_discover:
-                showFragment(R.id.main_activity_layout, discoverFragment);
+                showFragment(R.id.main_activity_layout, discoverSettingsFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_grow:
