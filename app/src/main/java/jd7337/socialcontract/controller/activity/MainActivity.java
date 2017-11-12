@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickEIPSubmit() {showFragmentNoBackStack(R.id.main_activity_layout, accountManagementFragment);}
+    public void onClickEIPSubmit() {showFragment(R.id.main_activity_layout, homeFragment);}
 
     public void onLogout() {
         Intent startLogin = new Intent(this, LoginActivity.class);
