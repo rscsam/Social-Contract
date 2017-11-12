@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jd7337.socialcontract.controller.activity.EditInterestProfileActivity">
+    tools:context="jd7337.socialcontract.controller.activity.TutorialActivity"
+    android:id="@+id/tutorial_activity">
 
 </android.support.constraint.ConstraintLayout>
