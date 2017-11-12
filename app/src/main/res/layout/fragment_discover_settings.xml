@@ -8,7 +8,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Disocer Settings Fragment"/>
+        android:text="Discover Settings Fragment"/>
 
     <Button
         android:layout_width="wrap_content"
