@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Social Contract</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="password">Password</string>
     <string name="nav_drawer1">Logged in as:"</string>
     <string name="nav_drawer2">"Home"</string>
     <string name="nav_drawer3">"My Profile"</string>
