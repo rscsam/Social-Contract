@@ -14,72 +14,84 @@
         android:layout_height="45dp"
         android:ems="10"
         android:inputType="number"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="268dp" />
+        app:layout_constraintStart_toEndOf="@+id/quantityTV"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
         android:id="@+id/quantityTV"
         android:layout_width="112dp"
         android:layout_height="45dp"
+        android:layout_marginStart="72dp"
         android:text="Quantity"
         android:textSize="24sp"
-        tools:layout_editor_absoluteX="64dp"
-        tools:layout_editor_absoluteY="268dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <Button
         android:id="@+id/purchase_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:text="Go!"
         android:textSize="24sp"
-        tools:layout_editor_absoluteX="148dp"
-        tools:layout_editor_absoluteY="347dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quantityTV"
+        app:layout_constraintVertical_bias="0.25" />
 
     <TextView
         android:id="@+id/textView3"
         android:layout_width="100dp"
         android:layout_height="33dp"
         android:text="5 Coins"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="203dp" />
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
     <TextView
         android:id="@+id/textView5"
         android:layout_width="100dp"
         android:layout_height="33dp"
         android:text="10 Coins"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="235dp" />
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <TextView
         android:id="@+id/textView4"
         android:layout_width="100dp"
         android:layout_height="33dp"
         android:text="1 Coin"
-        tools:layout_editor_absoluteX="175dp"
-        tools:layout_editor_absoluteY="173dp" />
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
         android:id="@+id/textView6"
         android:layout_width="117dp"
         android:layout_height="49dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="64dp"
         android:text="I want"
         android:textSize="30sp"
-        tools:layout_editor_absoluteX="64dp"
-        tools:layout_editor_absoluteY="123dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="111dp"
         android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="64dp"
-        tools:layout_editor_absoluteY="172dp">
+        android:layout_marginStart="82dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
 
         <RadioButton
             android:id="@+id/radioButton3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Like"
+            android:text="Likes"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="172dp" />
 
@@ -88,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Retweet"
+            android:text="Retweets"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="204dp" />
 
@@ -97,7 +109,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Follow"
+            android:text="Follows"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="236dp" />
     </RadioGroup>
