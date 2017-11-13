@@ -1,19 +1,117 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="jd7337.socialcontract.controller.fragment.GrowFragment">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constrantLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jd7337.socialcontract.controller.fragment.GrowFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <EditText
+        android:id="@+id/quantityET"
+        android:layout_width="141dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/quantityTV"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grow Fragment"/>
+        android:id="@+id/quantityTV"
+        android:layout_width="112dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="72dp"
+        android:text="Quantity"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
 
     <Button
+        android:id="@+id/purchase_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Purchase"
-        android:id="@+id/purchase_button"/>
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Go!"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quantityTV"
+        app:layout_constraintVertical_bias="0.25" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="100dp"
+        android:layout_height="33dp"
+        android:text="5 Coins"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="100dp"
+        android:layout_height="33dp"
+        android:text="10 Coins"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="100dp"
+        android:layout_height="33dp"
+        android:text="1 Coin"
+        app:layout_constraintStart_toEndOf="@+id/radioGroup"
+        app:layout_constraintTop_toBottomOf="@+id/textView6" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="117dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="64dp"
+        android:text="I want"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="111dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="82dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView6">
+
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Likes"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="172dp" />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Retweets"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="204dp" />
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Follows"
+            tools:layout_editor_absoluteX="64dp"
+            tools:layout_editor_absoluteY="236dp" />
+    </RadioGroup>
+
+</android.support.constraint.ConstraintLayout>
