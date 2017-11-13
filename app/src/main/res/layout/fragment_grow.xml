@@ -79,7 +79,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton"
+            android:text="Like"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="172dp" />
 
@@ -88,7 +88,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton"
+            android:text="Retweet"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="204dp" />
 
@@ -97,7 +97,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="RadioButton"
+            android:text="Follow"
             tools:layout_editor_absoluteX="64dp"
             tools:layout_editor_absoluteY="236dp" />
     </RadioGroup>
