@@ -1,25 +1,44 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="jd7337.socialcontract.controller.fragment.HomeFragment">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jd7337.socialcontract.controller.fragment.HomeFragment"
+    tools:layout_editor_absoluteY="81dp">
+
+    <Button
+        android:id="@+id/discover_button"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:text="@string/discover"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/grow_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/grow_button"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="@string/grow"
+        app:layout_constraintBaseline_toBaselineOf="@+id/discover_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discover_button" />
 
     <TextView
+        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home fragment"/>
+        android:text="Your Request:"
+        tools:layout_editor_absoluteX="80dp"
+        tools:layout_editor_absoluteY="120dp" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Discover"
-        android:id="@+id/discover_button"/>
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="50dp"
+        android:layout_height="49dp"
+        android:src="@mipmap/ic_launcher"
+        tools:layout_editor_absoluteX="269dp"
+        tools:layout_editor_absoluteY="156dp" android:contentDescription="TODO"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grow"
-        android:id="@+id/grow_button"/>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
