@@ -1,9 +1,7 @@
 package jd7337.socialcontract.controller.activity;
 
-import android.accounts.Account;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -11,7 +9,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -59,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.main_activity_layout, homeFragment).commit();
+                .add(R.id.main_activity_view, homeFragment).commit();
 
         // set the navigation drawer
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -104,31 +101,32 @@ public class MainActivity extends AppCompatActivity implements
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
+    // Navigates to the screen selected in the navigation drawer
     public void onNavigationItemSelected(MenuItem item) {
 
         switch (item.getItemId()) {
             case R.id.nav_home:
-                showFragment(R.id.main_activity_layout, homeFragment);
+                showFragment(R.id.main_activity_view, homeFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_profile:
-                showFragment(R.id.main_activity_layout, profileFragment);
+                showFragment(R.id.main_activity_view, profileFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_accounts:
-                showFragment(R.id.main_activity_layout, accountManagementFragment);
+                showFragment(R.id.main_activity_view, accountManagementFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_interests:
-                showFragment(R.id.main_activity_layout, editInterestProfileFragment);
+                showFragment(R.id.main_activity_view, editInterestProfileFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_discover:
-                showFragment(R.id.main_activity_layout, discoverSettingsFragment);
+                showFragment(R.id.main_activity_view, discoverSettingsFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_grow:
-                showFragment(R.id.main_activity_layout, growFragment);
+                showFragment(R.id.main_activity_view, growFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_logout:
@@ -139,33 +137,48 @@ public class MainActivity extends AppCompatActivity implements
         }
 
     }
+
+    @Override
     public void onClickGrowPurchase() {
-        showFragment(R.id.main_activity_layout, homeFragment);
+        showFragment(R.id.main_activity_view, homeFragment);
     }
 
     @Override
     public void onClickDiscoverImDone() {
-        showFragment(R.id.main_activity_layout, homeFragment);
+        showFragment(R.id.main_activity_view, homeFragment);
     }
 
     @Override
     public void onClickDiscoverSettingsGo() {
-        showFragment(R.id.main_activity_layout, discoverFragment);
+        showFragment(R.id.main_activity_view, discoverFragment);
     }
 
     @Override
     public void onClickHomeDiscover() {
-        showFragment(R.id.main_activity_layout, discoverSettingsFragment);
+        showFragment(R.id.main_activity_view, discoverSettingsFragment);
     }
 
     @Override
     public void onClickHomeGrow() {
-        showFragment(R.id.main_activity_layout, growFragment);
+        showFragment(R.id.main_activity_view, growFragment);
     }
 
     @Override
-    public void onClickEIPSubmit() {showFragment(R.id.main_activity_layout, homeFragment);}
+    public void onClickEIPSubmit() {showFragment(R.id.main_activity_view, homeFragment);}
 
+    @Override
+    public void onClickAccountManagement() {showFragment(R.id.main_activity_view, accountManagementFragment);}
+
+    @Override
+    public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
+
+
+    // goes to the profile screen
+    public void onClickProfile(View view) {
+        showFragment(R.id.main_activity_view, profileFragment);
+    }
+
+    // logs out of the application
     public void onLogout() {
         Intent startLogin = new Intent(this, LoginActivity.class);
         startLogin.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
