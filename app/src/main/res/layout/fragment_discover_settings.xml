@@ -6,13 +6,49 @@
              tools:context="jd7337.socialcontract.controller.fragment.DiscoverSettingsFragment">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginStart="70dp"
+        android:text="Choose how you want discover new content:"
+        android:textSize="24sp" />
+
+    <ImageView
+        android:layout_width="394dp"
+        android:layout_height="50dp"
+        android:src="@drawable/user" />
+
+    <CheckBox
+        android:id="@+id/checkbox1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Discover Settings Fragment"/>
+        android:layout_marginStart="100dp"
+        android:text="Likes"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="203dp" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:text="Shares"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="239dp" />
+
+    <CheckBox
+        android:id="@+id/checkBox3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="100dp"
+        android:text="Follows"
+        tools:layout_editor_absoluteX="50dp"
+        tools:layout_editor_absoluteY="271dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="150dp"
         android:text="Go"
         android:id="@+id/discover_go_button"/>
 
