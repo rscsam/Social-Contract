@@ -1,18 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <!-- The main content view -->
-    <android.support.constraint.ConstraintLayout
+    <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="jd7337.socialcontract.controller.activity.MainActivity"
-        android:id="@+id/main_activity_layout"/>
+        android:foregroundGravity="top|right"
+        android:id="@+id/main_activity_layout">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/user_logo_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:orientation="horizontal"
+                android:background="@drawable/coin_icon_border">
+                <ImageView
+                    android:id="@+id/user_logo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:onClick="onClickProfile"
+                    app:srcCompat="@drawable/user_icon"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/coin_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|right"
+                android:orientation="horizontal"
+                android:background="@drawable/coin_icon_border">
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    app:srcCompat="@drawable/coin_icon" />
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="10pt"
+                    android:text="10"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+
+            android:id="@+id/main_activity_view"/>
+
+    </FrameLayout>
     <!-- The navigation drawer -->
     <android.support.design.widget.NavigationView
         android:id="@+id/navigation"
