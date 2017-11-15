@@ -8,6 +8,7 @@
     <TextView
         android:layout_width="300dp"
         android:layout_height="80dp"
+        android:layout_marginTop="50dp"
         android:layout_marginStart="70dp"
         android:text="Choose how you want discover new content:"
         android:textSize="24sp" />
