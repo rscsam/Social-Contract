@@ -1,25 +1,55 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="jd7337.socialcontract.controller.fragment.HomeFragment">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jd7337.socialcontract.controller.fragment.HomeFragment"
+    tools:layout_editor_absoluteY="81dp">
+
+    <Button
+        android:id="@+id/discover_button"
+        android:layout_width="0dp"
+        android:layout_height="46dp"
+        android:text="@string/discover"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/grow_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/grow_button"
+        android:layout_width="0dp"
+        android:layout_height="48dp"
+        android:text="@string/grow"
+        app:layout_constraintBaseline_toBaselineOf="@+id/discover_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/discover_button" />
 
     <TextView
+        android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Home fragment"/>
+        android:layout_marginBottom="48dp"
+        android:layout_marginEnd="217dp"
+        android:layout_marginStart="80dp"
+        android:layout_marginTop="144dp"
+        android:text="Your Request:"
+        app:layout_constraintBottom_toTopOf="@+id/textView7"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Discover"
-        android:id="@+id/discover_button"/>
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="241dp"
+        android:layout_height="130dp"
+        android:layout_marginBottom="124dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="You currently don't have any request yet. Please click Grow to get some followers."
+        app:layout_constraintBottom_toTopOf="@+id/discover_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.503"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Grow"
-        android:id="@+id/grow_button"/>
-
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
