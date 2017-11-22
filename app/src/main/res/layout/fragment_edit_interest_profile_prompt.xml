@@ -1,25 +1,41 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment">
 
     <TextView
+        android:id="@+id/edit_interest_profile_prompt_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Interest Profile Prompt Fragment"/>
+        android:text="Fill out an interest profile to start connecting with cool content!"
+        android:textAlignment="center"
+        android:textSize="24sp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <Button
         android:id="@+id/ep_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"/>
+        android:layout_marginTop="0dp"
+        android:text="Edit Interest Profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_interest_profile_prompt_tv"/>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Skip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Skip This Step"
         android:id="@+id/skipep_button"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>
