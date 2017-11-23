@@ -140,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickGrowPurchase() {
-        showFragment(R.id.main_activity_view, homeFragment);
+        Bundle bundle = new Bundle();
+        bundle.putString("request", "1");
+        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
     }
 
     @Override
@@ -196,6 +198,14 @@ public class MainActivity extends AppCompatActivity implements
     private void showFragmentNoBackStack(int viewId, Fragment fragment) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(viewId, fragment);
+        transaction.commit();
+    }
+
+    private void showFragmentWithBundle(int viewId, Fragment fragment, Bundle bundle) {
+        fragment.setArguments(bundle);
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(viewId, fragment);
+        transaction.addToBackStack(null);
         transaction.commit();
     }
 }

@@ -44,6 +44,14 @@ public class HomeFragment extends Fragment {
                     }
                 }
         );
+
+        if (getArguments() != null) {
+            String text = getArguments().getString("request");
+            if (text != null) {
+                setImage(view);
+            }
+        }
+
         return view;
     }
 
@@ -64,6 +72,13 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
+    private void setImage(View view) {
+        view.findViewById(R.id.home_no_request_tv).setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.home_tap_discover_tv).setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.home_or_tv).setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.home_tap_grow_tv).setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.home_request_image).setVisibility(View.VISIBLE);
+    }
     public interface HomeFListener {
         void onClickHomeDiscover();
         void onClickHomeGrow();

@@ -1,19 +1,74 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
              xmlns:tools="http://schemas.android.com/tools"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
               android:orientation="vertical"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="jd7337.socialcontract.controller.fragment.DiscoverFragment">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Discover Fragment"/>
+        android:orientation="horizontal"
+        >
+        <ImageView
+            android:id="@+id/discover_like_icon"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:src="@drawable/like_selected"/>
+
+        <ImageView
+            android:id="@+id/discover_retweet_icon"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:src="@drawable/retweet_transparent" />
+
+        <ImageView
+            android:id="@+id/discover_follow_icon"
+            android:layout_width="61dp"
+            android:layout_height="49dp"
+            android:src="@drawable/follow_transparent" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/quantityTV"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_marginStart="130dp"
+            android:layout_marginTop="30dp"
+            android:text="Like for 1"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="34dp"
+            android:src="@drawable/coin_icon" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="217dp"
+        android:src="@drawable/tweet" />
 
     <Button
+        android:id="@+id/skip_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="I'm Done"
-        android:id="@+id/im_done_button"/>
+        android:layout_marginStart="240dp"
+        android:text="Skip" />
+
+    <Button
+        android:id="@+id/im_done_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="64dp"
+        android:layout_marginStart="150dp"
+        android:text="I'm Done" />
 
 </LinearLayout>
