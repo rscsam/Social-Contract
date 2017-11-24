@@ -15,4 +15,6 @@
     <string name="discover">DISCOVER</string>
     <string name="grow">GROW</string>
     <string name="register">REGISTER</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
 </resources>

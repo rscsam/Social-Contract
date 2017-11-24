@@ -15,6 +15,7 @@ import android.view.View;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
+import jd7337.socialcontract.controller.fragment.ConfirmPurchaseDialogFragment;
 import jd7337.socialcontract.controller.fragment.DiscoverFragment;
 import jd7337.socialcontract.controller.fragment.DiscoverSettingsFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity implements
         EditInterestProfileFragment.EditInterestProfileFListener,
         AccountManagementFragment.AccountManagementFListener,
         ProfileFragment.ProfileFListener,
-        AccountSelectFragment.AccountSelectFListener{
+        AccountSelectFragment.AccountSelectFListener,
+        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener {
 
     private HomeFragment homeFragment;
     private DiscoverSettingsFragment discoverSettingsFragment;
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements
     private AccountManagementFragment accountManagementFragment;
     private ProfileFragment profileFragment;
     private AccountSelectFragment accountSelectFragment;
+    private ConfirmPurchaseDialogFragment confirmPurchaseDialogFragment;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -57,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
         accountManagementFragment = new AccountManagementFragment();
         profileFragment = new ProfileFragment();
         accountSelectFragment = new AccountSelectFragment();
+        confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
 
 
         getSupportFragmentManager().beginTransaction()
@@ -144,9 +148,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickGrowPurchase() {
-        Bundle bundle = new Bundle();
-        bundle.putString("request", "1");
-        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+        confirmPurchaseDialogFragment.show(this.getFragmentManager(), "confirm_purchase_dialog");
     }
 
     @Override
@@ -182,6 +184,13 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
+
+    @Override
+    public void onClickConfirmPurchase() {
+        Bundle bundle = new Bundle();
+        bundle.putString("request", "1");
+        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+    }
 
 
     // goes to the profile screen
