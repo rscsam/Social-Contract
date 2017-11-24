@@ -57,25 +57,31 @@
 
     <TextView
         android:id="@+id/like_price_tv"
-        android:layout_width="18dp"
+        android:layout_width="20dp"
         android:layout_height="32dp"
         android:text="1"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toEndOf="@+id/radioGroup"
         app:layout_constraintTop_toBottomOf="@+id/header_tv" />
 
     <TextView
         android:id="@+id/retweet_price_tv"
-        android:layout_width="18dp"
-        android:layout_height="31dp"
+        android:layout_width="20dp"
+        android:layout_height="32dp"
         android:text="5"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toEndOf="@+id/radioGroup"
         app:layout_constraintTop_toBottomOf="@+id/like_price_tv" />
 
     <TextView
         android:id="@+id/follow_price_tv"
-        android:layout_width="18dp"
-        android:layout_height="33dp"
+        android:layout_width="20dp"
+        android:layout_height="32dp"
         android:text="10"
+        android:textSize="18sp"
+        android:gravity="center_vertical"
         app:layout_constraintStart_toEndOf="@+id/radioGroup"
         app:layout_constraintTop_toBottomOf="@+id/retweet_price_tv" />
 
