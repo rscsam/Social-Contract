@@ -10,8 +10,12 @@
     <Button
         android:id="@+id/discover_button"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="60dp"
         android:text="@string/discover"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/grow_button"
         app:layout_constraintStart_toStartOf="parent" />
@@ -19,8 +23,11 @@
     <Button
         android:id="@+id/grow_button"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="60dp"
         android:text="@string/grow"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button"
+        android:layout_marginBottom="2dp"
         app:layout_constraintBaseline_toBaselineOf="@id/discover_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/discover_button" />

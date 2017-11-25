@@ -32,26 +32,6 @@ public class EditInterestProfilePromptFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_edit_interest_profile_prompt, container,
                 false);
 
-        Button editProfileButton = view.findViewById(R.id.ep_button);
-        editProfileButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onClickEIPPEditProfile();
-                    }
-                }
-        );
-
-        Button skipButton = view.findViewById(R.id.skipep_button);
-        skipButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onClickEIPPSkip();
-                    }
-                }
-        );
-
         return view;
     }
 
