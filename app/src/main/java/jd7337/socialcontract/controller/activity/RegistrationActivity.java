@@ -18,7 +18,7 @@ public class RegistrationActivity extends AppCompatActivity {
     }
 
     public void onClickRegister(View view) {
-        Intent startTutorial = new Intent(this, TutorialActivity.class);
+        Intent startTutorial = new Intent(this, Tutorial2Activity.class);
         startActivity(startTutorial);
     }
 }
