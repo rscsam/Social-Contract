@@ -14,6 +14,8 @@ import android.view.View;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
+import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
+import jd7337.socialcontract.controller.fragment.ConfirmPurchaseDialogFragment;
 import jd7337.socialcontract.controller.fragment.DiscoverFragment;
 import jd7337.socialcontract.controller.fragment.DiscoverSettingsFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
@@ -26,7 +28,9 @@ public class MainActivity extends AppCompatActivity implements
     DiscoverFragment.DiscoverFListener, GrowFragment.GrowFListener,
         EditInterestProfileFragment.EditInterestProfileFListener,
         AccountManagementFragment.AccountManagementFListener,
-        ProfileFragment.ProfileFListener{
+        ProfileFragment.ProfileFListener,
+        AccountSelectFragment.AccountSelectFListener,
+        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener {
 
     private HomeFragment homeFragment;
     private DiscoverSettingsFragment discoverSettingsFragment;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements
     private EditInterestProfileFragment editInterestProfileFragment;
     private AccountManagementFragment accountManagementFragment;
     private ProfileFragment profileFragment;
+    private AccountSelectFragment accountSelectFragment;
+    private ConfirmPurchaseDialogFragment confirmPurchaseDialogFragment;
 
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -53,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements
         editInterestProfileFragment = new EditInterestProfileFragment();
         accountManagementFragment = new AccountManagementFragment();
         profileFragment = new ProfileFragment();
+        accountSelectFragment = new AccountSelectFragment();
+        confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
 
 
         getSupportFragmentManager().beginTransaction()
@@ -126,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_grow:
-                showFragment(R.id.main_activity_view, growFragment);
+                showFragment(R.id.main_activity_view, accountSelectFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_logout:
@@ -140,9 +148,7 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickGrowPurchase() {
-        Bundle bundle = new Bundle();
-        bundle.putString("request", "1");
-        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+        confirmPurchaseDialogFragment.show(this.getFragmentManager(), "confirm_purchase_dialog");
     }
 
     @Override
@@ -162,17 +168,29 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onClickHomeGrow() {
-        showFragment(R.id.main_activity_view, growFragment);
+        showFragment(R.id.main_activity_view, accountSelectFragment);
     }
 
     @Override
     public void onClickEIPSubmit() {showFragment(R.id.main_activity_view, homeFragment);}
 
     @Override
-    public void onClickAccountManagement() {showFragment(R.id.main_activity_view, accountManagementFragment);}
+    public void onClickAccountManagement() {
+        showFragment(R.id.main_activity_view, accountManagementFragment);
+    }
 
     @Override
     public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
+
+    @Override
+    public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
+
+    @Override
+    public void onClickConfirmPurchase() {
+        Bundle bundle = new Bundle();
+        bundle.putString("request", "1");
+        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+    }
 
 
     // goes to the profile screen
