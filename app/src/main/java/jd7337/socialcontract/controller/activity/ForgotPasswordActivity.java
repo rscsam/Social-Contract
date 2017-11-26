@@ -15,7 +15,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_forgot_password);
     }
 
-    public void onClickLogin(View view) {
+    public void onClickSend(View view) {
         Intent startLogin = new Intent(this, LoginActivity.class);
         startActivity(startLogin);
     }

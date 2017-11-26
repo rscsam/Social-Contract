@@ -16,7 +16,7 @@ public class ConfirmEmailActivity extends AppCompatActivity {
 
     }
 
-    public void onClickRegister(View view) {
+    public void onClickConfirm(View view) {
         Intent startTutorial = new Intent(this, TutorialActivity.class);
         startActivity(startTutorial);
     }

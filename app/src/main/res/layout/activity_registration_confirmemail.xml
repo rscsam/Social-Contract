@@ -4,15 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jd7337.socialcontract.controller.activity.RegistrationActivity"
+    tools:context="jd7337.socialcontract.controller.activity.ConfirmEmailActivity"
     tools:layout_editor_absoluteY="81dp">
 
     <Button
-        android:id="@+id/button3"
+        android:id="@+id/confirmEmailbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:onClick="onClickRegister"
+        android:onClick="onClickConfirm"
         android:text="Confirm email address"
         app:layout_constraintStart_toStartOf="@+id/textView15"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
@@ -26,7 +26,7 @@
         android:text="Thanks,\nSocial Contract Team"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button3" />
+        app:layout_constraintTop_toBottomOf="@+id/confirmEmailbutton" />
 
     <TextView
         android:id="@+id/textView16"

@@ -15,7 +15,7 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
     }
 
-    public void onClickRegister(View view) {
+    public void onClickRegisterDone(View view) {
         Intent startConfirmEmail = new Intent(this, ConfirmEmailActivity.class);
         startActivity(startConfirmEmail);
     }
