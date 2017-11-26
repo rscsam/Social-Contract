@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 
@@ -35,7 +36,14 @@ public class GrowFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        int quantity = Integer.parseInt(quantityET.getText().toString());
+                        int quantity;
+                        try {
+                            quantity = Integer.parseInt(quantityET.getText().toString());
+                        } catch (NumberFormatException e) {
+                            Toast.makeText(getContext(), "Please choose a quantity.",
+                                    Toast.LENGTH_SHORT).show();
+                            return;
+                        }
 
                         int selectId = interactionTypesRG.getCheckedRadioButtonId();
                         System.out.println(selectId);
