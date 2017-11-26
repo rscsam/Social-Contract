@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
@@ -45,6 +46,8 @@ public class MainActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
+
+    private int numCoins;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // model initialization
+        updateCoinNumber(20);
 
     }
 
@@ -147,7 +153,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickGrowPurchase() {
+    public void onClickGrowPurchase(int quantity, String type, int individualPrice) {
+        confirmPurchaseDialogFragment.setQuantity(quantity);
+        confirmPurchaseDialogFragment.setType(type);
+        confirmPurchaseDialogFragment.setTotalPrice(quantity * individualPrice);
         confirmPurchaseDialogFragment.show(this.getFragmentManager(), "confirm_purchase_dialog");
     }
 
@@ -186,12 +195,12 @@ public class MainActivity extends AppCompatActivity implements
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
 
     @Override
-    public void onClickConfirmPurchase() {
+    public void onClickConfirmPurchase(int totalCoins) {
+        updateCoinNumber(numCoins - totalCoins);
         Bundle bundle = new Bundle();
         bundle.putString("request", "1");
         showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
     }
-
 
     // goes to the profile screen
     public void onClickProfile(View view) {
@@ -213,17 +222,18 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    private void showFragmentNoBackStack(int viewId, Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(viewId, fragment);
-        transaction.commit();
-    }
-
     private void showFragmentWithBundle(int viewId, Fragment fragment, Bundle bundle) {
         fragment.setArguments(bundle);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(viewId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void updateCoinNumber(int newNumber) {
+        numCoins = newNumber;
+        TextView coinTV = findViewById(R.id.num_coins_tv);
+        String newCoinNumStr = newNumber + "";
+        coinTV.setText(newCoinNumStr);
     }
 }
