@@ -56,6 +56,8 @@
         android:layout_marginTop="36dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@+id/discover_text"
+        app:layout_constraintEnd_toEndOf="@+id/discover_text"
         android:text="Go"
         app:layout_constraintTop_toBottomOf="@+id/cb_three" />
 
