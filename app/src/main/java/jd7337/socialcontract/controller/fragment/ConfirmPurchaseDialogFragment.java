@@ -13,14 +13,19 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
 
     private ConfirmPurchaseDialogFListener mListener;
 
+    private int quantity;
+    private String type;
+    private int totalPrice;
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage("Purchase 1 Like for 1 coin?")
+        String message = "Purchase " + quantity + " " + type + " for " + totalPrice + " coins?";
+        builder.setMessage(message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mListener.onClickConfirmPurchase();
+                        mListener.onClickConfirmPurchase(totalPrice);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -42,8 +47,32 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
         }
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(int totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public interface ConfirmPurchaseDialogFListener {
-        void onClickConfirmPurchase();
+        void onClickConfirmPurchase(int totalPrice);
     }
 
 }
