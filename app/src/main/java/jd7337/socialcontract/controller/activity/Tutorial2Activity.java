@@ -1,6 +1,7 @@
 package jd7337.socialcontract.controller.activity;
 
 import android.animation.ArgbEvaluator;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
@@ -261,9 +263,15 @@ public class Tutorial2Activity extends AppCompatActivity implements
         transaction.commit();
     }
 
+    //make it easy to demo for now
     @Override
     public void onClickICAFConnectAccount() {
-        showFragment(R.id.tutorial2_activity, eippFragment);
+        Context context = getApplicationContext();
+        CharSequence text = "Social Media Account Connected";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override
