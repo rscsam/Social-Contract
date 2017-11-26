@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
                 android:orientation="horizontal"
-                android:background="@drawable/coin_icon_border">
+                android:background="@drawable/account_icon_border">
                 <ImageView
                     android:id="@+id/user_logo"
                     android:layout_width="30dp"
@@ -41,19 +41,19 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top|right"
                 android:orientation="horizontal"
-                android:background="@drawable/coin_icon_border">
+                android:background="@drawable/coin_border">
 
                 <ImageView
                     android:id="@+id/imageView3"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
                     app:srcCompat="@drawable/coin_icon" />
                 <TextView
                     android:id="@+id/textView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
-                    android:textSize="10pt"
+                    android:textSize="12pt"
                     android:text="10"/>
             </LinearLayout>
         </LinearLayout>

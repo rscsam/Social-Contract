@@ -15,4 +15,16 @@
     <string name="discover">DISCOVER</string>
     <string name="grow">GROW</string>
     <string name="register">REGISTER</string>
+    <string name="dialog_confirm">Confirm</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="title_activity_tutorial2">Tutorial2Activity</string>
+    <string name="intro_introduction">Welcome! Thank you for downloading Social Contract! Our goal is to help you grow your social media accounts and find new content!</string>
+    <string name="intro_discover">Discover</string>
+    <string name="intro_discover_text">Discover allows you to find new social media posts and accounts. Find content from other users of Social Contract with similar interests!</string>
+    <string name="intro_grow">Grow</string>
+    <string name="intro_grow_text">Grow allows you to grow your social media accounts! Put out your content on Social Contract for other users to see, like, share, and follow!</string>
+    <string name="intro_coins">Coins</string>
+    <string name="intro_coins_text">Earn coins by liking, following, and sharing in Discover. Spend coins in Grow to gain likes, shares, and follows on your own account!</string>
+    <string name="intro_welcome">Welcome!</string>
+    <string name="intro_welcome_text">Thanks for using Social Contract!\nSocial Contract lets you grow your social media accounts and find interesting new content! \nSwipe to get started.</string>
 </resources>

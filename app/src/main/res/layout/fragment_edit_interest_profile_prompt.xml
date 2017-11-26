@@ -1,25 +1,85 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:orientation="vertical"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              tools:context="jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment">
 
     <TextView
+        android:id="@+id/edit_interest_profile_prompt_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Edit Interest Profile Prompt Fragment"/>
+        android:text="Fill out an interest profile to start connecting with cool content!"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        app:layout_constraintVertical_bias="0.25"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 
-    <Button
-        android:id="@+id/ep_button"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Edit Profile"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edit_interest_profile_prompt_tv"
+        android:layout_margin="20dp"
+        android:orientation="vertical"
+        android:id="@+id/interest_checkboxes_ll">
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Music"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/music_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Food"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/food_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Movies"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/movies_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video Games"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/video_games_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sports"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/sports_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="News"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/news_interest_cb"/>
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Memes"
+            android:buttonTint="@color/white"
+            android:textColor="@color/white"
+            android:id="@+id/memes_interest_cb"/>
+    </LinearLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skip"
-        android:id="@+id/skipep_button"/>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

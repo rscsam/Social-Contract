@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import jd7337.socialcontract.R;
 
@@ -29,6 +30,84 @@ public class DiscoverFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         mListener.onClickDiscoverImDone();
+                    }
+                }
+        );
+
+        View likeIcon = view.findViewById(R.id.discover_like_icon);
+        likeIcon.setTag(R.drawable.like_selected);
+        likeIcon.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    ImageView imageView = (ImageView) view;
+
+                    Integer tag = (Integer) imageView.getTag();
+                    tag = tag == null ? 0 : tag;
+
+                    switch(tag) {
+                        case R.drawable.like_transparent:
+                            imageView.setTag(R.drawable.like_selected);
+                            imageView.setImageResource(R.drawable.like_selected);
+                            break;
+                        case R.drawable.like_selected:
+                            imageView.setTag(R.drawable.like_transparent);
+                            imageView.setImageResource(R.drawable.like_transparent);
+                            break;
+                    }
+
+                }
+            }
+        );
+
+        View retweetIcon = view.findViewById(R.id.discover_retweet_icon);
+        retweetIcon.setTag(R.drawable.retweet_transparent);
+        retweetIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageView imageView = (ImageView) view;
+
+                        Integer tag = (Integer) imageView.getTag();
+                        tag = tag == null ? 0 : tag;
+
+                        switch(tag) {
+                            case R.drawable.retweet_transparent:
+                                imageView.setTag(R.drawable.retweet_selected);
+                                imageView.setImageResource(R.drawable.retweet_selected);
+                                break;
+                            case R.drawable.retweet_selected:
+                                imageView.setTag(R.drawable.retweet_transparent);
+                                imageView.setImageResource(R.drawable.retweet_transparent);
+                                break;
+                        }
+
+                    }
+                }
+        );
+
+        View followIcon = view.findViewById(R.id.discover_follow_icon);
+        followIcon.setTag(R.drawable.follow_transparent);
+        followIcon.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ImageView imageView = (ImageView) view;
+
+                        Integer tag = (Integer) imageView.getTag();
+                        tag = tag == null ? 0 : tag;
+
+                        switch(tag) {
+                            case R.drawable.follow_transparent:
+                                imageView.setTag(R.drawable.follow_selected);
+                                imageView.setImageResource(R.drawable.follow_selected);
+                                break;
+                            case R.drawable.follow_selected:
+                                imageView.setTag(R.drawable.follow_transparent);
+                                imageView.setImageResource(R.drawable.follow_transparent);
+                                break;
+                        }
+
                     }
                 }
         );
