@@ -79,6 +79,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.home_tap_grow_tv).setVisibility(View.INVISIBLE);
         view.findViewById(R.id.home_request_image).setVisibility(View.VISIBLE);
     }
+
     public interface HomeFListener {
         void onClickHomeDiscover();
         void onClickHomeGrow();

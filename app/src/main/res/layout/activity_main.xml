@@ -19,13 +19,13 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top|right"
+            android:layout_gravity="top|end"
             android:orientation="horizontal">
             <LinearLayout
                 android:id="@+id/user_logo_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
+                android:layout_gravity="top|end"
                 android:orientation="horizontal"
                 android:background="@drawable/account_icon_border">
                 <ImageView
@@ -39,22 +39,22 @@
                 android:id="@+id/coin_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|right"
+                android:layout_gravity="top|end"
                 android:orientation="horizontal"
                 android:background="@drawable/coin_border">
 
                 <ImageView
-                    android:id="@+id/imageView3"
+                    android:id="@+id/toolbar_coin_iv"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     app:srcCompat="@drawable/coin_icon" />
                 <TextView
-                    android:id="@+id/textView"
+                    android:id="@+id/num_coins_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="12pt"
-                    android:text="10"/>
+                    android:text="999"/>
             </LinearLayout>
         </LinearLayout>
 
