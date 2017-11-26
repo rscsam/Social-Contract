@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="44dp"
-        android:onClick="onClickRegister"
+        android:onClick="onClickForgetPassword"
         android:text="Forgot Password"
         app:layout_constraintBaseline_toBaselineOf="@+id/registerbutton3"
         app:layout_constraintStart_toStartOf="parent" />

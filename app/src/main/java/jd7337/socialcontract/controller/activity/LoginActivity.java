@@ -24,4 +24,9 @@ public class LoginActivity extends AppCompatActivity {
         Intent startHome = new Intent(this, MainActivity.class);
         startActivity(startHome);
     }
+
+    public void onClickForgetPassword(View view) {
+        Intent starResetPassword = new Intent(this, ForgotPasswordActivity.class);
+        startActivity(starResetPassword);
+    }
 }
