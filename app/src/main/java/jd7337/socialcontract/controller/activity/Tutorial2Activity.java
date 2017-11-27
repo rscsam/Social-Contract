@@ -199,7 +199,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
         TextView text;
 
         int[] images = new int[]{R.drawable.ic_public_white_48dp, R.drawable.ic_search_white_48dp, R.drawable.ic_trending_up_white_48dp,
-                R.drawable.coin_icon};
+                R.drawable.coin_icon_large};
         int[] titles = new int[] {R.string.intro_welcome, R.string.intro_discover, R.string.intro_grow, R.string.intro_coins};
         int[] texts = new int[] {R.string.intro_welcome_text, R.string.intro_discover_text, R.string.intro_grow_text, R.string.intro_coins_text};
 
