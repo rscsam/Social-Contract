@@ -24,6 +24,7 @@
             android:name=".controller.activity.Tutorial2Activity"
             android:label="@string/title_activity_tutorial2"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".controller.activity.ConfirmEmailActivity"></activity>
     </application>
 
 </manifest>
