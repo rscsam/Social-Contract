@@ -46,17 +46,15 @@ public class GrowFragment extends Fragment {
                         }
 
                         int selectId = interactionTypesRG.getCheckedRadioButtonId();
-                        System.out.println(selectId);
                         RadioButton selected = interactionTypesRG.findViewById(selectId);
-                        System.out.println(selected);
-                        System.out.println(selected.getText().toString());
                         String type = selected.getText().toString();
+                        type = type.substring(0, type.length() - 1);
                         int price;
                         switch (type) {
-                            case "Likes":
+                            case "Like":
                                 price = 1;
                                 break;
-                            case "Retweets":
+                            case "Retweet":
                                 price = 5;
                                 break;
                             default:

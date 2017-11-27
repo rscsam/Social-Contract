@@ -20,7 +20,10 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        String message = "Purchase " + quantity + " " + type + " for " + totalPrice + " coins?";
+        String priceStr = totalPrice == 1 ? "1 coin?" : totalPrice + " coins?";
+        String message = quantity == 1
+                ? "Purchase 1 " + type + " for " + priceStr
+                : "Purchase " + quantity + " " + type + "s for " + priceStr;
         builder.setMessage(message)
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
