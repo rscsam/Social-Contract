@@ -111,10 +111,13 @@ public class Tutorial2Activity extends AppCompatActivity implements
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = getResources().getColor(R.color.colorAltDark);
-        final int color2 = getResources().getColor(R.color.colorPrimary);
-        final int color3 = getResources().getColor(R.color.colorAltLight);
-        final int[] colorList = new int[]{color1, color2, color3};
+        final int color1 = getResources().getColor(R.color.tutorial1);
+        final int color2 = getResources().getColor(R.color.tutorial2);
+        final int color3 = getResources().getColor(R.color.tutorial3);
+        final int color4 = getResources().getColor(R.color.tutorial4);
+        final int color5 = getResources().getColor(R.color.tutorial5);
+        final int color6 = getResources().getColor(R.color.tutorial6);
+        final int[] colorList = new int[]{color1, color2, color3, color4, color5, color6};
 
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
@@ -122,7 +125,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 int colorUpdate = (Integer) evaluator.evaluate(positionOffset,
-                        colorList[position % 3], colorList[(position + 1) % 3]);
+                        colorList[position], colorList[(position + 1) % 6]);
                 mViewPager.setBackgroundColor(colorUpdate);
             }
 
@@ -131,13 +134,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
                 page = position;
                 updateIndicators(page);
 
-                if (position % 3 == 0) {
-                    mViewPager.setBackgroundColor(color1);
-                } else if (position % 3 == 1) {
-                    mViewPager.setBackgroundColor(color2);
-                } else {
-                    mViewPager.setBackgroundColor(color3);
-                }
+                mViewPager.setBackgroundColor(colorList[position]);
 
                 mNextButton.setVisibility(position == 5 ? View.GONE : View.VISIBLE);
                 mFinishButton.setVisibility(position == 5 ? View.VISIBLE : View.GONE);
@@ -199,7 +196,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
         TextView text;
 
         int[] images = new int[]{R.drawable.ic_public_white_48dp, R.drawable.ic_search_white_48dp, R.drawable.ic_trending_up_white_48dp,
-                R.drawable.coin_icon};
+                R.drawable.coin_icon_large};
         int[] titles = new int[] {R.string.intro_welcome, R.string.intro_discover, R.string.intro_grow, R.string.intro_coins};
         int[] texts = new int[] {R.string.intro_welcome_text, R.string.intro_discover_text, R.string.intro_grow_text, R.string.intro_coins_text};
 
@@ -285,7 +282,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
     @Override
     public void onClickICAFConnectAccount() {
         Context context = getApplicationContext();
-        CharSequence text = "Social Media Account Connected";
+        CharSequence text = "Twitter Account Connected";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
