@@ -7,8 +7,6 @@ import android.view.View;
 
 import jd7337.socialcontract.R;
 
-import jd7337.socialcontract.R;
-
 public class RegistrationActivity extends AppCompatActivity {
 
     @Override
@@ -17,8 +15,8 @@ public class RegistrationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registration);
     }
 
-    public void onClickRegister(View view) {
-        Intent startTutorial = new Intent(this, Tutorial2Activity.class);
-        startActivity(startTutorial);
+    public void onClickRegisterDone(View view) {
+        Intent startConfirmEmail = new Intent(this, ConfirmEmailActivity.class);
+        startActivity(startConfirmEmail);
     }
 }
