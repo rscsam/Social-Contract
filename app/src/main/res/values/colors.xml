@@ -8,4 +8,10 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#262626</color>
     <color name="gray">#9999A6</color>
+    <color name="tutorial1">#4F6CAE</color>
+    <color name="tutorial2">#67A5BF</color>
+    <color name="tutorial3">#73B29F</color>
+    <color name="tutorial4">#AEC28E</color>
+    <color name="tutorial5">#C3B494</color>
+    <color name="tutorial6">#C0A3C5</color>
 </resources>
