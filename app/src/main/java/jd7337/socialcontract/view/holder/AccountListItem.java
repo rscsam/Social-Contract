@@ -9,6 +9,8 @@ public class AccountListItem {
     private int profilePicId, smTypePicId;
     private String profileName;
 
+    private boolean showingExtraSettings = false;
+
     public AccountListItem(int profilePicId, String profileName, int smTypePicId) {
         this.profilePicId = profilePicId;
         this.smTypePicId = smTypePicId;
@@ -37,5 +39,13 @@ public class AccountListItem {
 
     public void setProfileName(String profileName) {
         this.profileName = profileName;
+    }
+
+    public boolean isShowingExtraSettings() {
+        return showingExtraSettings;
+    }
+
+    public void setShowingExtraSettings(boolean showingExtraSettings) {
+        this.showingExtraSettings = showingExtraSettings;
     }
 }
