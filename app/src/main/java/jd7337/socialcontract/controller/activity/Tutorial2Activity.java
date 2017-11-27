@@ -282,7 +282,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
     @Override
     public void onClickICAFConnectAccount() {
         Context context = getApplicationContext();
-        CharSequence text = "Social Media Account Connected";
+        CharSequence text = "Twitter Account Connected";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
