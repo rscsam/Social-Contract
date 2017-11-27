@@ -1,6 +1,25 @@
+/**
+ * Certain portions of this activity were inspired by or derivative of
+ * Suleiman19/Android-Material-Design-for-pre-Lollipop
+ *
+ * Copyright notice below
+ *
+ * Copyright 2017 Suleiman Ali Shakir
+
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ compliance with the License. You may obtain a copy of the License at
+        http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software distributed under the License is
+ distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and limitations under the License.
+ */
+
+
+
 package jd7337.socialcontract.controller.activity;
 
 import android.animation.ArgbEvaluator;
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentTransaction;
@@ -19,6 +38,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
@@ -261,9 +281,15 @@ public class Tutorial2Activity extends AppCompatActivity implements
         transaction.commit();
     }
 
+    //make it easy to demo for now
     @Override
     public void onClickICAFConnectAccount() {
-        showFragment(R.id.tutorial2_activity, eippFragment);
+        Context context = getApplicationContext();
+        CharSequence text = "Social Media Account Connected";
+        int duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, text, duration);
+        toast.show();
     }
 
     @Override
