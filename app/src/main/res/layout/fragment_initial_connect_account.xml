@@ -79,23 +79,11 @@
                 android:layout_weight="1"
                 android:src="@drawable/twitter_icon" />
 
-            <TextView
-                android:layout_width="122dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="8dp"
-                android:text="Twitter"
-                android:textColor="@color/white"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <CheckBox
+            <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                android:id="@+id/twitter_connect_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Connect"
-                android:buttonTint="@color/white"
-                android:textColor="@color/white"/>
+                android:layout_height="wrap_content" />
+
         </LinearLayout>
 
         <Button
