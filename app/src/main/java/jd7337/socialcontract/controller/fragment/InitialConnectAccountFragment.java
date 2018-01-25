@@ -111,6 +111,7 @@ public class InitialConnectAccountFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        loginButton.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -131,12 +132,6 @@ public class InitialConnectAccountFragment extends Fragment {
         mListener = null;
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        loginButton.onActivityResult(requestCode, resultCode, data);
-    }
 
     /**
      * This interface must be implemented by activities that contain this
