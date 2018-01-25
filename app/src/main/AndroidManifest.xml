@@ -25,7 +25,7 @@
         <activity android:name=".controller.activity.ForgotPasswordActivity">
         </activity>
         <activity
-            android:name=".controller.activity.Tutorial2Activity"
+            android:name=".controller.activity.TutorialActivity"
             android:label="@string/title_activity_tutorial2"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>

@@ -45,7 +45,7 @@ import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 
-public class Tutorial2Activity extends AppCompatActivity implements
+public class TutorialActivity extends AppCompatActivity implements
         InitialConnectAccountFragment.InitialConnectAccountFListener,
         EditInterestProfilePromptFragment.EditInterestProfilePromptFListener,
         EditInterestProfileFragment.EditInterestProfileFListener {
@@ -80,7 +80,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_tutorial2);
+        setContentView(R.layout.activity_tutorial);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -218,7 +218,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_tutorial2, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_tutorial, container, false);
             ImageView imageView = (ImageView) rootView.findViewById(R.id.intro_image);
             imageView.setImageResource(images[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
             TextView labelText = (TextView) rootView.findViewById(R.id.intro_label);

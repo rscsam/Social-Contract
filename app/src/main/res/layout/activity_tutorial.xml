@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="jd7337.socialcontract.controller.activity.Tutorial2Activity">
+    tools:context="jd7337.socialcontract.controller.activity.TutorialActivity">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/intro_container"

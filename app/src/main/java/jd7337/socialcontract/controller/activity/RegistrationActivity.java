@@ -48,12 +48,18 @@ public class RegistrationActivity extends AppCompatActivity {
         mRegisterButton = findViewById(R.id.register_btn);
     }
 
+    /**
+     * Attempts to register the user
+     * @param view the view
+     */
     public void onClickRegisterDone(View view) {
 
+        // turn off register button while registration is occuring
         mRegisterButton.setEnabled(false);
         mEmail = mEmailET.getText().toString();
         mPassword = mPasswordET.getText().toString();
 
+        // if passwords and email are valid, gets a salt from the server
         if (checkPasswords()) {
             if(isValidEmail(mEmail)) {
                 getSalt();
@@ -66,20 +72,33 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Starts tutorial activity
+     */
     private void launchTutorial() {
-        Intent startConfirmEmail = new Intent(this, Tutorial2Activity.class);
+        Intent startConfirmEmail = new Intent(this, TutorialActivity.class);
         startActivity(startConfirmEmail);
     }
 
+    /**
+     * Starts a volley request for getting a salt from the database.
+     * Launches register() if it succeeds
+     */
     private void getSalt() {
+        // create a requestqueue to start volley requests
         RequestQueue queue = Volley.newRequestQueue(this);
+        // use the url of the endpoint you are trying to connect to
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/initRegistration";
 
-
+        // put all the parameters in a map
+        // these will be converted into a JSON object and passed to the server
         Map<String, String> params = new HashMap<>();
         params.put("email", mEmail);
 
-
+        // the volley request
+        // be sure to use POST or GET as necessary
+        // onResponse and onErrorResponse are the callbacks: get called after the async request finishes
+        // needs to override getHeaders or the server will not accept it
         JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -112,9 +131,14 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         };
 
+        // adding the request to the queue is all you have to do to start it
         queue.add(stringRequest);
     }
 
+    /**
+     * Registers the user in the database
+     * @param salt the salt returned from the database
+     */
     private void register(String salt) {
 
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -164,6 +188,12 @@ public class RegistrationActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
+    /**
+     * hashes the user's inputted password with the salt from the server
+     * Use SHA-256 on server and client
+     * @param salt the salt from the server
+     * @return hash(password and salt)
+     */
     private String hash(String salt) {
         String concat = mPassword + salt;
         try {
@@ -181,6 +211,10 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Ensures passwords are valid (match and are non-empty)
+     * @return true if passwords are valid
+     */
     private boolean checkPasswords() {
         String passwordETText = mPasswordET.getText().toString();
         String confirmPasswordText = mPasswordConfirmET.getText().toString();
@@ -198,6 +232,11 @@ public class RegistrationActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * checks if email is valid
+     * @param target email to be checked
+     * @return true if email is valid
+     */
     private boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
