@@ -3,62 +3,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="36dp"
-    android:layout_marginLeft="60dp"
-    android:layout_marginRight="60dp"
     tools:context="jd7337.socialcontract.controller.fragment.DiscoverFragment">
-
 
     <TextView
         android:id="@+id/discover_text"
-        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Choose how you want to discover new content:"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/discover_user"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/discover_user"
-        android:layout_width="fill_parent"
-        android:layout_height="53dp"
-        android:src="@drawable/user"
-        app:layout_constraintBottom_toTopOf="@+id/cb_one"
-        app:layout_constraintTop_toBottomOf="@+id/discover_text" />
-
-    <CheckBox
-        android:id="@+id/cb_one"
+    <ListView
+        android:id="@+id/account_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:text="Likes"
-        app:layout_constraintTop_toBottomOf="@+id/discover_user" />
-
-    <CheckBox
-        android:id="@+id/cb_two"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:text="Shares"
-        app:layout_constraintTop_toBottomOf="@+id/cb_one" />
-
-    <CheckBox
-        android:id="@+id/cb_three"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:text="Follows"
-        app:layout_constraintTop_toBottomOf="@+id/cb_two" />
-
-    <Button
-        android:id="@+id/discover_go_button"
-        android:layout_marginTop="36dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/discover_text"
-        app:layout_constraintEnd_toEndOf="@+id/discover_text"
-        android:text="Go"
-        app:layout_constraintTop_toBottomOf="@+id/cb_three" />
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/discover_text" />
 
 </android.support.constraint.ConstraintLayout>

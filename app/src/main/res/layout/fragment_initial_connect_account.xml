@@ -7,14 +7,6 @@
     tools:context="jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment"
     tools:layout_editor_absoluteY="81dp">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Initial Connect Account Fragment"
-        app:layout_constraintStart_toStartOf="@+id/linearLayout5"
-        app:layout_constraintTop_toTopOf="@+id/linearLayout5" />
-
     <LinearLayout
         android:id="@+id/linearLayout5"
         android:layout_width="0dp"
@@ -50,16 +42,20 @@
             <TextView
                 android:layout_width="122dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="Facebook"
                 android:textSize="24sp"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Connect" />
+                android:text="Connect"
+                android:buttonTint="@color/white"
+                android:textColor="@color/white"/>
         </LinearLayout>
 
         <LinearLayout
@@ -78,32 +74,25 @@
 
             <ImageView
                 android:id="@+id/imageViewTwitter"
-                android:layout_width="11dp"
+                android:layout_width="28dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:src="@drawable/twitter_icon" />
 
-            <TextView
+            <com.twitter.sdk.android.core.identity.TwitterLoginButton
+                android:id="@+id/twitter_connect_button"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Twitter"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content" />
 
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Connect" />
         </LinearLayout>
 
         <Button
             android:id="@+id/connect_account_button"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="54dp"
             android:text="Connect Account"
+            android:layout_gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/linearLayout5" />
 
@@ -118,6 +107,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

@@ -40,6 +40,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.twitter.sdk.android.core.Twitter;
+
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
@@ -80,6 +82,10 @@ public class Tutorial2Activity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Twitter kit
+        Twitter.initialize(this);
+
         setContentView(R.layout.activity_tutorial2);
 
         // Create the adapter that will return a fragment for each of the three
@@ -111,10 +117,13 @@ public class Tutorial2Activity extends AppCompatActivity implements
         mViewPager.setCurrentItem(page);
         updateIndicators(page);
 
-        final int color1 = getResources().getColor(R.color.colorAltDark);
-        final int color2 = getResources().getColor(R.color.colorPrimary);
-        final int color3 = getResources().getColor(R.color.colorAltLight);
-        final int[] colorList = new int[]{color1, color2, color3};
+        final int color1 = getResources().getColor(R.color.tutorial1);
+        final int color2 = getResources().getColor(R.color.tutorial2);
+        final int color3 = getResources().getColor(R.color.tutorial3);
+        final int color4 = getResources().getColor(R.color.tutorial4);
+        final int color5 = getResources().getColor(R.color.tutorial5);
+        final int color6 = getResources().getColor(R.color.tutorial6);
+        final int[] colorList = new int[]{color1, color2, color3, color4, color5, color6};
 
         final ArgbEvaluator evaluator = new ArgbEvaluator();
 
@@ -122,7 +131,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 int colorUpdate = (Integer) evaluator.evaluate(positionOffset,
-                        colorList[position % 3], colorList[(position + 1) % 3]);
+                        colorList[position], colorList[(position + 1) % 6]);
                 mViewPager.setBackgroundColor(colorUpdate);
             }
 
@@ -131,13 +140,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
                 page = position;
                 updateIndicators(page);
 
-                if (position % 3 == 0) {
-                    mViewPager.setBackgroundColor(color1);
-                } else if (position % 3 == 1) {
-                    mViewPager.setBackgroundColor(color2);
-                } else {
-                    mViewPager.setBackgroundColor(color3);
-                }
+                mViewPager.setBackgroundColor(colorList[position]);
 
                 mNextButton.setVisibility(position == 5 ? View.GONE : View.VISIBLE);
                 mFinishButton.setVisibility(position == 5 ? View.VISIBLE : View.GONE);
@@ -199,7 +202,7 @@ public class Tutorial2Activity extends AppCompatActivity implements
         TextView text;
 
         int[] images = new int[]{R.drawable.ic_public_white_48dp, R.drawable.ic_search_white_48dp, R.drawable.ic_trending_up_white_48dp,
-                R.drawable.coin_icon};
+                R.drawable.coin_icon_large};
         int[] titles = new int[] {R.string.intro_welcome, R.string.intro_discover, R.string.intro_grow, R.string.intro_coins};
         int[] texts = new int[] {R.string.intro_welcome_text, R.string.intro_discover_text, R.string.intro_grow_text, R.string.intro_coins_text};
 
@@ -249,9 +252,9 @@ public class Tutorial2Activity extends AppCompatActivity implements
             if (position < 4) {
                 return PlaceholderFragment.newInstance(position + 1);
             } else if (position == 4){
-                return new EditInterestProfilePromptFragment();
+                return eipFragment;
             } else {
-                return new InitialConnectAccountFragment();
+                return icaFragment;
             }
 
         }
@@ -285,11 +288,17 @@ public class Tutorial2Activity extends AppCompatActivity implements
     @Override
     public void onClickICAFConnectAccount() {
         Context context = getApplicationContext();
-        CharSequence text = "Social Media Account Connected";
+        CharSequence text = "Twitter Account Connected";
         int duration = Toast.LENGTH_SHORT;
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        icaFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

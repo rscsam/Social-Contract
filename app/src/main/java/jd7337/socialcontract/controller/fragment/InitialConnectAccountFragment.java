@@ -14,6 +14,14 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import android.widget.Toast;
+
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import jd7337.socialcontract.R;
 
@@ -21,6 +29,13 @@ public class InitialConnectAccountFragment extends Fragment {
     private InitialConnectAccountFListener mListener;
     private CallbackManager callbackManager;
     private LoginButton fbLoginButton;
+
+    private TwitterLoginButton loginButton;
+    private TwitterAuthToken authToken;
+    private String token;
+    private String secret;
+    private Long userId;
+    private String userName;
 
     public InitialConnectAccountFragment() {
         // Required empty public constructor
@@ -36,6 +51,23 @@ public class InitialConnectAccountFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_initial_connect_account, container, false);
+        loginButton = (TwitterLoginButton) view.findViewById(R.id.twitter_connect_button);
+        loginButton.setCallback(new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                Toast.makeText(getContext(), "Successful log in", Toast.LENGTH_SHORT).show();
+                authToken = result.data.getAuthToken();
+                token = authToken.token;
+                secret = authToken.secret;
+                userId = result.data.getUserId();
+                userName = result.data.getUserName();
+            }
+
+            @Override
+            public void failure(TwitterException exception) {
+                Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
         View connectAccountButton = view.findViewById(R.id.connect_account_button);
         connectAccountButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -100,6 +132,11 @@ public class InitialConnectAccountFragment extends Fragment {
     }
 
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        loginButton.onActivityResult(requestCode, resultCode, data);
+    }
 
     /**
      * This interface must be implemented by activities that contain this

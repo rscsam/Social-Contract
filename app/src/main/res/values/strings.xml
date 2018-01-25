@@ -31,4 +31,6 @@
     <string name="fb_login_protocol_scheme">fb2025358404148491</string>
 
 
+    <string name="com.twitter.sdk.android.CONSUMER_KEY">VWI3KMxAxWu89UBFzRHUDPa5I</string>
+    <string name="com.twitter.sdk.android.CONSUMER_SECRET">8fc4S9NlgAN6dq2Jnpm5qApERUymQsyzwrLXYWTe04HHgHQ05A</string>
 </resources>
