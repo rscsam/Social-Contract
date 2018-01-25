@@ -5,10 +5,9 @@
  * Copyright notice below
  *
  * Copyright 2017 Suleiman Ali Shakir
-
  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
  compliance with the License. You may obtain a copy of the License at
-        http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
  Unless required by applicable law or agreed to in writing, software distributed under the License is
  distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and limitations under the License.
@@ -39,6 +38,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.twitter.sdk.android.core.Twitter;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
@@ -80,6 +81,10 @@ public class TutorialActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Initialize Twitter kit
+        Twitter.initialize(this);
+
         setContentView(R.layout.activity_tutorial);
 
         // Create the adapter that will return a fragment for each of the three
@@ -246,9 +251,9 @@ public class TutorialActivity extends AppCompatActivity implements
             if (position < 4) {
                 return PlaceholderFragment.newInstance(position + 1);
             } else if (position == 4){
-                return new EditInterestProfilePromptFragment();
+                return eipFragment;
             } else {
-                return new InitialConnectAccountFragment();
+                return icaFragment;
             }
 
         }
@@ -287,6 +292,12 @@ public class TutorialActivity extends AppCompatActivity implements
 
         Toast toast = Toast.makeText(context, text, duration);
         toast.show();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        icaFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
