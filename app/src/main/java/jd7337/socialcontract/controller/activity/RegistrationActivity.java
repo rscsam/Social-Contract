@@ -29,23 +29,23 @@ import jd7337.socialcontract.R;
 
 public class RegistrationActivity extends AppCompatActivity {
 
-    private EditText mEmailET;
-    private EditText mPasswordET;
-    private EditText mPasswordConfirmET;
-    private Button mRegisterButton;
+    private EditText emailET;
+    private EditText passwordET;
+    private EditText passwordConfirmET;
+    private Button registerButton;
 
-    private String mEmail;
-    private String mPassword;
+    private String email;
+    private String password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
-        mEmailET = findViewById(R.id.register_email_et);
-        mPasswordET = findViewById(R.id.register_password_et);
-        mPasswordConfirmET = findViewById(R.id.register_password_confirm_et);
-        mRegisterButton = findViewById(R.id.register_btn);
+        emailET = findViewById(R.id.register_email_et);
+        passwordET = findViewById(R.id.register_password_et);
+        passwordConfirmET = findViewById(R.id.register_password_confirm_et);
+        registerButton = findViewById(R.id.register_btn);
     }
 
     /**
@@ -55,20 +55,20 @@ public class RegistrationActivity extends AppCompatActivity {
     public void onClickRegisterDone(View view) {
 
         // turn off register button while registration is occuring
-        mRegisterButton.setEnabled(false);
-        mEmail = mEmailET.getText().toString();
-        mPassword = mPasswordET.getText().toString();
+        registerButton.setEnabled(false);
+        email = emailET.getText().toString();
+        password = passwordET.getText().toString();
 
         // if passwords and email are valid, gets a salt from the server
         if (checkPasswords()) {
-            if(isValidEmail(mEmail)) {
+            if(isValidEmail(email)) {
                 getSalt();
             } else {
                 Toast.makeText(RegistrationActivity.this, "Please enter a valid email address", Toast.LENGTH_SHORT).show();
-                mRegisterButton.setEnabled(true);
+                registerButton.setEnabled(true);
             }
         } else {
-            mRegisterButton.setEnabled(true);
+            registerButton.setEnabled(true);
         }
     }
 
@@ -93,7 +93,7 @@ public class RegistrationActivity extends AppCompatActivity {
         // put all the parameters in a map
         // these will be converted into a JSON object and passed to the server
         Map<String, String> params = new HashMap<>();
-        params.put("email", mEmail);
+        params.put("email", email);
 
         // the volley request
         // be sure to use POST or GET as necessary
@@ -109,11 +109,11 @@ public class RegistrationActivity extends AppCompatActivity {
                                 register(response.getString("result"));
                             } else {
                                 Toast.makeText(RegistrationActivity.this, response.getString("result"), Toast.LENGTH_SHORT).show();
-                                mRegisterButton.setEnabled(true);
+                                registerButton.setEnabled(true);
                             }
                         } catch (JSONException e) {
                             Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                            mRegisterButton.setEnabled(true);
+                            registerButton.setEnabled(true);
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -144,10 +144,8 @@ public class RegistrationActivity extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/register";
 
-
-
         Map<String, String> params = new HashMap<>();
-        params.put("email", mEmail);
+        params.put("email", email);
         params.put("password", hash(salt));
         params.put("salt", salt);
 
@@ -159,21 +157,20 @@ public class RegistrationActivity extends AppCompatActivity {
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
-                                mRegisterButton.setEnabled(true);
                                 launchTutorial();
                             } else {
                                 Toast.makeText(RegistrationActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
-                                mRegisterButton.setEnabled(true);
                             }
                         } catch (JSONException e) {
                             Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                            mRegisterButton.setEnabled(true);
                         }
+                        registerButton.setEnabled(true);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(RegistrationActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                registerButton.setEnabled(true);
             }
         }
         ) {
@@ -195,7 +192,7 @@ public class RegistrationActivity extends AppCompatActivity {
      * @return hash(password and salt)
      */
     private String hash(String salt) {
-        String concat = mPassword + salt;
+        String concat = password + salt;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             md.update(concat.getBytes());
@@ -216,8 +213,8 @@ public class RegistrationActivity extends AppCompatActivity {
      * @return true if passwords are valid
      */
     private boolean checkPasswords() {
-        String passwordETText = mPasswordET.getText().toString();
-        String confirmPasswordText = mPasswordConfirmET.getText().toString();
+        String passwordETText = passwordET.getText().toString();
+        String confirmPasswordText = passwordConfirmET.getText().toString();
 
         if (passwordETText.isEmpty() || confirmPasswordText.isEmpty()) {
             Toast.makeText(RegistrationActivity.this, "Password cannot be blank", Toast.LENGTH_SHORT).show();
