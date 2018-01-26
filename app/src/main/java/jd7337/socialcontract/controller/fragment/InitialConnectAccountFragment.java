@@ -15,7 +15,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -25,10 +24,10 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.dialog.AuthenticationDialog;
-import jd7337.socialcontract.controller.listener.AuthenticationListener;
+import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
+import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
-public class InitialConnectAccountFragment extends Fragment implements AuthenticationListener {
+public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
     private InitialConnectAccountFListener mListener;
     private CallbackManager callbackManager;
     private LoginButton fbLoginButton;
@@ -110,9 +109,9 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
 
         });
 
-        btn_get_access_token = (Button) view.findViewById(R.id.btn_get_access_token);
+        btn_get_access_token = view.findViewById(R.id.btn_get_access_token);
 
-        final AuthenticationListener l = this;
+        final InstagramAuthenticationListener l = this;
         btn_get_access_token.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
