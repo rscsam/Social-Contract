@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -24,8 +25,10 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.dialog.AuthenticationDialog;
+import jd7337.socialcontract.controller.listener.AuthenticationListener;
 
-public class InitialConnectAccountFragment extends Fragment {
+public class InitialConnectAccountFragment extends Fragment implements AuthenticationListener {
     private InitialConnectAccountFListener mListener;
     private CallbackManager callbackManager;
     private LoginButton fbLoginButton;
@@ -36,6 +39,9 @@ public class InitialConnectAccountFragment extends Fragment {
     private String secret;
     private Long userId;
     private String userName;
+
+    private AuthenticationDialog auth_dialog;
+    private Button btn_get_access_token;
 
     public InitialConnectAccountFragment() {
         // Required empty public constructor
@@ -104,6 +110,18 @@ public class InitialConnectAccountFragment extends Fragment {
 
         });
 
+        btn_get_access_token = (Button) view.findViewById(R.id.btn_get_access_token);
+
+        final AuthenticationListener l = this;
+        btn_get_access_token.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                auth_dialog = new AuthenticationDialog(getContext(), l);
+                auth_dialog.setCancelable(true);
+                auth_dialog.show();
+            }
+        });
+
         return view;
     }
 
@@ -132,6 +150,16 @@ public class InitialConnectAccountFragment extends Fragment {
         mListener = null;
     }
 
+    public void onCodeReceived(String access_token) {
+        if (access_token == null) {
+            auth_dialog.dismiss();
+        }
+
+        Intent i = new Intent(MainActivity.this, FeedActivity.class);
+        i.putExtra("access_token", access_token);
+        startActivity(i);
+
+    }
 
     /**
      * This interface must be implemented by activities that contain this
