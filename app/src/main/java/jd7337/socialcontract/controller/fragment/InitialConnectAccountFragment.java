@@ -155,9 +155,9 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
             auth_dialog.dismiss();
         }
 
-        Intent i = new Intent(MainActivity.this, FeedActivity.class);
-        i.putExtra("access_token", access_token);
-        startActivity(i);
+//        Intent i = new Intent(MainActivity.this, FeedActivity.class);
+//        i.putExtra("access_token", access_token);
+//        startActivity(i);
 
     }
 
