@@ -29,6 +29,7 @@
     <string name="intro_welcome_text">Thanks for using Social Contract!\nSocial Contract lets you grow your social media accounts and find interesting new content! \nSwipe to get started.</string>
     <string name="facebook_app_id">2025358404148491</string>
     <string name="fb_login_protocol_scheme">fb2025358404148491</string>
+    <string name="com_facebook_loginview_log_in_button_continue">"Log in with Facebook"</string>
 
 
     <string name="com.twitter.sdk.android.CONSUMER_KEY">VWI3KMxAxWu89UBFzRHUDPa5I</string>
