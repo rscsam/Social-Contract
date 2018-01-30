@@ -55,6 +55,8 @@ public class TutorialActivity extends AppCompatActivity implements
     private EditInterestProfilePromptFragment eippFragment;
     private EditInterestProfileFragment eipFragment;
 
+    private String userId;
+
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -81,6 +83,8 @@ public class TutorialActivity extends AppCompatActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userId = getIntent().getStringExtra("userId");
 
         // Initialize Twitter kit
         Twitter.initialize(this);
@@ -267,6 +271,7 @@ public class TutorialActivity extends AppCompatActivity implements
 
     private void startMainActivity() {
         Intent startMain = new Intent(this, MainActivity.class);
+        startMain.putExtra("userId", userId);
         startActivity(startMain);
     }
 
