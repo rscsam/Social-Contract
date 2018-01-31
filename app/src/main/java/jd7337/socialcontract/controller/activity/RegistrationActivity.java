@@ -74,9 +74,11 @@ public class RegistrationActivity extends AppCompatActivity {
 
     /**
      * Starts tutorial activity
+     * @param id the id of the user
      */
-    private void launchTutorial() {
+    private void launchTutorial(String id) {
         Intent startConfirmEmail = new Intent(this, TutorialActivity.class);
+        startConfirmEmail.putExtra("userId", id);
         startActivity(startConfirmEmail);
     }
 
@@ -158,9 +160,9 @@ public class RegistrationActivity extends AppCompatActivity {
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
-                                launchTutorial();
+                                launchTutorial(response.getString("userId"));
                             } else {
-                                Toast.makeText(RegistrationActivity.this, "Registration Failed", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegistrationActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();

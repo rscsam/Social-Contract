@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
@@ -53,11 +54,14 @@ public class MainActivity extends AppCompatActivity implements
     private Button btn_get_access_token;
 
     private int numCoins;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userId = getIntent().getStringExtra("userId");
 
         // set the home fragment
         homeFragment = new HomeFragment();

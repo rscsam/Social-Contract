@@ -17,7 +17,7 @@
     <string name="register">REGISTER</string>
     <string name="dialog_confirm">Confirm</string>
     <string name="dialog_cancel">Cancel</string>
-    <string name="title_activity_tutorial2">Tutorial2Activity</string>
+    <string name="title_activity_tutorial">TutorialActivity</string>
     <string name="intro_introduction">Welcome! Thank you for downloading Social Contract! Our goal is to help you grow your social media accounts and find new content!</string>
     <string name="intro_discover">Discover</string>
     <string name="intro_discover_text">Discover allows you to find new social media posts and accounts. Find content from other users of Social Contract with similar interests!</string>

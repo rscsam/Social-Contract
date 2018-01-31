@@ -5,6 +5,8 @@ many types of social media into one application that then
 allows users to gain following and follow new people
 utilizing a centralized virtual currency called "coins."
 
+The code for the Social Contract server is located at https://github.com/rscsam/Social-Contract-Server
+
 <h2>Using git</h2>
 <h3>Branches and Pull Requests</h3>
 All code for this project should be done on your own branch.
