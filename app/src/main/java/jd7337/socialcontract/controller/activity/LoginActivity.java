@@ -39,6 +39,8 @@ public class LoginActivity extends AppCompatActivity {
     private String password;
     private Button loginButton;
 
+    private String userId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +70,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void startMainActivity() {
         Intent startMain = new Intent(this, MainActivity.class);
+        startMain.putExtra("userId", userId);
         startActivity(startMain);
     }
 
@@ -113,6 +116,7 @@ public class LoginActivity extends AppCompatActivity {
                             boolean success = response.getBoolean("success");
                             if (success) {
                                 login(response.getString("salt"), response.getString("nonce"));
+                                userId = response.getString("userId");
                             } else {
                                 Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
                                 loginButton.setEnabled(true);

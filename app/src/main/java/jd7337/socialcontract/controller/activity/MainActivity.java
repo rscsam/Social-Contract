@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
@@ -48,11 +49,14 @@ public class MainActivity extends AppCompatActivity implements
     private NavigationView mDrawerList;
 
     private int numCoins;
+    private String userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userId = getIntent().getStringExtra("userId");
 
         // set the home fragment
         homeFragment = new HomeFragment();
