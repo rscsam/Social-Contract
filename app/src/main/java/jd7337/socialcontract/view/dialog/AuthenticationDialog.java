@@ -14,6 +14,8 @@ import android.widget.Toast;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
 
+import jd7337.socialcontract.Constants;
+
 /**
  * Created by Ali Khosravi on 1/22/2018.
  */
@@ -26,11 +28,11 @@ public class AuthenticationDialog extends Dialog {
 
     private WebView web_view;
 
-    private final String url = jd7337.socialcontract.controller.Constants.INSTAGRAM_BASE_URL
+    private final String url = Constants.INSTAGRAM_BASE_URL
             + "oauth/authorize/?client_id="
-            + jd7337.socialcontract.controller.Constants.INSTAGRAM_CLIENT_ID
+            + Constants.INSTAGRAM_CLIENT_ID
             + "&redirect_uri="
-            + jd7337.socialcontract.controller.Constants.INSTAGRAM_REDIRECT_URL
+            + Constants.INSTAGRAM_REDIRECT_URL
             + "&response_type=token"
             + "&display=touch&scope=public_content";
 

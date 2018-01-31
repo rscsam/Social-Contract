@@ -149,11 +149,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         if (access_token == null) {
             auth_dialog.dismiss();
         }
-
-//        Intent i = new Intent(MainActivity.this, FeedActivity.class);
-//        i.putExtra("access_token", access_token);
-//        startActivity(i);
-
     }
 
     /**
