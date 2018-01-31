@@ -8,107 +8,94 @@
     tools:layout_editor_absoluteY="81dp">
 
     <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:id="@+id/fbLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
-            android:id="@+id/linearLayout4"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginBottom="54dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/connect_account_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="28dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/facebookicon" />
-
-            <TextView
-                android:layout_width="122dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_weight="1"
-                android:text="Facebook"
-                android:textSize="24sp"
-                android:textColor="@color/white"
-                android:textStyle="bold" />
-
-            <CheckBox
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Connect"
-                android:buttonTint="@color/white"
-                android:textColor="@color/white"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/linearLayout3"
-            android:layout_width="match_parent"
-            android:layout_height="102dp"
-            android:layout_marginBottom="18dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginStart="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/linearLayout4"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3">
-
-            <ImageView
-                android:id="@+id/imageViewTwitter"
-                android:layout_width="28dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:src="@drawable/twitter_icon" />
-
-            <com.twitter.sdk.android.core.identity.TwitterLoginButton
-                android:id="@+id/twitter_connect_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/connect_account_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="54dp"
-            android:text="Connect Account"
-            android:layout_gravity="center"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/linearLayout5" />
-
-
+        <ImageView
+            android:id="@+id/imageViewFacebook"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/facebookicon" />
 
         <com.facebook.login.widget.LoginButton
-            android:id="@+id/login_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="28dp"
+            android:id="@+id/fb_login_button"
+            android:layout_width="217dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:textSize="16sp"
+            android:paddingBottom="13sp"
+            android:paddingTop="13sp"
+            android:paddingLeft="22sp"
+            android:paddingRight="10sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/twLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fbLinearLayout">
+
+        <ImageView
+            android:id="@+id/imageViewTwitter"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/twitter_icon" />
+
+        <com.twitter.sdk.android.core.identity.TwitterLoginButton
+            android:id="@+id/tw_login_button"
+            android:layout_width="217dp"
+            android:layout_height="48dp"
+            android:textSize="14sp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/inLinearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="102dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">
+
+        <ImageView
+            android:id="@+id/imageViewInstagram"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/instagram_icon" />
+
+        <ImageButton
+            android:id="@+id/in_login_button"
+            android:layout_width="217dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:src="@drawable/instagram_login_button" />
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
