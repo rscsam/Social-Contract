@@ -7,7 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.facebook.CallbackManager;
@@ -15,7 +15,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
@@ -25,15 +24,15 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.dialog.AuthenticationDialog;
-import jd7337.socialcontract.controller.listener.AuthenticationListener;
+import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
+import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
-public class InitialConnectAccountFragment extends Fragment implements AuthenticationListener {
+public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
     private InitialConnectAccountFListener mListener;
     private CallbackManager callbackManager;
     private LoginButton fbLoginButton;
 
-    private TwitterLoginButton loginButton;
+    private TwitterLoginButton twLoginButton;
     private TwitterAuthToken authToken;
     private String token;
     private String secret;
@@ -41,7 +40,7 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
     private String userName;
 
     private AuthenticationDialog auth_dialog;
-    private Button btn_get_access_token;
+    private ImageButton inLoginButton;
 
     public InitialConnectAccountFragment() {
         // Required empty public constructor
@@ -57,8 +56,10 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_initial_connect_account, container, false);
-        loginButton = (TwitterLoginButton) view.findViewById(R.id.twitter_connect_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
+
+        // Twitter connection
+        twLoginButton = (TwitterLoginButton) view.findViewById(R.id.tw_login_button);
+        twLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
                 Toast.makeText(getContext(), "Successful log in", Toast.LENGTH_SHORT).show();
@@ -74,17 +75,10 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
                 Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
-        View connectAccountButton = view.findViewById(R.id.connect_account_button);
-        connectAccountButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onClickICAFConnectAccount();
-                    }
-                }
-        );
+
+        // Facebook connection
         callbackManager = CallbackManager.Factory.create();
-        fbLoginButton = (LoginButton) view.findViewById(R.id.login_button);
+        fbLoginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         fbLoginButton.setFragment(this);
         callbackManager = CallbackManager.Factory.create();
         //callback registration
@@ -110,10 +104,11 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
 
         });
 
-        btn_get_access_token = (Button) view.findViewById(R.id.btn_get_access_token);
+        // Instagram connection
+        inLoginButton = view.findViewById(R.id.in_login_button);
 
-        final AuthenticationListener l = this;
-        btn_get_access_token.setOnClickListener(new View.OnClickListener() {
+        final InstagramAuthenticationListener l = this;
+        inLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 auth_dialog = new AuthenticationDialog(getContext(), l);
@@ -129,7 +124,7 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
-        loginButton.onActivityResult(requestCode, resultCode, data);
+        twLoginButton.onActivityResult(requestCode, resultCode, data);
     }
 
 
@@ -154,11 +149,6 @@ public class InitialConnectAccountFragment extends Fragment implements Authentic
         if (access_token == null) {
             auth_dialog.dismiss();
         }
-
-//        Intent i = new Intent(MainActivity.this, FeedActivity.class);
-//        i.putExtra("access_token", access_token);
-//        startActivity(i);
-
     }
 
     /**

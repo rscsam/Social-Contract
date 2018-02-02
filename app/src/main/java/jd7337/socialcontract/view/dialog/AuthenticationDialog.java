@@ -1,4 +1,4 @@
-package jd7337.socialcontract.controller.dialog;
+package jd7337.socialcontract.view.dialog;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -12,6 +12,9 @@ import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
+
+import jd7337.socialcontract.Constants;
 
 /**
  * Created by Ali Khosravi on 1/22/2018.
@@ -20,20 +23,20 @@ import jd7337.socialcontract.R;
 
 public class AuthenticationDialog extends Dialog {
 
-    private final jd7337.socialcontract.controller.listener.AuthenticationListener listener;
+    private final InstagramAuthenticationListener listener;
     private Context context;
 
     private WebView web_view;
 
-    private final String url = jd7337.socialcontract.controller.Constants.BASE_URL
+    private final String url = Constants.INSTAGRAM_BASE_URL
             + "oauth/authorize/?client_id="
-            + jd7337.socialcontract.controller.Constants.CLIENT_ID
+            + Constants.INSTAGRAM_CLIENT_ID
             + "&redirect_uri="
-            + jd7337.socialcontract.controller.Constants.REDIRECT_URI
+            + Constants.INSTAGRAM_REDIRECT_URL
             + "&response_type=token"
             + "&display=touch&scope=public_content";
 
-    public AuthenticationDialog(@NonNull Context context, jd7337.socialcontract.controller.listener.AuthenticationListener listener) {
+    public AuthenticationDialog(@NonNull Context context, InstagramAuthenticationListener listener) {
         super(context);
         this.context = context;
         this.listener = listener;
@@ -55,6 +58,7 @@ public class AuthenticationDialog extends Dialog {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
+                System.out.println("Page Started");
             }
 
             String access_token;
