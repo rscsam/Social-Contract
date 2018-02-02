@@ -145,7 +145,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(String access_token) {
+    public void onCodeReceived(String access_token) {  // this is the actual instagram token
         if (access_token == null) {
             auth_dialog.dismiss();
         }
