@@ -15,7 +15,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -70,6 +69,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void startMainActivity() {
         Intent startMain = new Intent(this, MainActivity.class);
+        startMain.putExtra("email", email);
         startMain.putExtra("userId", userId);
         startActivity(startMain);
     }
