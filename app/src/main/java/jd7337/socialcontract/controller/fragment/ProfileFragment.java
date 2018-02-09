@@ -53,8 +53,6 @@ public class ProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Toast.makeText(getContext(), email, Toast.LENGTH_SHORT).show();
-        Toast.makeText(getContext(), userId, Toast.LENGTH_SHORT).show();
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
