@@ -33,8 +33,10 @@
         android:id="@+id/change_email_text"
         android:layout_width="wrap_content"
         android:layout_height="15dp"
+        android:layout_marginTop="40dp"
         android:text="New Email"
         app:layout_constraintBaseline_toBaselineOf="@+id/edit_email"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/edit_email"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -43,11 +45,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
+        android:layout_marginTop="40dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Enter Your New Email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="@+id/edit_password" />
 
     <TextView
