@@ -10,11 +10,15 @@ import android.widget.Button;
 
 import jd7337.socialcontract.R;
 
-public class ProfileFragment extends Fragment {
+/**
+ * Created by Ali Khosravi on 2/9/2018.
+ */
 
-    private ProfileFListener mListener;
+public class UpdateProfileFragment extends Fragment {
 
-    public ProfileFragment() {
+    private UpdateProfileFListener mListener;
+
+    public UpdateProfileFragment() {
         // Required empty public constructor
     }
 
@@ -22,9 +26,9 @@ public class ProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
-        accountManagementButton.setOnClickListener(
+        View view = inflater.inflate(R.layout.fragment_update_profile, container, false);
+        Button changePasswordTwoButton = (Button) view.findViewById(R.id.change_password_button_two);
+        changePasswordTwoButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -33,22 +37,12 @@ public class ProfileFragment extends Fragment {
                 }
         );
 
-        Button editInterestProfileButton = (Button) view.findViewById(R.id.edit_interest_profile_button);
-        editInterestProfileButton.setOnClickListener(
+        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_button);
+        changeEmailButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         mListener.onClickInterestProfile();
-                    }
-                }
-        );
-
-        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_button);
-        changePasswordButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onClickChangePasswordTwo();
                     }
                 }
         );
@@ -58,8 +52,8 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof ProfileFListener) {
-            mListener = (ProfileFListener) context;
+        if (context instanceof UpdateProfileFListener) {
+            mListener = (UpdateProfileFListener) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement ProfileFListener");
@@ -72,10 +66,9 @@ public class ProfileFragment extends Fragment {
         mListener = null;
     }
 
-    public interface ProfileFListener {
-        void onClickAccountManagement();
-        void onClickInterestProfile();
-        void onClickChangePasswordTwo();
-    }
+public interface UpdateProfileFListener {
+    void onClickAccountManagement();
+    void onClickInterestProfile();
+}
 
 }
