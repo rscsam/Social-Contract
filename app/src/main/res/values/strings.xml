@@ -33,4 +33,7 @@
 
     <string name="com.twitter.sdk.android.CONSUMER_KEY">VWI3KMxAxWu89UBFzRHUDPa5I</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">8fc4S9NlgAN6dq2Jnpm5qApERUymQsyzwrLXYWTe04HHgHQ05A</string>
+    <string name="instagram_base_url">https://api.instagram.com/</string>
+    <string name="instagram_client_id">756d44111aca4f9da3151319b465700f</string>
+    <string name="instagram_redirect_url">https://github.com/rscsam/Social-Contract</string>
 </resources>

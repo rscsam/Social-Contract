@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
@@ -33,9 +34,10 @@ public class MainActivity extends AppCompatActivity implements
         AccountManagementFragment.AccountManagementFListener,
         ProfileFragment.ProfileFListener,
         AccountSelectFragment.AccountSelectFListener,
-        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener {
+        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener, UpdateProfileFragment.UpdateProfileFListener {
 
     private HomeFragment homeFragment;
+    private UpdateProfileFragment updateProfileFragment;
     private DiscoverSettingsFragment discoverSettingsFragment;
     private DiscoverFragment discoverFragment;
     private GrowFragment growFragment;
@@ -72,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements
         homeFragment = new HomeFragment();
         discoverSettingsFragment = new DiscoverSettingsFragment();
         discoverFragment = new DiscoverFragment();
+        updateProfileFragment = new UpdateProfileFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
         accountManagementFragment = new AccountManagementFragment();
@@ -200,6 +203,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClickAccountManagement() {
         showFragment(R.id.main_activity_view, accountManagementFragment);
+    }
+
+    @Override
+    public void onClickChangePasswordTwo() {
+        showFragment(R.id.main_activity_view, updateProfileFragment);
     }
 
     @Override

@@ -74,6 +74,16 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
+
+        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_button);
+        changePasswordButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mListener.onClickChangePasswordTwo();
+                    }
+                }
+        );
         return view;
     }
 
@@ -271,6 +281,7 @@ public class ProfileFragment extends Fragment {
     public interface ProfileFListener {
         void onClickAccountManagement();
         void onClickInterestProfile();
+        void onClickChangePasswordTwo();
     }
 
 }
