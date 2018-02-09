@@ -57,6 +57,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         // grab user's email from the intent
         email = getArguments().getString("email");
+        userId = getArguments().getString("userId");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
@@ -81,6 +82,7 @@ public class ProfileFragment extends Fragment {
         // Set the user's email to display
         TextView emailTextView = (TextView) view.findViewById(R.id.displayed_email_tv);
         emailTextView.setText(email);
+        // Button to start changing user's email
         Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
         changeEmailButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -96,6 +98,22 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
+        Button confirmEmailButton = (Button) view.findViewById(R.id.confirm_email_bt);
+        confirmEmailButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+                        String newEmail = editEmailEditText.getText().toString();
+                        if (isValidEmail(newEmail)) {
+                            changeEmail(newEmail);
+                        } else {
+                            Toast.makeText(getContext(), "Invalid email format.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+        // Allow user to begin editing password
         Button changePasswordButton = (Button) view.findViewById(R.id.change_password_bt);
         changePasswordButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -111,12 +129,19 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
+        // Submit change to password
         Button confirmPasswordButton = (Button) view.findViewById(R.id.confirm_password_bt);
         confirmPasswordButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        EditText editPasswordEditText = container.findViewById(R.id.edit_password_et);
+                        String newPassword = editPasswordEditText.getText().toString();
+                        if (!newPassword.isEmpty()) {
+                            changePassword(newPassword);
+                        } else {
+                            Toast.makeText(getContext(), "Password can't be blank.", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 }
         );
@@ -187,14 +212,20 @@ public class ProfileFragment extends Fragment {
     }
     /**
      * Connect to the change password endpoint on the server to change the user's password in the database
+     * Hashes the password first
      * @param password - password to change to
      */
     public void changePassword(String password) {
+        //ensures the salt and nonce have been retrieved
+        getSaltAndNonce();
+        //hashs the password
+        String hashedPassword = hashPassword(password);
+
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
 
         Map<String, String> params = new HashMap<>();
-        params.put("password", password);
+        params.put("password", hashedPassword);
         params.put("userId", userId);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
@@ -272,20 +303,18 @@ public class ProfileFragment extends Fragment {
     /**
      * checks if email is in a valid format
      * @param checkedEmail - email to be checked
-     * @retrun boolean - true if email is in a valid format
+     * @return boolean - true if email is in a valid format
      */
     private boolean isValidEmail(String checkedEmail) {
         return !TextUtils.isEmpty(checkedEmail) && android.util.Patterns.EMAIL_ADDRESS.matcher(checkedEmail).matches();
     }
 
     /**
-     * Hashes the password
-     * @param salt - the salt to hash with
-     * @param nonce - the nonce to hash with
+     * Retrieves the salt and nonce and uses them to hash the password
      * @param password - password to be hashed
      * @return String - the hashed password
      */
-    private String hashPassword(String salt, String nonce, String password) {
+    private String hashPassword(String password) {
         String concat = password + salt;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -319,8 +348,6 @@ public class ProfileFragment extends Fragment {
     public interface ProfileFListener {
         void onClickAccountManagement();
         void onClickInterestProfile();
-        void onClickChangeEmail(View view);
-        void onClickChangePassword(View view);
     }
 
 }

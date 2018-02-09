@@ -14,8 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
+import android.widget.Toast;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
@@ -60,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements
     private int numCoins;
     private String email;
     private String userId;
-    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +67,6 @@ public class MainActivity extends AppCompatActivity implements
 
         email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
-        email = getIntent().getStringExtra("email");
 
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
@@ -213,68 +210,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickChangePasswordTwo() {
-        showFragment(R.id.main_activity_view, updateProfileFragment);
-    }
-
-    @Override
     public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
-
-    /**
-     * Profile fragment
-     * Allows editing email.
-     */
-    public void onClickChangeEmail(View view) {
-        Toast.makeText(this, "toggle called", Toast.LENGTH_SHORT).show();
-        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
-        System.out.println(changeEmailButton);
-        EditText editEmailEditText = (EditText) view.findViewById(R.id.edit_email_et);
-        System.out.println(editEmailEditText);
-        changeEmailButton.setVisibility(View.GONE);
-        editEmailEditText.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Profile fragment
-     * Stops editing email
-     */
-    public void onClickConfirmEmail(View view) {
-        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
-        EditText editEmailEditText = (EditText) view.findViewById(R.id.edit_email_et);
-        changeEmailButton.setVisibility(View.VISIBLE);
-        editEmailEditText.setVisibility(View.GONE);
-    }
-
-    /**
-     * Profile fragment
-     * Allows editing password.
-     */
-    public void onClickChangePassword(View view) {
-        Toast.makeText(this, "toggle called", Toast.LENGTH_SHORT).show();
-        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_bt);
-        System.out.println(changePasswordButton);
-        EditText editPasswordEditText = (EditText) view.findViewById(R.id.edit_password_et);
-        System.out.println(editPasswordEditText);
-        TextView noRequestTextView = (TextView) view.findViewById(R.id.home_no_request_tv);
-        System.out.println(noRequestTextView);
-        Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
-        System.out.println(accountManagementButton);
-        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
-        System.out.println(changeEmailButton);
-        changePasswordButton.setVisibility(View.GONE);
-        editPasswordEditText.setVisibility(View.VISIBLE);
-    }
-
-    /**
-     * Profile fragment
-     * Stops editing password
-     */
-    public void onClickConfirmPassword(View view) {
-        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_bt);
-        EditText editPasswordEditText = (EditText) view.findViewById(R.id.edit_password_et);
-        changePasswordButton.setVisibility(View.GONE);
-        editPasswordEditText.setVisibility(View.VISIBLE);
-    }
 
     @Override
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
