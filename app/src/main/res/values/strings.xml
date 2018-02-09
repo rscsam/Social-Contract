@@ -30,6 +30,13 @@
     <string name="facebook_app_id">2025358404148491</string>
     <string name="fb_login_protocol_scheme">fb2025358404148491</string>
     <string name="com_facebook_loginview_log_in_button_continue">"Log in with Facebook"</string>
+    <string name="email">Email:</string>
+    <string name="change_email">Change Email</string>
+    <string name="change_password">Change Password</string>
+    <string name="enter_new_email">Enter new email:</string>
+    <string name="enter_new_password">Enter new password:</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 
     <string name="com.twitter.sdk.android.CONSUMER_KEY">VWI3KMxAxWu89UBFzRHUDPa5I</string>
     <string name="com.twitter.sdk.android.CONSUMER_SECRET">8fc4S9NlgAN6dq2Jnpm5qApERUymQsyzwrLXYWTe04HHgHQ05A</string>

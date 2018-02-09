@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -51,8 +53,10 @@ public class ProfileFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
+        // grab user's email from the intent
+        email = getArguments().getString("email");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
@@ -74,16 +78,49 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
-
-        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_button);
+        // Set the user's email to display
+        TextView emailTextView = (TextView) view.findViewById(R.id.displayed_email_tv);
+        emailTextView.setText(email);
+        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
+        changeEmailButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+                        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
+                        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
+                        view.setVisibility(View.GONE);
+                        editEmailEditText.setVisibility(View.VISIBLE);
+                        confirmEmailButton.setVisibility(View.VISIBLE);
+                        cancelEmailButton.setVisibility(View.VISIBLE);
+                    }
+                }
+        );
+        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_bt);
         changePasswordButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        mListener.onClickChangePasswordTwo();
+                        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
+                        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
+                        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
+                        view.setVisibility(View.GONE);
+                        editPasswordEditText.setVisibility(View.VISIBLE);
+                        confirmPasswordButton.setVisibility(View.VISIBLE);
+                        cancelPasswordButton.setVisibility(View.VISIBLE);
                     }
                 }
         );
+        Button confirmPasswordButton = (Button) view.findViewById(R.id.confirm_password_bt);
+        confirmPasswordButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                }
+        );
+        Button cancelPasswordButton = (Button) view.findViewById(R.id.cancel_password_bt);
         return view;
     }
 
@@ -97,6 +134,7 @@ public class ProfileFragment extends Fragment {
                     + " must implement ProfileFListener");
         }
     }
+
     /**
      * Connect to the change email endpoint on the server to change the user's email in the database
      * Assumes email's format has already been checked
@@ -281,7 +319,8 @@ public class ProfileFragment extends Fragment {
     public interface ProfileFListener {
         void onClickAccountManagement();
         void onClickInterestProfile();
-        void onClickChangePasswordTwo();
+        void onClickChangeEmail(View view);
+        void onClickChangePassword(View view);
     }
 
 }
