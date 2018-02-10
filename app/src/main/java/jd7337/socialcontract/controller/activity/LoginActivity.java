@@ -71,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
         Intent startMain = new Intent(this, MainActivity.class);
         startMain.putExtra("email", email);
         startMain.putExtra("userId", userId);
-        startMain.putExtra("email", email);
         startActivity(startMain);
     }
 

@@ -98,6 +98,7 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
+        // Submit change to user's email
         Button confirmEmailButton = (Button) view.findViewById(R.id.confirm_email_bt);
         confirmEmailButton.setOnClickListener(
                 new View.OnClickListener() {
@@ -110,6 +111,21 @@ public class ProfileFragment extends Fragment {
                         } else {
                             Toast.makeText(getContext(), "Invalid email format.", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                }
+        );
+        Button cancelEmailButton = (Button) view.findViewById(R.id.cancel_email_bt);
+        cancelEmailButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+                        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
+                        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
+                        view.setVisibility(View.GONE);
+                        editEmailEditText.setVisibility(View.GONE);
+                        confirmEmailButton.setVisibility(View.GONE);
+                        changeEmailButton.setVisibility(View.VISIBLE);
                     }
                 }
         );
@@ -145,7 +161,22 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
+        // Stop editing password and don't change
         Button cancelPasswordButton = (Button) view.findViewById(R.id.cancel_password_bt);
+        cancelPasswordButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
+                        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
+                        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
+                        view.setVisibility(View.GONE);
+                        editPasswordEditText.setVisibility(View.GONE);
+                        confirmPasswordButton.setVisibility(View.GONE);
+                        changePasswordButton.setVisibility(View.VISIBLE);
+                    }
+                }
+        );
         return view;
     }
 

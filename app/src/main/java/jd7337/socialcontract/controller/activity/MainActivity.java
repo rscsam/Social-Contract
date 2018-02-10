@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -143,9 +142,7 @@ public class MainActivity extends AppCompatActivity implements
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_profile:
-                Bundle bundle = new Bundle();
-                bundle.putString("email", email);
-                showFragmentWithBundle(R.id.main_activity_view, profileFragment, bundle);
+                showFragment(R.id.main_activity_view, profileFragment);
                 mDrawerLayout.closeDrawer(mDrawerList);
                 break;
             case R.id.nav_accounts:
