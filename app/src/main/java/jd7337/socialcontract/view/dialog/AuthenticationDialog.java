@@ -50,6 +50,7 @@ public class AuthenticationDialog extends Dialog {
     private void initializeWebView() {
         web_view = (WebView) findViewById(R.id.web_view);
         web_view.loadUrl(url);
+        System.out.println("iinit called");
         web_view.setWebViewClient(new WebViewClient() {
 
             boolean authComplete = false;
@@ -83,4 +84,3 @@ public class AuthenticationDialog extends Dialog {
         });
     }
 }
-
