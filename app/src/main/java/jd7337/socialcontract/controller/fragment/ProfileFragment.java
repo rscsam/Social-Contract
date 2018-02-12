@@ -36,8 +36,7 @@ public class ProfileFragment extends Fragment {
 
     private String email;
     private String userId;
-    private String salt;
-    private String nonce;
+    private String password;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -154,7 +153,8 @@ public class ProfileFragment extends Fragment {
                         EditText editPasswordEditText = container.findViewById(R.id.edit_password_et);
                         String newPassword = editPasswordEditText.getText().toString();
                         if (!newPassword.isEmpty()) {
-                            changePassword(newPassword);
+                            password = newPassword;
+                            initChangePassword();
                         } else {
                             Toast.makeText(getContext(), "Password can't be blank.", Toast.LENGTH_SHORT).show();
                         }
@@ -244,14 +244,9 @@ public class ProfileFragment extends Fragment {
     /**
      * Connect to the change password endpoint on the server to change the user's password in the database
      * Hashes the password first
-     * @param password - password to change to
+     * @param hashedPassword - hashed password to change to
      */
-    public void changePassword(String password) {
-        //ensures the salt and nonce have been retrieved
-        getSaltAndNonce();
-        //hashs the password
-        String hashedPassword = hashPassword(password);
-
+    public void changePassword(String hashedPassword) {
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
 
@@ -298,9 +293,11 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Connects to loginInit endpoint to get user's salt and nonce.
+     * Starts the change password sequence.
+     * Connects to loginInit endpoint to get user's salt.
+     * Then calls hash password with the salt.
      */
-    private void getSaltAndNonce() {
+    private void initChangePassword() {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
 
@@ -314,8 +311,7 @@ public class ProfileFragment extends Fragment {
                         try {
                             boolean success = response.getBoolean("success");
                             if (success) {
-                                salt = response.getString("salt");
-                                nonce = response.getString("nonce");
+                                hashPassword(password, response.getString("salt"));
                             } else {
                                 Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
@@ -329,6 +325,8 @@ public class ProfileFragment extends Fragment {
                 Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+
+        queue.add(jsonObjectRequest);
     }
 
     /**
@@ -341,11 +339,11 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * Retrieves the salt and nonce and uses them to hash the password
+     * Uses the salt to hash the password, and then calls change password
      * @param password - password to be hashed
      * @return String - the hashed password
      */
-    private String hashPassword(String password) {
+    private void hashPassword(String password, String salt) {
         String concat = password + salt;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -355,18 +353,9 @@ public class ProfileFragment extends Fragment {
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
-
-            String nextHash = sb.toString() + nonce;
-            MessageDigest md2 = MessageDigest.getInstance("SHA-256");
-            md2.update(nextHash.getBytes());
-            byte[] digest2 = md2.digest();
-            StringBuilder sb2 = new StringBuilder();
-            for (byte b : digest2) {
-                sb2.append(String.format("%02x", b & 0xff));
-            }
-            return sb2.toString();
+            changePassword(sb.toString());
         } catch (NoSuchAlgorithmException e) {
-            return concat.substring(0,60);
+            changePassword(concat.substring(0,60));
         }
     }
 
