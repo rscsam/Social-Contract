@@ -202,59 +202,56 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(String access_token) {  // this is the actual instagram token
-        System.out.println("Code Received");
+    public void onCodeReceived(final String access_token) {  // this is the actual instagram token
         if (access_token == null) {
             auth_dialog.dismiss();
         } else {
-
-            RequestQueue queue = Volley.newRequestQueue(getContext());
+            final Context mContext = getContext();
+            RequestQueue queue = Volley.newRequestQueue(mContext);
 
             String url = "https://api.instagram.com/v1/users/self/?access_token=" + access_token;
 
             final String token = access_token;
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>() {
+                        RequestQueue queue = Volley.newRequestQueue(mContext);
                         @Override
                         public void onResponse(JSONObject response) {
                             try {
-                                boolean success = response.getBoolean("success");
-                                if (success) {
-                                    String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addInstagram";
-
-                                    Map<String, String> params = new HashMap<>();
-                                    params.put("accessToken", token);
-                                    params.put("socialContractId", mListener.getSocialContractId());
-                                    params.put("instagramId", response.getString("id"));
-                                    params.put("username", response.getString("username"));
-                                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                                            new Response.Listener<JSONObject>() {
-                                                @Override
-                                                public void onResponse(JSONObject response) {
-                                                    try {
-                                                        boolean success = response.getBoolean("success");
-                                                        if (success) {
-                                                            Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    } catch (JSONException e) {
-                                                        Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addInstagram";
+                                Map<String, String> params = new HashMap<>();
+                                params.put("accessToken", token);
+                                params.put("socialContractId", mListener.getSocialContractId());
+                                params.put("instagramId", response.getJSONObject("data").getString("id"));
+                                params.put("username", response.getJSONObject("data").getString("username"));
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+                                                    boolean success = response.getBoolean("success");
+                                                    if (success) {
+                                                        Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
                                                     }
+                                                } catch (JSONException e) {
+                                                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                                                 }
-                                            }, new Response.ErrorListener() {
-                                        @Override
-                                        public void onErrorResponse(VolleyError error) {
-                                            Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
+                                            }
+                                        }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-                                    ) {
-                                        @Override
-                                        public Map<String, String> getHeaders() throws AuthFailureError {
-                                            HashMap<String, String> headers = new HashMap<>();
-                                            headers.put("Content-Type", "application/json; charset=utf-8");
-                                            return headers;
-                                        }
-                                    };
                                 }
+                                ) {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        HashMap<String, String> headers = new HashMap<>();
+                                        headers.put("Content-Type", "application/json; charset=utf-8");
+                                        return headers;
+                                    }
+                                };
+                                queue.add(jsonObjectRequest);
                             } catch (JSONException e) {
                                 Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                             }
