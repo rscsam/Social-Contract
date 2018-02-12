@@ -202,7 +202,8 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(final String access_token) {  // this is the actual instagram token
+    public void onCodeReceived(String access_token) {  // this is the actual instagram token
+        System.out.println("Code Received");
         if (access_token == null) {
             auth_dialog.dismiss();
         } else {
@@ -211,6 +212,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
 
             String url = "https://api.instagram.com/v1/users/self/?access_token=" + access_token;
 
+            final String token = access_token;
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -221,7 +223,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                                     String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addInstagram";
 
                                     Map<String, String> params = new HashMap<>();
-                                    params.put("accessToken", access_token);
+                                    params.put("accessToken", token);
                                     params.put("socialContractId", mListener.getSocialContractId());
                                     params.put("instagramId", response.getString("id"));
                                     params.put("username", response.getString("username"));

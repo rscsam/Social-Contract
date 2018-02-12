@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -52,8 +54,8 @@ public class AuthenticationDialog extends Dialog {
         web_view.loadUrl(url);
         System.out.println("iinit called");
         web_view.setWebViewClient(new WebViewClient() {
-
             boolean authComplete = false;
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -61,6 +63,12 @@ public class AuthenticationDialog extends Dialog {
             }
 
             String access_token;
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                System.out.println(error.toString());
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
