@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
     private Button btn_get_access_token;
 
     private int numCoins;
+    private String email;
     private String userId;
 
     @Override
@@ -63,7 +64,12 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
+
+        Bundle bundle = new Bundle();
+        bundle.putString("email", email);
+        bundle.putString("userId", userId);
 
         // set the home fragment
         homeFragment = new HomeFragment();
@@ -73,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
         accountManagementFragment = new AccountManagementFragment();
-        profileFragment = new ProfileFragment();
+        profileFragment = ProfileFragment.newInstance(bundle);
         accountSelectFragment = new AccountSelectFragment();
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
 
@@ -198,11 +204,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClickAccountManagement() {
         showFragment(R.id.main_activity_view, accountManagementFragment);
-    }
-
-    @Override
-    public void onClickChangePasswordTwo() {
-        showFragment(R.id.main_activity_view, updateProfileFragment);
     }
 
     @Override
