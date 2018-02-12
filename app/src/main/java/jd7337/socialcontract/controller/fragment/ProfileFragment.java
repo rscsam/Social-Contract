@@ -234,7 +234,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application.json; charset=utf-8");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
         };
@@ -249,6 +249,8 @@ public class ProfileFragment extends Fragment {
     public void changePassword(String hashedPassword) {
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
+
+        System.out.println(hashedPassword);
 
         Map<String, String> params = new HashMap<>();
         params.put("password", hashedPassword);
@@ -284,10 +286,12 @@ public class ProfileFragment extends Fragment {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application.json; charset=utf-8");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
         };
+
+        System.out.println(jsonObjectRequest);
 
         queue.add(jsonObjectRequest);
     }
