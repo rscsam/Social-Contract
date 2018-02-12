@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -29,8 +30,6 @@ import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
 public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
     private InitialConnectAccountFListener mListener;
-    private CallbackManager callbackManager;
-    private LoginButton fbLoginButton;
 
     private TwitterLoginButton twLoginButton;
     private TwitterAuthToken authToken;
@@ -38,6 +37,13 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
     private String secret;
     private Long userId;
     private String userName;
+
+    //facebook Related
+    private CallbackManager callbackManager;
+    private LoginButton fbLoginButton;
+    private AccessToken fbAccessToken;
+    private String fbAppID;
+    private String fbUserID;
 
     private AuthenticationDialog auth_dialog;
     private ImageButton inLoginButton;
@@ -81,12 +87,16 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         fbLoginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
         fbLoginButton.setFragment(this);
         callbackManager = CallbackManager.Factory.create();
-        //callback registration
+
+        //callback registration for facebook
         fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Toast toast = Toast.makeText(getActivity(),"Logged In", Toast.LENGTH_SHORT);
                 toast.show();
+                fbAccessToken = loginResult.getAccessToken();
+                fbAppID =  fbAccessToken.getApplicationId();
+                fbUserID = fbAccessToken.getUserId();
             }
 
             @Override
