@@ -20,78 +20,47 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.facebook.login.widget.ProfilePictureView
-            android:id="@+id/friendProfilePicture"
-            android:layout_width="147dp"
+            android:id="@+id/fbProfilePic"
+            android:layout_width="110dp"
             android:layout_height="102dp" />
 
-        <com.facebook.login.widget.LoginButton
-            android:id="@+id/fb_login_button"
-            android:layout_width="217dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:textSize="16sp"
-            android:paddingBottom="13sp"
-            android:paddingTop="13sp"
-            android:paddingStart="22sp"
-            android:paddingEnd="10sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="Facebook Account"
+                android:textAlignment="center" />
 
-    <LinearLayout
-        android:id="@+id/twLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="102dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fbLinearLayout">
+            <TextView
+                android:id="@+id/accountName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="accountName"
+                android:textAlignment="center" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:text="TextView"
+                android:textAlignment="center" />
+
+        </LinearLayout>
 
         <ImageView
-            android:id="@+id/imageViewTwitter"
-            android:layout_width="0dp"
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/twitter_icon" />
-
-        <com.twitter.sdk.android.core.identity.TwitterLoginButton
-            android:id="@+id/tw_login_button"
-            android:layout_width="217dp"
-            android:layout_height="48dp"
-            android:textSize="14sp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/inLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="102dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">
-
-        <ImageView
-            android:id="@+id/imageViewInstagram"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/instagram_icon" />
-
-        <ImageButton
-            android:id="@+id/in_login_button"
-            android:layout_width="217dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:src="@drawable/instagram_login_button" />
+            android:src="@drawable/com_facebook_button_icon_blue" />
 
     </LinearLayout>
 

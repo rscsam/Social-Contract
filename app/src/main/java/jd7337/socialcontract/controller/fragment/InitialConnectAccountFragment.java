@@ -48,6 +48,9 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
     private AuthenticationDialog auth_dialog;
     private ImageButton inLoginButton;
 
+    private AuthenticationDialog auth_dialog;
+    private ImageButton inLoginButton;
+
     public InitialConnectAccountFragment() {
         // Required empty public constructor
     }
