@@ -4,9 +4,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -26,11 +30,11 @@ public class AuthenticationDialog extends Dialog {
 
     private WebView web_view;
 
-    private final String url = R.string.instagram_base_url
+    private final String url = getContext().getString(R.string.instagram_base_url)
             + "oauth/authorize/?client_id="
-            + R.string.instagram_client_id
+            + getContext().getString(R.string.instagram_client_id)
             + "&redirect_uri="
-            + R.string.instagram_redirect_url
+            + getContext().getString(R.string.instagram_redirect_url)
             + "&response_type=token"
             + "&display=touch&scope=public_content";
 
@@ -51,8 +55,8 @@ public class AuthenticationDialog extends Dialog {
         web_view = (WebView) findViewById(R.id.web_view);
         web_view.loadUrl(url);
         web_view.setWebViewClient(new WebViewClient() {
-
             boolean authComplete = false;
+
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
@@ -60,6 +64,11 @@ public class AuthenticationDialog extends Dialog {
             }
 
             String access_token;
+
+            @Override
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
+            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -83,4 +92,3 @@ public class AuthenticationDialog extends Dialog {
         });
     }
 }
-

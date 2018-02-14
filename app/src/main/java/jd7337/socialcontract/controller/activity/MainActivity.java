@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
@@ -34,9 +35,10 @@ public class MainActivity extends AppCompatActivity implements
         AccountManagementFragment.AccountManagementFListener,
         ProfileFragment.ProfileFListener,
         AccountSelectFragment.AccountSelectFListener,
-        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener {
+        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener, UpdateProfileFragment.UpdateProfileFListener {
 
     private HomeFragment homeFragment;
+    private UpdateProfileFragment updateProfileFragment;
     private DiscoverSettingsFragment discoverSettingsFragment;
     private DiscoverFragment discoverFragment;
     private GrowFragment growFragment;
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements
     private Button btn_get_access_token;
 
     private int numCoins;
+    private String email;
     private String userId;
 
     @Override
@@ -61,16 +64,22 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
+
+        Bundle bundle = new Bundle();
+        bundle.putString("email", email);
+        bundle.putString("userId", userId);
 
         // set the home fragment
         homeFragment = new HomeFragment();
         discoverSettingsFragment = new DiscoverSettingsFragment();
         discoverFragment = new DiscoverFragment();
+        updateProfileFragment = new UpdateProfileFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
-        accountManagementFragment = AccountManagementFragment.newInstance(userId);
-        profileFragment = new ProfileFragment();
+        accountManagementFragment = new AccountManagementFragment();
+        profileFragment = ProfileFragment.newInstance(bundle);
         accountSelectFragment = new AccountSelectFragment();
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
 
@@ -94,6 +103,11 @@ public class MainActivity extends AppCompatActivity implements
                 invalidateOptionsMenu();
             }
         };
+
+        MenuItem drawerEmail = (MenuItem) findViewById(R.id.nav_email);
+        if (drawerEmail != null) {
+            drawerEmail.setTitle(email);
+        }
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -190,9 +204,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickEIPSubmit() {showFragment(R.id.main_activity_view, homeFragment);}
-
-    @Override
     public void onClickAccountManagement() {
         showFragment(R.id.main_activity_view, accountManagementFragment);
     }
@@ -244,5 +255,13 @@ public class MainActivity extends AppCompatActivity implements
         TextView coinTV = findViewById(R.id.num_coins_tv);
         String newCoinNumStr = newNumber + "";
         coinTV.setText(newCoinNumStr);
+    }
+
+    /**
+     * Used when a user changes their email so that change can be displayed
+     * @param newEmail - email to change to
+     */
+    public void setEmail(String newEmail) {
+        email = newEmail;
     }
 }

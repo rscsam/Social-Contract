@@ -55,14 +55,5 @@
             android:text="Memes"
             android:id="@+id/memes_interest_cb"/>
     </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:layout_marginBottom="30dp"
-        android:text="Save"
-        android:id="@+id/submit_ep_button"/>
 
 </android.support.constraint.ConstraintLayout>
