@@ -249,8 +249,6 @@ public class ProfileFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
 
-        System.out.println(hashedPassword);
-
         Map<String, String> params = new HashMap<>();
         params.put("password", hashedPassword);
         params.put("userId", userId);
@@ -289,8 +287,6 @@ public class ProfileFragment extends Fragment {
                 return headers;
             }
         };
-
-        System.out.println(jsonObjectRequest);
 
         queue.add(jsonObjectRequest);
     }
