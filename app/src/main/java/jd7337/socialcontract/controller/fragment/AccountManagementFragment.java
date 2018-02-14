@@ -44,8 +44,8 @@ public class AccountManagementFragment extends Fragment {
         }
     }
 
-    public void revokePermissions(AccessToken accessToken) {
-        GraphRequest delPermRequest = new GraphRequest(accessToken.getCurrentAccessToken(), "/{user-id}/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
+    public void revokePermissions(AccessToken accessToken, String userID) {
+        GraphRequest delPermRequest = new GraphRequest(accessToken.getCurrentAccessToken(), "/" + userID + "/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
             @Override
             public void onCompleted(GraphResponse graphResponse) {
                 if (graphResponse != null) {
