@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -87,18 +89,13 @@ public class ProfileFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
-                        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
-                        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
-                        view.setVisibility(View.GONE);
-                        editEmailEditText.setVisibility(View.VISIBLE);
-                        confirmEmailButton.setVisibility(View.VISIBLE);
-                        cancelEmailButton.setVisibility(View.VISIBLE);
+                        beginEditingEmail(container);
+                        hideKeyboard();
                     }
                 }
         );
         // Submit change to user's email
-        Button confirmEmailButton = (Button) view.findViewById(R.id.confirm_email_bt);
+        final Button confirmEmailButton = (Button) view.findViewById(R.id.confirm_email_bt);
         confirmEmailButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -106,10 +103,14 @@ public class ProfileFragment extends Fragment {
                         EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
                         String newEmail = editEmailEditText.getText().toString();
                         if (isValidEmail(newEmail)) {
-                            changeEmail(newEmail);
+                            changeEmail(newEmail, container);
                         } else {
                             Toast.makeText(getContext(), "Invalid email format.", Toast.LENGTH_SHORT).show();
                         }
+                        // Clear out entered email
+                        editEmailEditText.setText("");
+                        stopEditingEmail(container);
+                        hideKeyboard();
                     }
                 }
         );
@@ -118,13 +119,11 @@ public class ProfileFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        //Clear the entered email
                         EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
-                        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
-                        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
-                        view.setVisibility(View.GONE);
-                        editEmailEditText.setVisibility(View.GONE);
-                        confirmEmailButton.setVisibility(View.GONE);
-                        changeEmailButton.setVisibility(View.VISIBLE);
+                        editEmailEditText.setText("");
+                        stopEditingEmail(container);
+                        hideKeyboard();
                     }
                 }
         );
@@ -134,13 +133,8 @@ public class ProfileFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
-                        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
-                        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
-                        view.setVisibility(View.GONE);
-                        editPasswordEditText.setVisibility(View.VISIBLE);
-                        confirmPasswordButton.setVisibility(View.VISIBLE);
-                        cancelPasswordButton.setVisibility(View.VISIBLE);
+                        beginEditingPassword(container);
+                        hideKeyboard();
                     }
                 }
         );
@@ -158,6 +152,10 @@ public class ProfileFragment extends Fragment {
                         } else {
                             Toast.makeText(getContext(), "Password can't be blank.", Toast.LENGTH_SHORT).show();
                         }
+                        // Clear out entered password after
+                        editPasswordEditText.setText("");
+                        stopEditingPassword(container);
+                        hideKeyboard();
                     }
                 }
         );
@@ -167,13 +165,11 @@ public class ProfileFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
-                        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
-                        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
-                        view.setVisibility(View.GONE);
-                        editPasswordEditText.setVisibility(View.GONE);
-                        confirmPasswordButton.setVisibility(View.GONE);
-                        changePasswordButton.setVisibility(View.VISIBLE);
+                        // Clear out entered password
+                        EditText editPasswordEditText = container.findViewById(R.id.edit_password_et);
+                        editPasswordEditText.setText("");
+                        stopEditingPassword(container);
+                        hideKeyboard();
                     }
                 }
         );
@@ -196,7 +192,7 @@ public class ProfileFragment extends Fragment {
      * Assumes email's format has already been checked
      * @param newEmail - new email to change to
      */
-    public void changeEmail(String newEmail) {
+    public void changeEmail(final String newEmail, final ViewGroup container) {
         RequestQueue queue = Volley.newRequestQueue(this.getContext());
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changeEmail";
 
@@ -213,6 +209,9 @@ public class ProfileFragment extends Fragment {
                             if (success) {
                                 Toast.makeText(ProfileFragment.super.getContext(),
                                         "Successfully changed email", Toast.LENGTH_SHORT).show();
+                                email = newEmail;
+                                TextView emailTextView = (TextView) container.findViewById(R.id.displayed_email_tv);
+                                emailTextView.setText(newEmail);
                             } else {
                                 Toast.makeText(ProfileFragment.super.getContext(),
                                         response.getString("message"), Toast.LENGTH_SHORT).show();
@@ -361,6 +360,75 @@ public class ProfileFragment extends Fragment {
         } catch (NoSuchAlgorithmException e) {
             changePassword(concat.substring(0,60));
         }
+    }
+
+    /**
+     * Changes view so user can enter new email.
+     * @param container - ViewGroup with reference to layout's views
+     */
+    private void beginEditingEmail(ViewGroup container) {
+        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
+        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
+        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
+        changeEmailButton.setVisibility(View.GONE);
+        editEmailEditText.setVisibility(View.VISIBLE);
+        confirmEmailButton.setVisibility(View.VISIBLE);
+        cancelEmailButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Changes view after user finishes editing email.
+     * @param container - ViewGroup with reference to layout's views
+     */
+    private void stopEditingEmail(ViewGroup container) {
+        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
+        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
+        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
+        cancelEmailButton.setVisibility(View.GONE);
+        editEmailEditText.setVisibility(View.GONE);
+        confirmEmailButton.setVisibility(View.GONE);
+        changeEmailButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Changes view so user can enter new password.
+     * @param container - ViewGroup with reference to layout's views
+     */
+    private void beginEditingPassword(ViewGroup container) {
+        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
+        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
+        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
+        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
+        changePasswordButton.setVisibility(View.GONE);
+        editPasswordEditText.setVisibility(View.VISIBLE);
+        confirmPasswordButton.setVisibility(View.VISIBLE);
+        cancelPasswordButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Changes view after user finishes editing password.
+     * @param container - ViewGroup with reference to layout's views
+     */
+    private void stopEditingPassword(ViewGroup container) {
+        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
+        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
+        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
+        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
+        cancelPasswordButton.setVisibility(View.GONE);
+        editPasswordEditText.setVisibility(View.GONE);
+        confirmPasswordButton.setVisibility(View.GONE);
+        changePasswordButton.setVisibility(View.VISIBLE);
+    }
+
+    /**
+     * Hides the on-screen soft keyboard.
+     */
+    private void hideKeyboard() {
+        View focusedView = getActivity().getCurrentFocus();
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
     }
 
     @Override
