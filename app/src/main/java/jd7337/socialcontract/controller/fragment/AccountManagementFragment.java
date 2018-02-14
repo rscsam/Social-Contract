@@ -6,12 +6,21 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.util.Log;
+
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.FacebookRequestError;
+import com.facebook.HttpMethod;
 
 import jd7337.socialcontract.R;
 
 public class AccountManagementFragment extends Fragment {
 
     private AccountManagementFListener mListener;
+
+    private static final String TAG = "Error";
 
     public AccountManagementFragment() {
         // Required empty public constructor
@@ -33,6 +42,22 @@ public class AccountManagementFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement AccountManagementFListener");
         }
+    }
+
+    public void revokePermissions(AccessToken accessToken, String userID) {
+        GraphRequest delPermRequest = new GraphRequest(accessToken.getCurrentAccessToken(), "/" + userID + "/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
+            @Override
+            public void onCompleted(GraphResponse graphResponse) {
+                if (graphResponse != null) {
+                    FacebookRequestError error = graphResponse.getError();
+                    if (error != null) {
+                        Log.e(TAG, error.toString());
+                    }
+                }
+            }
+        });
+        Log.d(TAG, "Executing revoke permissions with graph path" + delPermRequest.getGraphPath());
+        delPermRequest.executeAsync();
     }
 
     @Override
