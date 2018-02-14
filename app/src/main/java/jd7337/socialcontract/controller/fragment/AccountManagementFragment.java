@@ -52,8 +52,6 @@ public class AccountManagementFragment extends Fragment {
                     FacebookRequestError error = graphResponse.getError();
                     if (error != null) {
                         Log.e(TAG, error.toString());
-                    } else {
-                        getActivity().finish();
                     }
                 }
             }
