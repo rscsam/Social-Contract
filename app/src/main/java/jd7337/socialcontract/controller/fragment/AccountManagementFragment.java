@@ -13,6 +13,9 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
+
+import android.widget.Button;
+import android.support.v7.widget.AppCompatButton;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -52,6 +55,36 @@ public class AccountManagementFragment extends Fragment {
         args.putString("userId", userId);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public Button deleteTwitterButton(String twitterId) {
+        final String tId = twitterId;
+        AppCompatButton deleteTwitterButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteTwitterAccount(tId);
+            }
+        };
+        return deleteTwitterButton;
+    }
+
+    public Button deleteInstagramButton(String instagramId) {
+        final String iId = instagramId;
+        AppCompatButton deleteInstagramButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteInstagramAccount(iId);
+            }
+        };
+        return deleteInstagramButton;
+    }
+
+    public Button deleteFacebookButton(String facebookId, final AccessToken accessToken) {
+        final String fId = facebookId;
+        AppCompatButton deleteFacebookButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteFacebookAccount(fId, accessToken);
+            }
+        };
+        return deleteFacebookButton;
     }
 
     @Override
@@ -152,6 +185,9 @@ public class AccountManagementFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteFacebook";
 
+        final String fId = facebookId;
+        final AccessToken ac = accessToken;
+
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userId);
 
@@ -165,6 +201,7 @@ public class AccountManagementFragment extends Fragment {
                             boolean success = response.getBoolean("success");
                             if (success) {
                                 Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
+                                revokePermissions(ac, fId);
                             } else {
                                 String message = response.getString("message");
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
@@ -187,7 +224,6 @@ public class AccountManagementFragment extends Fragment {
                 return headers;
             }
         };
-        revokePermissions(accessToken, facebookId);
         queue.add(jsonObjectRequest);
     }
 
@@ -237,6 +273,7 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest);
     }
 
-    public interface AccountManagementFListener {
-    }
+     public interface AccountManagementFListener{
+     }
+
 }
