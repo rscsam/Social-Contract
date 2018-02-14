@@ -104,6 +104,11 @@ public class MainActivity extends AppCompatActivity implements
             }
         };
 
+        MenuItem drawerEmail = (MenuItem) findViewById(R.id.nav_email);
+        if (drawerEmail != null) {
+            drawerEmail.setTitle(email);
+        }
+
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -250,5 +255,13 @@ public class MainActivity extends AppCompatActivity implements
         TextView coinTV = findViewById(R.id.num_coins_tv);
         String newCoinNumStr = newNumber + "";
         coinTV.setText(newCoinNumStr);
+    }
+
+    /**
+     * Used when a user changes their email so that change can be displayed
+     * @param newEmail - email to change to
+     */
+    public void setEmail(String newEmail) {
+        email = newEmail;
     }
 }

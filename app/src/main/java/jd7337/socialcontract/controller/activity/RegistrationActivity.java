@@ -77,9 +77,10 @@ public class RegistrationActivity extends AppCompatActivity {
      * @param id the id of the user
      */
     private void launchTutorial(String id) {
-        Intent startConfirmEmail = new Intent(this, TutorialActivity.class);
-        startConfirmEmail.putExtra("userId", id);
-        startActivity(startConfirmEmail);
+        Intent startTutorial = new Intent(this, TutorialActivity.class);
+        startTutorial.putExtra("userId", id);
+        startTutorial.putExtra("email", email);
+        startActivity(startTutorial);
     }
 
     /**
