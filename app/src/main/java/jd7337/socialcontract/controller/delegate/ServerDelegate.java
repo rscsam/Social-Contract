@@ -36,7 +36,7 @@ public class ServerDelegate {
             requestParams.put("sports", interestProfile.getSports());
             requestParams.put("movies", interestProfile.getMovies());
             requestParams.put("videogames", interestProfile.getVideoGames());
-            requestParams.put("music", interestProfile.getFood());
+            requestParams.put("food", interestProfile.getFood());
             requestParams.put("memes", interestProfile.getMemes());
             requestParams.put("socialContractId", socialContractId);
         } catch (JSONException e) {

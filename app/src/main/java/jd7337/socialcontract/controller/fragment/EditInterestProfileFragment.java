@@ -19,6 +19,7 @@ public class EditInterestProfileFragment extends Fragment {
 
     public EditInterestProfileFragment() {
         // Required empty public constructor
+        interestProfile = new InterestProfile();
     }
 
     @Override
@@ -27,15 +28,6 @@ public class EditInterestProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_edit_interest_profile, container,
                 false);
-        Button submitButton = (Button) view.findViewById(R.id.submit_ep_button);
-        submitButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        mListener.onClickEIPSubmit();
-                    }
-                }
-        );
         view.findViewById(R.id.music_interest_cb).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -97,6 +89,5 @@ public class EditInterestProfileFragment extends Fragment {
     }
 
     public interface EditInterestProfileFListener {
-        void onClickEIPSubmit();
     }
 }

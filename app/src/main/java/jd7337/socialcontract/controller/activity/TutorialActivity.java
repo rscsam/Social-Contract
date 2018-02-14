@@ -322,9 +322,4 @@ public class TutorialActivity extends AppCompatActivity implements
         startMainActivity();
     }
 
-    @Override
-    public void onClickEIPSubmit() {
-        startMainActivity();
-    }
-
 }

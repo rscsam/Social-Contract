@@ -199,9 +199,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickEIPSubmit() {showFragment(R.id.main_activity_view, homeFragment);}
-
-    @Override
     public void onClickAccountManagement() {
         showFragment(R.id.main_activity_view, accountManagementFragment);
     }
