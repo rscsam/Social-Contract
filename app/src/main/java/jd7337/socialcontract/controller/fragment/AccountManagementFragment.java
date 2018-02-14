@@ -14,7 +14,26 @@ import com.facebook.GraphResponse;
 import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 
+import android.widget.Button;
+import android.support.v7.widget.AppCompatButton;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.activity.LoginActivity;
 
 public class AccountManagementFragment extends Fragment {
 
@@ -22,14 +41,62 @@ public class AccountManagementFragment extends Fragment {
 
     private static final String TAG = "Error";
 
+    private Context mContext;
+
+    private String userId;
+
     public AccountManagementFragment() {
         // Required empty public constructor
+    }
+
+    public static AccountManagementFragment newInstance(String userId) {
+        AccountManagementFragment fragment = new AccountManagementFragment();
+        Bundle args = new Bundle();
+        args.putString("userId", userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    public Button deleteTwitterButton(String twitterId) {
+        final String tId = twitterId;
+        AppCompatButton deleteTwitterButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteTwitterAccount(tId);
+            }
+        };
+        return deleteTwitterButton;
+    }
+
+    public Button deleteInstagramButton(String instagramId) {
+        final String iId = instagramId;
+        AppCompatButton deleteInstagramButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteInstagramAccount(iId);
+            }
+        };
+        return deleteInstagramButton;
+    }
+
+    public Button deleteFacebookButton(String facebookId, final AccessToken accessToken) {
+        final String fId = facebookId;
+        AppCompatButton deleteFacebookButton = new AppCompatButton(getActivity()) {
+            public void onClick() {
+                deleteFacebookAccount(fId, accessToken);
+            }
+        };
+        return deleteFacebookButton;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        if (getArguments() != null) {
+            userId = getArguments().getString("userId");
+        }
+
+        mContext = getActivity();
         return inflater.inflate(R.layout.fragment_account_management, container, false);
     }
 
@@ -66,6 +133,147 @@ public class AccountManagementFragment extends Fragment {
         mListener = null;
     }
 
-    public interface AccountManagementFListener {
+    /**
+     * Deletes a user's Instagram account
+     */
+    private void deleteInstagramAccount(String instagramId){
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteInstagram";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+
+        params.put("instagramId", instagramId);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
+                            } else {
+                                String message = response.getString("message");
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
     }
+
+    /**
+     * Deletes a user's Facebook account
+     */
+    private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteFacebook";
+
+        final String fId = facebookId;
+        final AccessToken ac = accessToken;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+
+        params.put("facebookId", facebookId);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
+                                revokePermissions(ac, fId);
+                            } else {
+                                String message = response.getString("message");
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
+
+    /**
+     * Deletes a user's Twitter account
+     */
+    private void deleteTwitterAccount(String twitterId){
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteTwitter";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+
+        params.put("twitterId", twitterId);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getActivity(), "Twitter account deleted", Toast.LENGTH_LONG).show();
+                            } else {
+                                String message = response.getString("message");
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        queue.add(jsonObjectRequest);
+    }
+
+     public interface AccountManagementFListener{
+     }
+
 }
