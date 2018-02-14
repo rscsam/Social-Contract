@@ -101,16 +101,106 @@ public class AccountManagementFragment extends Fragment {
     }
 
     /**
+     * Deletes a user's Instagram account
+     */
+    private void deleteInstagramAccount(String instagramId){
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteInstagram";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+
+        params.put("instagramId", instagramId);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
+                            } else {
+                                String message = response.getString("message");
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest);
+    }
+
+    /**
+     * Deletes a user's Facebook account
+     */
+    private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteFacebook";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+
+        params.put("facebookId", facebookId);
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
+                            } else {
+                                String message = response.getString("message");
+                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            }
+        }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        revokePermissions(accessToken, facebookId);
+        queue.add(jsonObjectRequest);
+    }
+
+    /**
      * Deletes a user's Twitter account
      */
-    private void deleteTwitterAccount(){
+    private void deleteTwitterAccount(String twitterId){
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteTwitter";
 
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userId);
 
-        String twitterId = "test";
         params.put("twitterId", twitterId);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
@@ -146,9 +236,6 @@ public class AccountManagementFragment extends Fragment {
 
         queue.add(jsonObjectRequest);
     }
-
-    private void deleteFacebookAccount(){}
-    private void deleteInstagamAccount(){}
 
     public interface AccountManagementFListener {
     }
