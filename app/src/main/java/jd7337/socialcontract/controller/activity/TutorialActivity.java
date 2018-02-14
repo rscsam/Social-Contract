@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.twitter.sdk.android.core.Twitter;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
@@ -274,6 +275,8 @@ public class TutorialActivity extends AppCompatActivity implements
     }
 
     private void startMainActivity() {
+        ServerDelegate.sendInterestProfile(this, getSocialContractId(),
+                eipFragment.getInterestProfile());
         Intent startMain = new Intent(this, MainActivity.class);
         startMain.putExtra("userId", userId);
         startActivity(startMain);
