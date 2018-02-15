@@ -9,6 +9,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity implements
     private String email;
     private String userId;
 
+    private Menu  menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,19 +98,17 @@ public class MainActivity extends AppCompatActivity implements
 
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View view) {
                 super.onDrawerOpened(view);
-                invalidateOptionsMenu();
+
             }
         };
 
-        MenuItem drawerEmail = (MenuItem) findViewById(R.id.nav_email);
-        if (drawerEmail != null) {
-            drawerEmail.setTitle(email);
-        }
+
+        Menu menu = mDrawerList.getMenu();
+        menu.findItem(R.id.nav_email).setTitle(email);
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -263,5 +264,7 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void setEmail(String newEmail) {
         email = newEmail;
+        Menu menu = mDrawerList.getMenu();
+        menu.findItem(R.id.nav_email).setTitle(email);
     }
 }
