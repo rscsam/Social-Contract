@@ -264,4 +264,9 @@ public class MainActivity extends AppCompatActivity implements
     public void setEmail(String newEmail) {
         email = newEmail;
     }
+
+    @Override
+    public String getSocialContractId() {
+        return userId;
+    }
 }

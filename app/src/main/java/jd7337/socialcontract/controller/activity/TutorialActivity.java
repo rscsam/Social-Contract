@@ -277,8 +277,6 @@ public class TutorialActivity extends AppCompatActivity implements
     }
 
     private void startMainActivity() {
-        ServerDelegate.sendInterestProfile(this, getSocialContractId(),
-                eipFragment.getInterestProfile());
         Intent startMain = new Intent(this, MainActivity.class);
         startMain.putExtra("userId", userId);
         startMain.putExtra("email", email);
