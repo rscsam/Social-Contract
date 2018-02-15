@@ -254,4 +254,9 @@ public class MainActivity extends AppCompatActivity implements
         String newCoinNumStr = newNumber + "";
         coinTV.setText(newCoinNumStr);
     }
+
+    @Override
+    public String getSocialContractId() {
+        return userId;
+    }
 }

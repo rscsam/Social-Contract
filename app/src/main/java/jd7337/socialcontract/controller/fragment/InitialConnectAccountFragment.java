@@ -64,9 +64,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
     private AuthenticationDialog auth_dialog;
     private ImageButton inLoginButton;
 
-    private AuthenticationDialog auth_dialog;
-    private ImageButton inLoginButton;
-
     public InitialConnectAccountFragment() {
         // Required empty public constructor
     }
@@ -154,28 +151,20 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                         queue.add(jsonObjectRequest);
                     }
                 };
-            public void onSuccess(LoginResult loginResult) {
-                Toast toast = Toast.makeText(getActivity(),"Logged In", Toast.LENGTH_SHORT);
-                toast.show();
-                fbAccessToken = loginResult.getAccessToken();
-                fbAppID =  fbAccessToken.getApplicationId();
-                fbUserID = fbAccessToken.getUserId();
             }
 
-            @Override
-            public void onCancel() {
-                // App code
-                Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
-                toast.show();
-            }
+                @Override
+                public void onCancel () {
+                    // App code
+                    Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
 
-            @Override
-            public void onError(FacebookException exception) {
+                @Override
+                public void onError (FacebookException exception){
 
-            }
-
-
-        });
+                }
+            });
 
         // Instagram connection
         inLoginButton = view.findViewById(R.id.in_login_button);

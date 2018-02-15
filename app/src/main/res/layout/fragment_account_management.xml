@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.facebook.login.widget.ProfilePictureView
+        <ImageView
             android:id="@+id/fbProfilePic"
             android:layout_width="110dp"
             android:layout_height="102dp" />
@@ -30,7 +30,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/accountName"
+                android:id="@+id/fbaccountName"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
