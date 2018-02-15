@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.activity.MainActivity;
 
 public class ProfileFragment extends Fragment {
 
@@ -212,6 +213,9 @@ public class ProfileFragment extends Fragment {
                                 email = newEmail;
                                 TextView emailTextView = (TextView) container.findViewById(R.id.displayed_email_tv);
                                 emailTextView.setText(newEmail);
+                                MainActivity activity = (MainActivity) getActivity();
+                                activity.setEmail(email);
+
                             } else {
                                 Toast.makeText(ProfileFragment.super.getContext(),
                                         response.getString("message"), Toast.LENGTH_SHORT).show();
