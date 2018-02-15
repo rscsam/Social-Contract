@@ -264,8 +264,15 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void setEmail(String newEmail) {
         email = newEmail;
+        // update email in nav bar
         Menu menu = mDrawerList.getMenu();
         menu.findItem(R.id.nav_email).setTitle(email);
+
+        // pass create updated bundle for profile fragment with new email
+        Bundle bundle = new Bundle();
+        bundle.putString("email", newEmail);
+        bundle.putString("userId", userId);
+        profileFragment = ProfileFragment.newInstance(bundle);
     }
 
     @Override
