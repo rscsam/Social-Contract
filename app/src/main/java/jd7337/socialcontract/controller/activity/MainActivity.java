@@ -267,4 +267,9 @@ public class MainActivity extends AppCompatActivity implements
         Menu menu = mDrawerList.getMenu();
         menu.findItem(R.id.nav_email).setTitle(email);
     }
+
+    @Override
+    public String getSocialContractId() {
+        return userId;
+    }
 }
