@@ -39,6 +39,19 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
 
+import android.widget.Button;
+import android.support.v7.widget.AppCompatButton;
+import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -85,33 +98,46 @@ public class AccountManagementFragment extends Fragment {
         return fragment;
     }
 
-    public Button deleteTwitterButton(String twitterId) {
+    public ImageButton deleteTwitterButton(String twitterId) {
         final String tId = twitterId;
-        AppCompatButton deleteTwitterButton = new AppCompatButton(getActivity()) {
-            public void onClick() {
-                deleteTwitterAccount(tId);
+        ImageButton deleteTwitterButton = new ImageButton(getActivity());
+        deleteTwitterButton.setOnClickListener(
+            new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    deleteTwitterAccount(tId);
+                }
             }
-        };
+        );
         return deleteTwitterButton;
     }
 
-    public Button deleteInstagramButton(String instagramId) {
+    public ImageButton deleteInstagramButton(String instagramId) {
         final String iId = instagramId;
-        AppCompatButton deleteInstagramButton = new AppCompatButton(getActivity()) {
-            public void onClick() {
-                deleteInstagramAccount(iId);
-            }
-        };
+        ImageButton deleteInstagramButton = new ImageButton(getActivity());
+        deleteInstagramButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteInstagramAccount(iId);
+                    }
+                }
+        );
+
         return deleteInstagramButton;
     }
 
-    public Button deleteFacebookButton(String facebookId, final AccessToken accessToken) {
+    public ImageButton deleteFacebookButton(String facebookId, final AccessToken accessToken) {
         final String fId = facebookId;
-        AppCompatButton deleteFacebookButton = new AppCompatButton(getActivity()) {
-            public void onClick() {
-                deleteFacebookAccount(fId, accessToken);
-            }
-        };
+        ImageButton deleteFacebookButton = new ImageButton(getActivity());
+        deleteFacebookButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        deleteFacebookAccount(fId, accessToken);
+                    }
+                }
+        );
         return deleteFacebookButton;
     }
 
