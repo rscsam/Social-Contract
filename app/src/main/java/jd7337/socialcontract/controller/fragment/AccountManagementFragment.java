@@ -112,42 +112,42 @@ public class AccountManagementFragment extends Fragment {
 
 
         // twitter account
-        String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
-        Map<String, String> params2 = new HashMap<>();
-        params.put("socialContractId", userID);
-        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, new JSONObject(params2), new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                System.out.println(response);
-                //set facebook profile
-                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-                AccountService accountService = twitterApiClient.getAccountService();
-                Call<User> call = accountService.verifyCredentials(true, true, true);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                    }
-                });
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            public  Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest2);
+//        String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
+//        Map<String, String> params2 = new HashMap<>();
+//        params.put("socialContractId", userID);
+//        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, new JSONObject(params2), new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                System.out.println(response);
+//                //set facebook profile
+//                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+//                AccountService accountService = twitterApiClient.getAccountService();
+//                Call<User> call = accountService.verifyCredentials(true, true, true);
+//                call.enqueue(new Callback<User>() {
+//                    @Override
+//                    public void success(Result<User> result) {
+//
+//                    }
+//
+//                    @Override
+//                    public void failure(TwitterException exception) {
+//                    }
+//                });
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+//            }
+//        }) {
+//            @Override
+//            public  Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<>();
+//                headers.put("Content-Type", "application/json; charset=utf-8");
+//                return headers;
+//            }
+//        };
+//        queue.add(jsonObjectRequest2);
 
 
 
@@ -179,30 +179,67 @@ public class AccountManagementFragment extends Fragment {
 
     private void getFBPic(String fbUserId, final ViewGroup container) {
         Bundle params = new Bundle();
-        //params.putString("fields", "id,email,gender,cover,picture.type(large)");
+        //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
         new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
-                    public void onCompleted(GraphResponse response) {
+                    public void onCompleted(final GraphResponse response) {
                         if (response != null) {
-                            try {
-                                JSONObject data = response.getJSONObject();
-                                System.out.println(data);
-                                String profilePicUrl = data.getJSONObject("data").getString("url");
-                                URL picUrl = new URL(profilePicUrl);
-                                System.out.println(profilePicUrl);
-                                //Should work from here
-//                                Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openConnection().getInputStream());
-//                                ImageView fbProfilePic = container.findViewById(R.id.fbProfilePic);
-//                                fbProfilePic.setImageBitmap(profilePic);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                            Thread thread = new Thread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        JSONObject data = response.getJSONObject();
+                                        System.out.println(data);
+                                        String profilePicUrl = data.getJSONObject("data").getString("url");
+                                        URL picUrl = new URL(profilePicUrl);
+                                        System.out.println(profilePicUrl);
+                                        //Should work from here
+                                        final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openConnection().getInputStream());
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                ImageView fbProfilePic = container.findViewById(R.id.fbProfilePic);
+                                                fbProfilePic.setImageBitmap(profilePic);
+                                            }
+                                        });
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                            thread.start();
                         }
                     }
                 }).executeAsync();
+
+
+//        GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
+//                new GraphRequest.Callback() {
+//                    @Override
+//                    public void onCompleted(GraphResponse response) {
+//                        if (response != null) {
+//                            try {
+//                                JSONObject data = response.getJSONObject();
+//                                System.out.println(data);
+//                                String profilePicUrl = data.getJSONObject("data").getString("url");
+//                                URL picUrl = new URL(profilePicUrl);
+//                                System.out.println(profilePicUrl);
+//                                //Should work from here
+////                                Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openConnection().getInputStream());
+////                                ImageView fbProfilePic = container.findViewById(R.id.fbProfilePic);
+////                                fbProfilePic.setImageBitmap(profilePic);
+//                            } catch (Exception e) {
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                })
+
     }
+
+
 
 }
