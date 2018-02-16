@@ -31,6 +31,13 @@ import com.mopub.volley.Response;
 import com.mopub.volley.VolleyError;
 import com.mopub.volley.toolbox.JsonObjectRequest;
 import com.mopub.volley.toolbox.Volley;
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,6 +52,7 @@ import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.activity.LoginActivity;
+import retrofit2.Call;
 
 public class AccountManagementFragment extends Fragment {
 
@@ -119,6 +127,7 @@ public class AccountManagementFragment extends Fragment {
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
+        Twitter.initialize(getContext());
 
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
@@ -192,6 +201,47 @@ public class AccountManagementFragment extends Fragment {
             }
         };
         queue.add(jsonObjectRequest2);
+
+
+        // twitter account
+        Call<User> user = TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(false, false, false);
+        user.enqueue(new Callback<User>() {
+            @Override
+            public void success(Result<User> userResult) {
+                String name = userResult.data.name;
+                String email = userResult.data.email;
+
+                // _normal (48x48px) | _bigger (73x73px) | _mini (24x24px)
+                final String photoUrlNormalSize   = userResult.data.profileImageUrl;
+                System.out.println(photoUrlNormalSize);
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            URL picUrl = new URL(photoUrlNormalSize);
+                            //Should work from here
+                            final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openStream());
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ImageView twProfilePic = container.findViewById(R.id.twProfilePic);
+                                    twProfilePic.setImageBitmap(profilePic);
+                                }
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                thread.start();
+
+            }
+
+            @Override
+            public void failure(TwitterException exc) {
+                Log.d("TwitterKit", "Verify Credentials Failure", exc);
+            }
+        });
 
 
 
