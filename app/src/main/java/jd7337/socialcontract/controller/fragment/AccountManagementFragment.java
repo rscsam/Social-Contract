@@ -38,6 +38,9 @@ import com.twitter.sdk.android.core.models.User;
 import android.widget.Button;
 import android.support.v7.widget.AppCompatButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -119,14 +122,15 @@ public class AccountManagementFragment extends Fragment {
         return deleteInstagramButton;
     }
 
-    public ImageButton deleteFacebookButton(String facebookId, final AccessToken accessToken) {
+    public ImageButton deleteFacebookButton(String facebookId) {
         final String fId = facebookId;
         ImageButton deleteFacebookButton = new ImageButton(getActivity());
         deleteFacebookButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        deleteFacebookAccount(fId, accessToken);
+                        System.out.println("doot");
+                        deleteFacebookAccount(fId);
                     }
                 }
         );
@@ -156,6 +160,8 @@ public class AccountManagementFragment extends Fragment {
         LinearLayout twLayout = view.findViewById(R.id.twLinearLayout);
 
 
+        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
+
         userID = mListener.getSocialContractId();
         System.out.println(userID);
         queue = Volley.newRequestQueue(getContext());
@@ -173,6 +179,10 @@ public class AccountManagementFragment extends Fragment {
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
                     setFBPic(fbUserId, container);
                     setFbName(container);
+                    ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
+                    fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                    fbLayout.addView(fbDeleteButton);
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                 }
@@ -481,12 +491,13 @@ public class AccountManagementFragment extends Fragment {
     /**
      * Deletes a user's Facebook account
      */
-    private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
+    //private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
+    private void deleteFacebookAccount(String facebookId){
         RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteFacebook";
 
         final String fId = facebookId;
-        final AccessToken ac = accessToken;
+        //final AccessToken ac = accessToken;
 
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userId);
@@ -501,7 +512,7 @@ public class AccountManagementFragment extends Fragment {
                             boolean success = response.getBoolean("success");
                             if (success) {
                                 Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
-                                revokePermissions(ac, fId);
+                                //revokePermissions(ac, fId);
                             } else {
                                 String message = response.getString("message");
                                 Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
