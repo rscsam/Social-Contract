@@ -24,13 +24,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
-import com.mopub.volley.AuthFailureError;
-import com.mopub.volley.Request;
-import com.mopub.volley.RequestQueue;
-import com.mopub.volley.Response;
-import com.mopub.volley.VolleyError;
-import com.mopub.volley.toolbox.JsonObjectRequest;
-import com.mopub.volley.toolbox.Volley;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -252,6 +245,7 @@ public class AccountManagementFragment extends Fragment {
                                 public void run() {
                                     ImageView twProfilePic = container.findViewById(R.id.twProfilePic);
                                     twProfilePic.setImageBitmap(profilePic);
+//                                    TextView twText = container.findViewById()
                                 }
                             });
                         } catch (Exception e) {
