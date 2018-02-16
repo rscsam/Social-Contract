@@ -18,11 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.twitter.sdk.android.core.Callback;
@@ -49,11 +51,6 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,6 +141,7 @@ public class AccountManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
@@ -574,7 +572,5 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest);
     }
 
-//     public interface AccountManagementFListener{
-//     }
 
 }
