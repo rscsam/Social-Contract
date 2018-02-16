@@ -43,4 +43,5 @@
     <string name="instagram_base_url">https://api.instagram.com/</string>
     <string name="instagram_client_id">756d44111aca4f9da3151319b465700f</string>
     <string name="instagram_redirect_url">https://github.com/rscsam/Social-Contract</string>
+    <string name="save_changes">Save Changes</string>
 </resources>

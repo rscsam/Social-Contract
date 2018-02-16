@@ -42,6 +42,7 @@ import android.widget.Toast;
 import com.twitter.sdk.android.core.Twitter;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
@@ -56,6 +57,7 @@ public class TutorialActivity extends AppCompatActivity implements
     private EditInterestProfileFragment eipFragment;
 
     private String userId;
+    private String email;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -85,6 +87,7 @@ public class TutorialActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
 
         userId = getIntent().getStringExtra("userId");
+        email = getIntent().getStringExtra("email");
 
         // Initialize Twitter kit
         Twitter.initialize(this);
@@ -276,6 +279,7 @@ public class TutorialActivity extends AppCompatActivity implements
     private void startMainActivity() {
         Intent startMain = new Intent(this, MainActivity.class);
         startMain.putExtra("userId", userId);
+        startMain.putExtra("email", email);
         startActivity(startMain);
     }
 
@@ -316,11 +320,6 @@ public class TutorialActivity extends AppCompatActivity implements
 
     @Override
     public void onClickEIPPSkip() {
-        startMainActivity();
-    }
-
-    @Override
-    public void onClickEIPSubmit() {
         startMainActivity();
     }
 

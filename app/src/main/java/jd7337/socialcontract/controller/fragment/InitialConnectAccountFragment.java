@@ -84,12 +84,47 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         twLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Toast.makeText(getContext(), "Successful log in", Toast.LENGTH_SHORT).show();
                 authToken = result.data.getAuthToken();
                 token = authToken.token;
                 secret = authToken.secret;
                 userId = result.data.getUserId();
                 userName = result.data.getUserName();
+                RequestQueue queue = Volley.newRequestQueue(getContext());
+                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addTwitter";
+
+                Map<String, String> params = new HashMap<>();
+                params.put("authToken", token);
+                params.put("socialContractId", mListener.getSocialContractId());
+                params.put("twitterId", userId.toString());
+                params.put("authSecret", secret);
+                params.put("username", userName);
+                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                        new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                try {
+                                    boolean success = response.getBoolean("success");
+                                    if (success) {
+                                        Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<>();
+                        headers.put("Content-Type", "application/json; charset=utf-8");
+                        return headers;
+                    }
+                };
+                queue.add(jsonObjectRequest);
             }
 
             @Override
@@ -139,8 +174,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                             public void onErrorResponse(VolleyError error) {
                                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        }
-                        ) {
+                        }) {
                             @Override
                             public Map<String, String> getHeaders() throws AuthFailureError {
                                 HashMap<String, String> headers = new HashMap<>();

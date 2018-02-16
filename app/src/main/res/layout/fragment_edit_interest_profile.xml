@@ -11,7 +11,9 @@
         android:text="Tell us what you are interested in!"
         android:textSize="20sp"
         android:layout_margin="10dp"
+        app:layout_constraintVertical_bias="0.2"
         app:layout_constraintTop_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:id="@+id/interest_prompt_tv"/>
@@ -55,14 +57,17 @@
             android:text="Memes"
             android:id="@+id/memes_interest_cb"/>
     </LinearLayout>
+
     <Button
+        android:text="@string/save_changes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/custom_button"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/interest_checkboxes_ll"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
-        android:layout_marginBottom="30dp"
-        android:text="Save"
-        android:id="@+id/submit_ep_button"/>
+        android:id="@+id/eip_save_changes_bttn"/>
 
 </android.support.constraint.ConstraintLayout>

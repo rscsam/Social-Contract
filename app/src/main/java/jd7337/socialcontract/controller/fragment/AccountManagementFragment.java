@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -23,24 +24,15 @@ import com.mopub.volley.Response;
 import com.mopub.volley.VolleyError;
 import com.mopub.volley.toolbox.JsonObjectRequest;
 import com.mopub.volley.toolbox.Volley;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.TwitterException;
-import com.twitter.sdk.android.core.models.User;
-import com.twitter.sdk.android.core.services.AccountService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
-import retrofit2.Call;
 
 public class AccountManagementFragment extends Fragment {
 
@@ -48,11 +40,8 @@ public class AccountManagementFragment extends Fragment {
     private ProfilePictureView fbProfilePictureView;
     private String userID;  //the user id in our database
     private String fbUserId;
-    private String fbAccessToken;
     private String twUserId;
     private String twAccessToken;
-
-
 
 
     public AccountManagementFragment() {
@@ -85,12 +74,9 @@ public class AccountManagementFragment extends Fragment {
                 try {
                     //set facebook profile
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    //fbAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     System.out.println(fbUserId);
-//                    fbProfilePictureView = view.findViewById(R.id.fbProfilePic);
-//                    fbProfilePictureView.setProfileId(fbUserId);
-                    getFBPic(fbUserId, container);
-
+                    setFBPic(fbUserId, container);
+                    setFbName(container);
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                 }
@@ -177,11 +163,12 @@ public class AccountManagementFragment extends Fragment {
     }
 
 
-    private void getFBPic(String fbUserId, final ViewGroup container) {
+    private void setFBPic(String fbUserId, final ViewGroup container) {
         Bundle params = new Bundle();
         //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
+        System.out.println(AccessToken.getCurrentAccessToken());
         new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
@@ -215,29 +202,29 @@ public class AccountManagementFragment extends Fragment {
                     }
                 }).executeAsync();
 
+    }
+    private void setFbName(final ViewGroup container) {
+        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject object,
+                            GraphResponse response) {
+                        System.out.println(response);
+                        try {
+                            String fbName = response.getJSONObject().getString("name");
+                            TextView fbNameTxt = container.findViewById(R.id.fbName);
+                            fbNameTxt.setText(fbName);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
 
-//        GraphRequest request = new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
-//                new GraphRequest.Callback() {
-//                    @Override
-//                    public void onCompleted(GraphResponse response) {
-//                        if (response != null) {
-//                            try {
-//                                JSONObject data = response.getJSONObject();
-//                                System.out.println(data);
-//                                String profilePicUrl = data.getJSONObject("data").getString("url");
-//                                URL picUrl = new URL(profilePicUrl);
-//                                System.out.println(profilePicUrl);
-//                                //Should work from here
-////                                Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openConnection().getInputStream());
-////                                ImageView fbProfilePic = container.findViewById(R.id.fbProfilePic);
-////                                fbProfilePic.setImageBitmap(profilePic);
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//                })
-
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name");
+        request.setParameters(parameters);
+        request.executeAsync();
     }
 
 
