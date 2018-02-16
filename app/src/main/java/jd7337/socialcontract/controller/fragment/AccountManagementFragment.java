@@ -227,13 +227,14 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest2);
 
 
+        final LinearLayout twitterLayout = (LinearLayout) view.findViewById(R.id.twLinearLayout);
         // twitter account
         Call<User> user = TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(false, false, false);
         user.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> userResult) {
                 final String name = userResult.data.name;
-
+                final String twitterId = String.valueOf(userResult.data.id);
                 final String photoUrlNormalSize   = userResult.data.profileImageUrl;
                 System.out.println(photoUrlNormalSize);
                 Thread thread = new Thread(new Runnable() {
@@ -250,6 +251,10 @@ public class AccountManagementFragment extends Fragment {
                                     twProfilePic.setImageBitmap(profilePic);
                                     TextView twText = container.findViewById(R.id.twaccountName);
                                     twText.setText(name);
+                                    ImageButton twDeleteButton = deleteTwitterButton(twitterId);
+                                    twDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                                    twDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                                    twitterLayout.addView(twDeleteButton);
                                 }
                             });
                         } catch (Exception e) {
@@ -268,8 +273,7 @@ public class AccountManagementFragment extends Fragment {
         });
 
 
-
-        return inflater.inflate(R.layout.fragment_account_management, container, false);
+        return view;
     }
 
     @Override
