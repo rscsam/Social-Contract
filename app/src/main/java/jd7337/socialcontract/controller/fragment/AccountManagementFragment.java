@@ -1,20 +1,25 @@
 package jd7337.socialcontract.controller.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
+import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.HttpMethod;
@@ -51,6 +56,7 @@ public class AccountManagementFragment extends Fragment {
     private String twAccessToken;
     private String insUrl;
     private RequestQueue queue;
+    private InitialConnectAccountFragment initialConnectAccountFragment;
 
 
     private static final String TAG = "Error";
@@ -110,13 +116,13 @@ public class AccountManagementFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
 
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
+
         userID = mListener.getSocialContractId();
         System.out.println(userID);
         queue = Volley.newRequestQueue(getContext());
@@ -493,7 +499,7 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest);
     }
 
-     public interface AccountManagementFListener{
-     }
+//     public interface AccountManagementFListener{
+//     }
 
 }

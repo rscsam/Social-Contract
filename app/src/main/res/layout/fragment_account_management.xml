@@ -55,6 +55,12 @@
             android:layout_weight="1"
             android:src="@drawable/com_facebook_button_icon_blue" />
 
+        <ImageButton
+            android:id="@+id/fb_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_black_24dp"/>
+
     </LinearLayout>
 
     <LinearLayout
@@ -103,6 +109,11 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/twitter_icon" />
+        <ImageButton
+            android:id="@+id/tw_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_black_24dp"/>
 
     </LinearLayout>
 
@@ -152,13 +163,18 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:src="@drawable/instagram_icon" />
+        <ImageButton
+            android:id="@+id/ig_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_black_24dp"/>
 
     </LinearLayout>
 
     <Button
         android:id="@+id/connectButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="52dp"
         android:layout_marginBottom="52dp"
         android:text="Connect Acount"
         app:layout_constraintBottom_toBottomOf="parent"
