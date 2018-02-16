@@ -193,6 +193,7 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest);
 
 
+        final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
         // instagram account
         String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
         Map<String, String> params2 = new HashMap<>();
@@ -204,9 +205,16 @@ public class AccountManagementFragment extends Fragment {
                     //set instagram profile
                     String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
                     System.out.println(insURL);
                     setInsData(insURL, container, instaName);
+
+                    ImageButton inDeleteButton = deleteInstagramButton(instaId);
+                    inDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    inDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                    instaLayout.addView(inDeleteButton);
+
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                 }
@@ -445,7 +453,7 @@ public class AccountManagementFragment extends Fragment {
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteInstagram";
 
         Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userId);
+        params.put("socialContractId", userID);
 
         params.put("instagramId", instagramId);
 
@@ -494,7 +502,7 @@ public class AccountManagementFragment extends Fragment {
         //final AccessToken ac = accessToken;
 
         Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userId);
+        params.put("socialContractId", userID);
 
         params.put("facebookId", facebookId);
 
@@ -540,7 +548,7 @@ public class AccountManagementFragment extends Fragment {
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteTwitter";
 
         Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userId);
+        params.put("socialContractId", userID);
 
         params.put("twitterId", twitterId);
 
