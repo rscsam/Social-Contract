@@ -226,7 +226,4 @@ public class AccountManagementFragment extends Fragment {
         request.setParameters(parameters);
         request.executeAsync();
     }
-
-
-
 }
