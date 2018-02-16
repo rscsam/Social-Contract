@@ -3,7 +3,9 @@ package jd7337.socialcontract.controller.fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,10 @@ import com.mopub.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,6 +48,8 @@ public class AccountManagementFragment extends Fragment {
     private String fbUserId;
     private String twUserId;
     private String twAccessToken;
+    private String insUrl;
+    private RequestQueue queue;
 
 
     public AccountManagementFragment() {
@@ -60,7 +68,7 @@ public class AccountManagementFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
         userID = mListener.getSocialContractId();
         System.out.println(userID);
-        RequestQueue queue = Volley.newRequestQueue(getContext());
+        queue = Volley.newRequestQueue(getContext());
 
         //facebook account
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/facebookAccounts";
@@ -70,11 +78,9 @@ public class AccountManagementFragment extends Fragment {
         new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                System.out.println(response);
                 try {
                     //set facebook profile
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    System.out.println(fbUserId);
                     setFBPic(fbUserId, container);
                     setFbName(container);
                 } catch (JSONException e) {
@@ -97,43 +103,38 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest);
 
 
-        // twitter account
-//        String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
-//        Map<String, String> params2 = new HashMap<>();
-//        params.put("socialContractId", userID);
-//        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, new JSONObject(params2), new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                System.out.println(response);
-//                //set facebook profile
-//                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-//                AccountService accountService = twitterApiClient.getAccountService();
-//                Call<User> call = accountService.verifyCredentials(true, true, true);
-//                call.enqueue(new Callback<User>() {
-//                    @Override
-//                    public void success(Result<User> result) {
-//
-//                    }
-//
-//                    @Override
-//                    public void failure(TwitterException exception) {
-//                    }
-//                });
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-//            }
-//        }) {
-//            @Override
-//            public  Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<>();
-//                headers.put("Content-Type", "application/json; charset=utf-8");
-//                return headers;
-//            }
-//        };
-//        queue.add(jsonObjectRequest2);
+        // instagram account
+        String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
+        Map<String, String> params2 = new HashMap<>();
+        params2.put("socialContractId", userID);
+        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, new JSONObject(params2), new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    //set instagram profile
+                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                    System.out.println(insURL);
+                    setInsData(insURL, container, instaName);
+                } catch (JSONException e) {
+                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public  Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequest2);
 
 
 
@@ -168,7 +169,6 @@ public class AccountManagementFragment extends Fragment {
         //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
-        System.out.println(AccessToken.getCurrentAccessToken());
         new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
@@ -179,12 +179,10 @@ public class AccountManagementFragment extends Fragment {
                                 public void run() {
                                     try {
                                         JSONObject data = response.getJSONObject();
-                                        System.out.println(data);
                                         String profilePicUrl = data.getJSONObject("data").getString("url");
                                         URL picUrl = new URL(profilePicUrl);
-                                        System.out.println(profilePicUrl);
                                         //Should work from here
-                                        final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openConnection().getInputStream());
+                                        final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openStream());
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
@@ -203,6 +201,26 @@ public class AccountManagementFragment extends Fragment {
                 }).executeAsync();
 
     }
+
+
+//    private class MyNetworkTask extends AsyncTask<URL, Void, Bitmap> {
+//
+//        @Override
+//        protected Bitmap doInBackground(URL... urls) {
+//            URL url = urls[0];
+//            try {
+//                Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+//                return profilePic;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (NetworkOnMainThreadException e) {
+//                System.out.println("why the fuck");
+//            }
+//            return null;
+//        }
+//    }
+
+
     private void setFbName(final ViewGroup container) {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -210,7 +228,6 @@ public class AccountManagementFragment extends Fragment {
                     public void onCompleted(
                             JSONObject object,
                             GraphResponse response) {
-                        System.out.println(response);
                         try {
                             String fbName = response.getJSONObject().getString("name");
                             TextView fbNameTxt = container.findViewById(R.id.fbName);
@@ -218,12 +235,56 @@ public class AccountManagementFragment extends Fragment {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-
                     }
                 });
         Bundle parameters = new Bundle();
         parameters.putString("fields", "name");
         request.setParameters(parameters);
         request.executeAsync();
+    }
+
+    private void setInsData(String url, final ViewGroup container, final String instaName) {
+
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String picUrl = response.getJSONObject("data").getString("profile_picture");
+                                    System.out.println(picUrl);
+                                    URL url = new URL(picUrl);
+                                    final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+                                    //Bitmap profilePic = getBitmapFromURL(picUrl);
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ImageView igProfilePic = container.findViewById(R.id.igProfilePic);
+                                            igProfilePic.setImageBitmap(profilePic);
+                                            TextView igNameTxt = container.findViewById(R.id.igName);
+                                            igNameTxt.setText(instaName);
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        thread.start();
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        error.getStackTrace();
+                    }
+                });
+        queue.add(getRequest);
+
     }
 }
