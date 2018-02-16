@@ -258,11 +258,6 @@ public class MainActivity extends AppCompatActivity implements
         coinTV.setText(newCoinNumStr);
     }
 
-    @Override
-    public String getSocialContractId() {
-        return userId;
-    }
-
     /**
      * Used when a user changes their email so that change can be displayed
      * @param newEmail - email to change to
@@ -271,6 +266,11 @@ public class MainActivity extends AppCompatActivity implements
         email = newEmail;
         Menu menu = mDrawerList.getMenu();
         menu.findItem(R.id.nav_email).setTitle(email);
+    }
+
+    @Override
+    public String getSocialContractId() {
+        return userId;
     }
 
 
