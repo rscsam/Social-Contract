@@ -227,10 +227,8 @@ public class AccountManagementFragment extends Fragment {
         user.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> userResult) {
-                String name = userResult.data.name;
-                String email = userResult.data.email;
+                final String name = userResult.data.name;
 
-                // _normal (48x48px) | _bigger (73x73px) | _mini (24x24px)
                 final String photoUrlNormalSize   = userResult.data.profileImageUrl;
                 System.out.println(photoUrlNormalSize);
                 Thread thread = new Thread(new Runnable() {
@@ -245,7 +243,8 @@ public class AccountManagementFragment extends Fragment {
                                 public void run() {
                                     ImageView twProfilePic = container.findViewById(R.id.twProfilePic);
                                     twProfilePic.setImageBitmap(profilePic);
-//                                    TextView twText = container.findViewById()
+                                    TextView twText = container.findViewById(R.id.twaccountName);
+                                    twText.setText(name);
                                 }
                             });
                         } catch (Exception e) {
