@@ -1,37 +1,29 @@
 package jd7337.socialcontract.controller.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.NetworkOnMainThreadException;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.AppCompatButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.FacebookRequestError;
 import com.facebook.HttpMethod;
 import com.facebook.login.widget.ProfilePictureView;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
-import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
-import android.widget.Button;
-import android.support.v7.widget.AppCompatButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,15 +38,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.activity.LoginActivity;
+import jd7337.socialcontract.model.TwitterUserService;
+import jd7337.socialcontract.model.UserQueryTwitterApiClient;
 import retrofit2.Call;
 
 public class AccountManagementFragment extends Fragment {
@@ -124,7 +119,6 @@ public class AccountManagementFragment extends Fragment {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        System.out.println("doot");
                         deleteFacebookAccount(fId);
                     }
                 }
@@ -150,13 +144,12 @@ public class AccountManagementFragment extends Fragment {
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
 
-        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
 
         userID = mListener.getSocialContractId();
-        System.out.println(userID);
         queue = Volley.newRequestQueue(getContext());
 
-        //facebook account
+        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
+        // retrieve and set facebook account info
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/facebookAccounts";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userID);
@@ -194,7 +187,7 @@ public class AccountManagementFragment extends Fragment {
 
 
         final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
-        // instagram account
+        // retrieve and set instagram account info
         String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
         Map<String, String> params2 = new HashMap<>();
         params2.put("socialContractId", userID);
@@ -207,7 +200,6 @@ public class AccountManagementFragment extends Fragment {
                     String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
                     String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                    System.out.println(insURL);
                     setInsData(insURL, container, instaName);
 
                     ImageButton inDeleteButton = deleteInstagramButton(instaId);
@@ -235,53 +227,93 @@ public class AccountManagementFragment extends Fragment {
         queue.add(jsonObjectRequest2);
 
 
-        final LinearLayout twitterLayout = (LinearLayout) view.findViewById(R.id.twLinearLayout);
-        // twitter account
-        Call<User> user = TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(false, false, false);
-        user.enqueue(new Callback<User>() {
+        // retrieve and set twitter account info
+        String retrieveTwitterIdUrl = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
+        Map<String, String> twitterParams = new HashMap<>();
+        twitterParams.put("socialContractId", userID);
+        JsonObjectRequest jsonObjectRequestTwitter = new JsonObjectRequest(Request.Method.POST, retrieveTwitterIdUrl, new JSONObject(twitterParams),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray accounts = response.getJSONArray("accounts");
+                            if (accounts.length() > 0) {
+                                JSONObject account = accounts.getJSONObject(0);
+                                Long twitterId = account.getLong("twitterId");
+                                setTwitterProfilePic(twitterId, container);
+                            }
+                        } catch (JSONException e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        queue.add(jsonObjectRequestTwitter);
+
+        return view;
+    }
+
+    private void setTwitterProfilePic(final Long twitterId, final ViewGroup container) {
+        TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+        TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
+        Call<User> userCall = twitterUserService.show(twitterId);
+        userCall.enqueue(new Callback<User>() {
             @Override
             public void success(Result<User> userResult) {
-                final String name = userResult.data.name;
-                final String twitterId = String.valueOf(userResult.data.id);
-                final String photoUrlNormalSize   = userResult.data.profileImageUrl;
-                System.out.println(photoUrlNormalSize);
+                final String photoUrl = userResult.data.profileImageUrl;
+                final String userName = userResult.data.screenName;
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            URL picUrl = new URL(photoUrlNormalSize);
-                            //Should work from here
-                            final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openStream());
+                            URL picUrl = new URL(photoUrl);
+                            final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     ImageView twProfilePic = container.findViewById(R.id.twProfilePic);
                                     twProfilePic.setImageBitmap(profilePic);
-                                    TextView twText = container.findViewById(R.id.twaccountName);
-                                    twText.setText(name);
-                                    ImageButton twDeleteButton = deleteTwitterButton(twitterId);
+                                    TextView twNameTextView = container.findViewById(R.id.twaccountName);
+                                    twNameTextView.setText(userName);
+                                    ImageButton twDeleteButton = deleteTwitterButton(twitterId.toString());
                                     twDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                                     twDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                                    LinearLayout twitterLayout = (LinearLayout) container.findViewById(R.id.twLinearLayout);
                                     twitterLayout.addView(twDeleteButton);
                                 }
                             });
-                        } catch (Exception e) {
+                        } catch (MalformedURLException e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            e.printStackTrace();
+                        } catch (java.io.IOException e) {
+                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
                         }
                     }
                 });
                 thread.start();
-
             }
 
             @Override
-            public void failure(TwitterException exc) {
-                Log.d("TwitterKit", "Verify Credentials Failure", exc);
+            public void failure(TwitterException e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
+                Log.d("TwitterKit", "Set Twitter Image Error", e);
             }
         });
-
-
-        return view;
     }
 
     @Override
@@ -360,25 +392,6 @@ public class AccountManagementFragment extends Fragment {
 
     }
 
-
-//    private class MyNetworkTask extends AsyncTask<URL, Void, Bitmap> {
-//
-//        @Override
-//        protected Bitmap doInBackground(URL... urls) {
-//            URL url = urls[0];
-//            try {
-//                Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
-//                return profilePic;
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (NetworkOnMainThreadException e) {
-//                System.out.println("why the fuck");
-//            }
-//            return null;
-//        }
-//    }
-
-
     private void setFbName(final ViewGroup container) {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
                 new GraphRequest.GraphJSONObjectCallback() {
@@ -412,7 +425,6 @@ public class AccountManagementFragment extends Fragment {
                             public void run() {
                                 try {
                                     String picUrl = response.getJSONObject("data").getString("profile_picture");
-                                    System.out.println(picUrl);
                                     URL url = new URL(picUrl);
                                     final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
                                     //Bitmap profilePic = getBitmapFromURL(picUrl);
