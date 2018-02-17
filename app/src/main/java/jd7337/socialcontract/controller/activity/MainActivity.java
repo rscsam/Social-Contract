@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
 
+//    @Override
+//    public void onClickAccountConnect() {
+//        showFragment(R.id.main_activity_view, initialConnectAccountFragment);
+//    }
+
     @Override
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
 
@@ -275,4 +280,6 @@ public class MainActivity extends AppCompatActivity implements
     public String getSocialContractId() {
         return userId;
     }
+
+
 }

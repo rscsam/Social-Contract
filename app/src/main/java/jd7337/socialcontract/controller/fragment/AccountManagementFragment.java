@@ -21,6 +21,7 @@ import android.widget.Toast;
 import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -55,6 +56,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -73,6 +76,7 @@ public class AccountManagementFragment extends Fragment {
     private String insUrl;
     private RequestQueue queue;
     private InitialConnectAccountFragment initialConnectAccountFragment;
+    private Button connectAccountButton;
 
 
     private static final String TAG = "Error";
@@ -155,9 +159,16 @@ public class AccountManagementFragment extends Fragment {
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
 
-
-
-        LinearLayout twLayout = view.findViewById(R.id.twLinearLayout);
+        // set up connect button
+//        connectAccountButton = (Button) view.findViewById(R.id.connectButton);
+//        connectAccountButton.setOnClickListener(
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mListener.onClickAccountConnect();
+//                    }
+//                }
+//        );
 
 
         final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
@@ -177,8 +188,17 @@ public class AccountManagementFragment extends Fragment {
                 try {
                     //set facebook profile
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    setFBPic(fbUserId, container);
-                    setFbName(container);
+                    String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
+                    AccessToken correctToken = AccessToken.getCurrentAccessToken();
+                    Collection permission = correctToken.getPermissions();
+                    Collection declinePermission = correctToken.getDeclinedPermissions();
+                    AccessTokenSource accessTokenSource = correctToken.getSource();
+                    Date expireDate = correctToken.getExpires();
+                    Date lastRefreshDate = correctToken.getLastRefresh();
+                    AccessToken accessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                    setFBPic(accessToken, container);
+                    setFbName(accessToken, container);
                     ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
                     fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
@@ -321,15 +341,18 @@ public class AccountManagementFragment extends Fragment {
 
     public interface AccountManagementFListener {
         String getSocialContractId();
+        //void onClickAccountConnect();
     }
 
 
-    private void setFBPic(String fbUserId, final ViewGroup container) {
+    private void setFBPic(AccessToken accessToken, final ViewGroup container) {
         Bundle params = new Bundle();
         //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
-        new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
+        System.out.println("AccessToken is: ");
+        System.out.println(AccessToken.getCurrentAccessToken().toString());
+        new GraphRequest(accessToken, graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(final GraphResponse response) {
@@ -381,8 +404,8 @@ public class AccountManagementFragment extends Fragment {
 //    }
 
 
-    private void setFbName(final ViewGroup container) {
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+    private void setFbName(AccessToken accessToken, final ViewGroup container) {
+        GraphRequest request = GraphRequest.newMeRequest(accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(
