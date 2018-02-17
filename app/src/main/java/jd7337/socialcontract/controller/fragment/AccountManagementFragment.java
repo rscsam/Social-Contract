@@ -77,6 +77,7 @@ public class AccountManagementFragment extends Fragment {
     private RequestQueue queue;
     private InitialConnectAccountFragment initialConnectAccountFragment;
     private Button connectAccountButton;
+    private AccessToken fbAccessToken;
 
 
     private static final String TAG = "Error";
@@ -190,15 +191,9 @@ public class AccountManagementFragment extends Fragment {
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
                     String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                    AccessToken correctToken = AccessToken.getCurrentAccessToken();
-                    Collection permission = correctToken.getPermissions();
-                    Collection declinePermission = correctToken.getDeclinedPermissions();
-                    AccessTokenSource accessTokenSource = correctToken.getSource();
-                    Date expireDate = correctToken.getExpires();
-                    Date lastRefreshDate = correctToken.getLastRefresh();
-                    AccessToken accessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                    setFBPic(accessToken, container);
-                    setFbName(accessToken, container);
+                    AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                    setFBPic(fbaccessToken, container);
+                    setFbName(fbaccessToken, container);
                     ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
                     fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
