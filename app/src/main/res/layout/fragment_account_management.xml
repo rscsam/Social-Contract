@@ -4,103 +4,71 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="jd7337.socialcontract.controller.fragment.AccountManagementFragment"
-    tools:layout_editor_absoluteY="81dp">
+    tools:context="jd7337.socialcontract.controller.fragment.AccountManagementFragment">
 
     <LinearLayout
         android:id="@+id/fbLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/twLinearLayout"
+        android:layout_marginTop="50dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-
         <ImageView
             android:id="@+id/fbProfilePic"
-            android:layout_width="110dp"
-            android:layout_height="102dp" />
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/fbName"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/fbholder"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="Facebook"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/fbName"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="accountName"
-                android:textAlignment="center" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="accountName"
+            android:textAlignment="center" />
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:src="@drawable/com_facebook_button_icon_blue" />
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/twLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/igLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fbLinearLayout">
 
         <ImageView
             android:id="@+id/twProfilePic"
-            android:layout_width="110dp"
-            android:layout_height="102dp" />
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/twaccountName"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/twaccountHolder"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="Twitter"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/twaccountName"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="accountName"
-                android:textAlignment="center" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="accountName"
+            android:textAlignment="center" />
 
         <ImageView
             android:id="@+id/twittericon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
             android:src="@drawable/twitter_icon" />
 
@@ -108,50 +76,36 @@
 
     <LinearLayout
         android:id="@+id/igLinearLayout"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginBottom="57dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:paddingStart="25dp"
+        android:paddingEnd="25dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/connectButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">
 
         <ImageView
             android:id="@+id/igProfilePic"
-            android:layout_width="110dp"
-            android:layout_height="102dp" />
+            android:layout_width="70dp"
+            android:layout_height="70dp" />
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/igName"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/igaccountName"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="Instagram"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/igName"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:text="accountName"
-                android:textAlignment="center" />
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="accountName"
+            android:textAlignment="center"/>
 
         <ImageView
             android:id="@+id/instagramicon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_weight="1"
-            android:src="@drawable/instagram_icon" />
+            android:src="@drawable/instagram_icon"/>
 
     </LinearLayout>
 
@@ -160,10 +114,9 @@
         android:layout_width="wrap_content"
         android:layout_height="52dp"
         android:layout_marginBottom="52dp"
-        android:text="Connect Acount"
+        android:text="Connect Account"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/igLinearLayout" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

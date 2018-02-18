@@ -214,6 +214,11 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
 
+//    @Override
+//    public void onClickAccountConnect() {
+//        showFragment(R.id.main_activity_view, initialConnectAccountFragment);
+//    }
+
     @Override
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
 
@@ -267,12 +272,21 @@ public class MainActivity extends AppCompatActivity implements
      */
     public void setEmail(String newEmail) {
         email = newEmail;
+        // update email in nav bar
         Menu menu = mDrawerList.getMenu();
         menu.findItem(R.id.nav_email).setTitle(email);
+
+        // pass create updated bundle for profile fragment with new email
+        Bundle bundle = new Bundle();
+        bundle.putString("email", newEmail);
+        bundle.putString("userId", userId);
+        profileFragment = ProfileFragment.newInstance(bundle);
     }
 
     @Override
     public String getSocialContractId() {
         return userId;
     }
+
+
 }

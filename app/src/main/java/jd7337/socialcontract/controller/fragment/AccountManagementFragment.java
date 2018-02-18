@@ -9,6 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookRequestError;
@@ -25,11 +30,6 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -63,8 +63,11 @@ public class AccountManagementFragment extends Fragment {
     private String insUrl;
     private RequestQueue queue;
     private InitialConnectAccountFragment initialConnectAccountFragment;
+    private Button connectAccountButton;
+    private AccessToken fbAccessToken;
 
-
+    private ViewGroup viewTemp;
+    private LinearLayout fbLayoutTemp, twLayoutTemp, igLayoutTemp; // temp
     private static final String TAG = "Error";
 
     private Context mContext;
@@ -91,6 +94,7 @@ public class AccountManagementFragment extends Fragment {
                 @Override
                 public void onClick(View view) {
                     deleteTwitterAccount(tId);
+                    viewTemp.removeView(twLayoutTemp);
                 }
             }
         );
@@ -105,6 +109,7 @@ public class AccountManagementFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         deleteInstagramAccount(iId);
+                        viewTemp.removeView(igLayoutTemp);
                     }
                 }
         );
@@ -120,6 +125,7 @@ public class AccountManagementFragment extends Fragment {
                     @Override
                     public void onClick(View view) {
                         deleteFacebookAccount(fId);
+                        viewTemp.removeView(fbLayoutTemp);
                     }
                 }
         );
@@ -143,12 +149,25 @@ public class AccountManagementFragment extends Fragment {
 
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
+        viewTemp = (ViewGroup) view;
 
+        // set up connect button
+//        connectAccountButton = (Button) view.findViewById(R.id.connectButton);
+//        connectAccountButton.setOnClickListener(
+//                new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View view) {
+//                        mListener.onClickAccountConnect();
+//                    }
+//                }
+//        );
+
+        fbLayoutTemp = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
+        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
 
         userID = mListener.getSocialContractId();
         queue = Volley.newRequestQueue(getContext());
 
-        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
         // retrieve and set facebook account info
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/facebookAccounts";
         Map<String, String> params = new HashMap<>();
@@ -160,7 +179,10 @@ public class AccountManagementFragment extends Fragment {
                 try {
                     //set facebook profile
                     fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    setFBPic(fbUserId, container);
+                    String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
+                    AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                    setFBPic(fbaccessToken, container);
                     setFbName(container);
                     ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
                     fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -187,6 +209,7 @@ public class AccountManagementFragment extends Fragment {
 
 
         final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
+        igLayoutTemp = instaLayout;
         // retrieve and set instagram account info
         String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
         Map<String, String> params2 = new HashMap<>();
@@ -293,6 +316,7 @@ public class AccountManagementFragment extends Fragment {
                                     twDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                                     twDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
                                     LinearLayout twitterLayout = (LinearLayout) container.findViewById(R.id.twLinearLayout);
+                                    twLayoutTemp = twitterLayout;
                                     twitterLayout.addView(twDeleteButton);
                                 }
                             });
@@ -351,15 +375,18 @@ public class AccountManagementFragment extends Fragment {
 
     public interface AccountManagementFListener {
         String getSocialContractId();
+        //void onClickAccountConnect();
     }
 
 
-    private void setFBPic(String fbUserId, final ViewGroup container) {
+    private void setFBPic(AccessToken accessToken, final ViewGroup container) {
         Bundle params = new Bundle();
         //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
-        new GraphRequest(AccessToken.getCurrentAccessToken(), graphPath, params, HttpMethod.GET,
+        System.out.println("AccessToken is: ");
+        System.out.println(AccessToken.getCurrentAccessToken().toString());
+        new GraphRequest(accessToken, graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
                     public void onCompleted(final GraphResponse response) {
@@ -391,6 +418,24 @@ public class AccountManagementFragment extends Fragment {
                 }).executeAsync();
 
     }
+
+
+//    private class MyNetworkTask extends AsyncTask<URL, Void, Bitmap> {
+//
+//        @Override
+//        protected Bitmap doInBackground(URL... urls) {
+//            URL url = urls[0];
+//            try {
+//                Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+//                return profilePic;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            } catch (NetworkOnMainThreadException e) {
+//                System.out.println("why the fuck");
+//            }
+//            return null;
+//        }
+//    }
 
     private void setFbName(final ViewGroup container) {
         GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
