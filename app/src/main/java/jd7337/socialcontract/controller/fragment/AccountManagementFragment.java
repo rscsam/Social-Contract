@@ -14,8 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.util.Log;
 
 import com.facebook.AccessToken;
+import com.facebook.AccessTokenSource;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -44,6 +51,8 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -182,7 +191,7 @@ public class AccountManagementFragment extends Fragment {
                     String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
                     AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                    setFBPic(fbaccessToken, container);
+                    setFBPic(fbToken, container);
                     setFbName(container);
                     ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
                     fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -437,8 +446,8 @@ public class AccountManagementFragment extends Fragment {
 //        }
 //    }
 
-    private void setFbName(final ViewGroup container) {
-        GraphRequest request = GraphRequest.newMeRequest(AccessToken.getCurrentAccessToken(),
+   private void setFbName(AccessToken accessToken, final ViewGroup container) {
+        GraphRequest request = GraphRequest.newMeRequest(accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(
