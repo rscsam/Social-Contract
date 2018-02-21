@@ -14,15 +14,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.util.Log;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenSource;
 import com.facebook.FacebookRequestError;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
@@ -51,8 +44,6 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -159,17 +150,6 @@ public class AccountManagementFragment extends Fragment {
         mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
         viewTemp = (ViewGroup) view;
-
-        // set up connect button
-//        connectAccountButton = (Button) view.findViewById(R.id.connectButton);
-//        connectAccountButton.setOnClickListener(
-//                new View.OnClickListener() {
-//                    @Override
-//                    public void onClick(View view) {
-//                        mListener.onClickAccountConnect();
-//                    }
-//                }
-//        );
 
         fbLayoutTemp = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
         final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
@@ -393,8 +373,6 @@ public class AccountManagementFragment extends Fragment {
         //params.putString("fields", "name");
         params.putBoolean("redirect", false);
         String graphPath = "me/picture";
-        System.out.println("AccessToken is: ");
-        System.out.println(AccessToken.getCurrentAccessToken().toString());
         new GraphRequest(accessToken, graphPath, params, HttpMethod.GET,
                 new GraphRequest.Callback() {
                     @Override
@@ -428,25 +406,7 @@ public class AccountManagementFragment extends Fragment {
 
     }
 
-
-//    private class MyNetworkTask extends AsyncTask<URL, Void, Bitmap> {
-//
-//        @Override
-//        protected Bitmap doInBackground(URL... urls) {
-//            URL url = urls[0];
-//            try {
-//                Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
-//                return profilePic;
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            } catch (NetworkOnMainThreadException e) {
-//                System.out.println("why the fuck");
-//            }
-//            return null;
-//        }
-//    }
-
-   private void setFbName(AccessToken accessToken, final ViewGroup container) {
+    private void setFbName(AccessToken accessToken, final ViewGroup container) {
         GraphRequest request = GraphRequest.newMeRequest(accessToken,
                 new GraphRequest.GraphJSONObjectCallback() {
                     @Override
@@ -511,6 +471,7 @@ public class AccountManagementFragment extends Fragment {
         queue.add(getRequest);
 
     }
+
     /**
      * Deletes a user's Instagram account
      */
@@ -651,6 +612,5 @@ public class AccountManagementFragment extends Fragment {
 
         queue.add(jsonObjectRequest);
     }
-
 
 }
