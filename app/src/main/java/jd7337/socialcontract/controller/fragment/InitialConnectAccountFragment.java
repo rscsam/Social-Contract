@@ -36,12 +36,15 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.activity.LoginActivity;
 import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
+import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
 public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
