@@ -39,7 +39,6 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         goButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("something happened");
                 context.onClickDiscoverSettingsGo();
             }
         });

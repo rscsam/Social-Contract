@@ -60,7 +60,6 @@ public class AuthenticationDialog extends Dialog {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 super.onPageStarted(view, url, favicon);
-                System.out.println("Page Started");
             }
 
             String access_token;

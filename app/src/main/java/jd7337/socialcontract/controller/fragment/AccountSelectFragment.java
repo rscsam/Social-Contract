@@ -113,7 +113,6 @@ public class AccountSelectFragment extends Fragment {
                                 getTwitterAccounts(container);
                             }
                         } catch (JSONException e) {
-                            //Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -204,7 +203,6 @@ public class AccountSelectFragment extends Fragment {
                     public void onResponse(JSONObject response) {
                         try {
                             JSONArray accounts = response.getJSONArray("accounts");
-                            System.out.println(accounts);
                             for (int i = 0; i < accounts.length(); i++) {
                                 JSONObject account = accounts.getJSONObject(i);
                                 String twitterIdString = account.getString("twitterId");
@@ -246,7 +244,6 @@ public class AccountSelectFragment extends Fragment {
      * @param lastProfile - true if this is the last Twitter profile and Instagram should be called next
      */
     private void setTwitterProfile(Long twitterId, final ViewGroup container, final boolean lastProfile) {
-        System.out.println("tId: " + twitterId);
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
         TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
@@ -287,8 +284,6 @@ public class AccountSelectFragment extends Fragment {
             @Override
             public void failure(TwitterException e) {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
-                System.out.println("Here's the error.");
-                System.out.println(e.getMessage());
                 Log.d("TwitterKit", "Set Twitter Image Error", e);
             }
         });
@@ -394,10 +389,6 @@ public class AccountSelectFragment extends Fragment {
         // Set adapter
         AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
         ListView accountList = container.findViewById(R.id.account_list);
-        for (AccountListItem a : accounts) {
-            System.out.println("ato: " + a);
-        }
-        System.out.println(accounts.length);
         accountList.setAdapter(accountsAdapter);
         accountList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
