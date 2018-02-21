@@ -121,12 +121,18 @@ public class AccountSelectFragment extends Fragment {
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Continue chain of calls if there's a failure
+                            getTwitterAccounts(container);
                         }
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                System.out.println(error.getMessage());
+                Toast.makeText(getContext(), "Error retrieving Facebook accounts", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                getTwitterAccounts(container);
             }
         }) {
             @Override
@@ -151,6 +157,10 @@ public class AccountSelectFragment extends Fragment {
                             setFBAccount(fbAccessToken, fbName, container, lastAccount);
                         } catch (Exception e) {
                             e.printStackTrace();
+                            if (lastAccount) {
+                                // Continue chain of calls if there's a failure
+                                getTwitterAccounts(container);
+                            }
                         }
                     }
                 });
@@ -190,6 +200,10 @@ public class AccountSelectFragment extends Fragment {
                                         });
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        if (lastAccount) {
+                                            // Continue chain of calls if there's a failure
+                                            getTwitterAccounts(container);
+                                        }
                                     }
                                 }
                             });
@@ -225,6 +239,8 @@ public class AccountSelectFragment extends Fragment {
                             }
                         } catch (JSONException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                            // Continue chain of calls if there's a failure
+                            getInstagramAccount(container);
                         }
                     }
                 },
@@ -232,6 +248,9 @@ public class AccountSelectFragment extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Error retrieving Twitter accounts", Toast.LENGTH_SHORT).show();
+                        // Continue chain of calls if there's a failure
+                        getInstagramAccount(container);
                     }
                 }
         ) {
@@ -281,9 +300,17 @@ public class AccountSelectFragment extends Fragment {
                         } catch (MalformedURLException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
+                            // Continue chain of calls if there's a failure
+                            if (lastProfile) {
+                                getInstagramAccount(container);
+                            }
                         } catch (java.io.IOException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
+                            // Continue chain of calls if there's a failure
+                            if (lastProfile) {
+                                getInstagramAccount(container);
+                            }
                         }
                     }
                 });
@@ -294,6 +321,10 @@ public class AccountSelectFragment extends Fragment {
             public void failure(TwitterException e) {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
                 Log.d("TwitterKit", "Set Twitter Image Error", e);
+                // Continue chain of calls if there's a failure
+                if (lastProfile) {
+                    getInstagramAccount(container);
+                }
             }
         });
     }
@@ -321,12 +352,17 @@ public class AccountSelectFragment extends Fragment {
                     }
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                    // Continue chain of calls if there's a failure
+                    settleAccounts(container);
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error retrieving Instagram accounts", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
             }
         }) {
             @Override
@@ -365,6 +401,10 @@ public class AccountSelectFragment extends Fragment {
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                    // Continue chain of calls if there's a failure
+                                    if (lastAccount) {
+                                        settleAccounts(container);
+                                    }
                                 }
                             }
                         });
@@ -374,6 +414,8 @@ public class AccountSelectFragment extends Fragment {
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.getStackTrace();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
             }
         });
         queue.add(getRequest);
@@ -408,9 +450,14 @@ public class AccountSelectFragment extends Fragment {
                     }
                 }
         );
-        // Change instruction text back
         TextView instructionTextView = container.findViewById(R.id.instruction_tv);
-        instructionTextView.setText(R.string.choose_which_account_to_grow);
+        // Change instruction text if no accounts are connected
+        if (numAccounts == 0) {
+            instructionTextView.setText(R.string.no_accounts_connected);
+        } else {
+        // Change instruction text back
+            instructionTextView.setText(R.string.choose_which_account_to_grow);
+        }
     }
 
     @Override
