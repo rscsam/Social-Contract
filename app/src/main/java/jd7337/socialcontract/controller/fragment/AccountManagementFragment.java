@@ -191,8 +191,8 @@ public class AccountManagementFragment extends Fragment {
                     String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
                     AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                    setFBPic(fbToken, container);
-                    setFbName(container);
+                    setFBPic(fbaccessToken, container);
+                    setFbName(fbaccessToken, container);
                     ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
                     fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                     fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
