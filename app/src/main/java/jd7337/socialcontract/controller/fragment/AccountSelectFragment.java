@@ -57,12 +57,12 @@ public class AccountSelectFragment extends Fragment {
     private AccountSelectFListener mListener;
 
     private String userId;
-    private Bitmap fbProfilePic;
-    private String fbUserName;
-    private List<String> twUserNameList = new ArrayList<String>();
-    private List<Bitmap> twProfilePicList = new ArrayList<Bitmap>();
-    private String inUserName;
-    private Bitmap inProfilePic;
+    private List<Bitmap> fbProfilePicList = new ArrayList<>();
+    private List<String> fbUserNameList = new ArrayList<>();
+    private List<String> twUserNameList = new ArrayList<>();
+    private List<Bitmap> twProfilePicList = new ArrayList<>();
+    private List<String> inUserNameList = new ArrayList<>();
+    private List<Bitmap> inProfilePicList = new ArrayList<>();
 
     public static AccountSelectFragment newInstance(Bundle bundle) {
         AccountSelectFragment fragment = new AccountSelectFragment();
@@ -80,8 +80,12 @@ public class AccountSelectFragment extends Fragment {
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
+        fbUserNameList.clear();
+        fbProfilePicList.clear();
         twUserNameList.clear();
         twProfilePicList.clear();
+        inUserNameList.clear();
+        inProfilePicList.clear();
         Twitter.initialize(getContext());
         View view = inflater.inflate(R.layout.fragment_account_select, container, false);
         TextView instructionsTextView = view.findViewById(R.id.instruction_tv);
@@ -102,14 +106,17 @@ public class AccountSelectFragment extends Fragment {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            if (response.getJSONArray("accounts").length() > 0) {
+                            JSONArray accounts = response.getJSONArray("accounts");
+                            for (int i = 0; i < accounts.length(); i++) {
                                 //set facebook profile
                                 String fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
                                 String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                                 String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
                                 AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                                setFBAccount(fbaccessToken, container);
-                            } else {
+                                // send true as the last parameter if this is the last Facebook account
+                                getFBName(fbaccessToken, container, i == accounts.length() - 1);
+                            }
+                            if (accounts.length() == 0) {
                                 getTwitterAccounts(container);
                             }
                         } catch (JSONException e) {
@@ -132,7 +139,28 @@ public class AccountSelectFragment extends Fragment {
         queue.add(jsonObjectRequestFB);
     }
 
-    public void setFBAccount(final AccessToken fbAccessToken, final ViewGroup container) {
+    private void getFBName(final AccessToken fbAccessToken, final ViewGroup container, final boolean lastAccount) {
+        GraphRequest request = GraphRequest.newMeRequest(fbAccessToken,
+                new GraphRequest.GraphJSONObjectCallback() {
+                    @Override
+                    public void onCompleted(
+                            JSONObject object,
+                            GraphResponse response) {
+                        try {
+                            String fbName = response.getJSONObject().getString("name");
+                            setFBAccount(fbAccessToken, fbName, container, lastAccount);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "name");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    public void setFBAccount(final AccessToken fbAccessToken, final String fbName, final ViewGroup container, final boolean lastAccount) {
         // set FB pic
         Bundle params = new Bundle();
         params.putBoolean("redirect", false);
@@ -153,8 +181,11 @@ public class AccountSelectFragment extends Fragment {
                                         getActivity().runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
-                                                fbProfilePic = profilePic;
-                                                setFBName(fbAccessToken, container);
+                                                fbProfilePicList.add(profilePic);
+                                                fbUserNameList.add(fbName);
+                                                if (lastAccount) {
+                                                    getTwitterAccounts(container);
+                                                }
                                             }
                                         });
                                     } catch (Exception e) {
@@ -168,28 +199,6 @@ public class AccountSelectFragment extends Fragment {
                 }
         ).executeAsync();
 
-    }
-
-    private void setFBName(AccessToken fbAccessToken, final ViewGroup container) {
-        GraphRequest request = GraphRequest.newMeRequest(fbAccessToken,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        try {
-                            String fbName = response.getJSONObject().getString("name");
-                            fbUserName = fbName;
-                            getTwitterAccounts(container);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "name");
-        request.setParameters(parameters);
-        request.executeAsync();
     }
 
     private void getTwitterAccounts(final ViewGroup container) {
@@ -299,13 +308,15 @@ public class AccountSelectFragment extends Fragment {
             public void onResponse(JSONObject response) {
                 try {
                     //set instagram profile
-                    if (response.getJSONArray("accounts").length() > 0) {
+                    JSONArray accounts = response.getJSONArray("accounts");
+                    for (int i = 0; i < accounts.length(); i++) {
                         String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                         String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
-                        inUserName = instaName;
                         String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                        setInstagramData(insURL, container);
-                    } else {
+                        // sends true for the last parameter if this is the last Instagram account
+                        setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
+                    }
+                    if (accounts.length() == 0) {
                         settleAccounts(container);
                     }
                 } catch (JSONException e) {
@@ -328,7 +339,7 @@ public class AccountSelectFragment extends Fragment {
         queue.add(jsonObjectRequest2);
     }
 
-    private void setInstagramData(String url, final ViewGroup container) {
+    private void setInstagramData(String url, final String instaName, final ViewGroup container, final boolean lastAccount) {
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -344,8 +355,11 @@ public class AccountSelectFragment extends Fragment {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            inProfilePic = profilePic;
-                                            settleAccounts(container);
+                                            inProfilePicList.add(profilePic);
+                                            inUserNameList.add(instaName);
+                                            if (lastAccount) {
+                                                settleAccounts(container);
+                                            }
                                         }
                                     });
 
@@ -366,25 +380,21 @@ public class AccountSelectFragment extends Fragment {
     }
 
     private void settleAccounts(ViewGroup container) {
-        int numAccounts = twUserNameList.size();
-        if (fbUserName != null) {
-            numAccounts++;
-        }
-        if (inUserName != null) {
-            numAccounts++;
-        }
+        int numAccounts = fbUserNameList.size();
+        numAccounts += twUserNameList.size();
+        numAccounts += inUserNameList.size();
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
-        if (fbUserName != null) {
-            accounts[i] = new AccountListItem(fbProfilePic, fbUserName, R.drawable.facebookicon);
+        for (int x = 0; x < fbUserNameList.size(); x++) {
+            accounts[i] = new AccountListItem(fbProfilePicList.get(x), fbUserNameList.get(x), R.drawable.facebookicon);
             i++;
         }
         for (int x = 0; x < twUserNameList.size(); x++) {
             accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), R.drawable.twitter_icon);
             i++;
         }
-        if (inUserName != null) {
-            accounts[i] = new AccountListItem(inProfilePic, inUserName, R.drawable.instagram_icon);
+        for (int x = 0; x < inUserNameList.size(); x++) {
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), R.drawable.instagram_icon);
         }
         // Set adapter
         AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
