@@ -166,17 +166,19 @@ public class AccountManagementFragment extends Fragment {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    //set facebook profile
-                    fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                    String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                    AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                    setFBPic(fbaccessToken, container);
-                    setFbName(fbaccessToken, container);
-                    ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
-                    fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                    fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                    fbLayout.addView(fbDeleteButton);
+                    if (response.getJSONArray("accounts").length() > 0) {
+                        //set facebook profile
+                        fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
+                        String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                        String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
+                        AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                        setFBPic(fbaccessToken, container);
+                        setFbName(fbaccessToken, container);
+                        ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
+                        fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                        fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                        fbLayout.addView(fbDeleteButton);
+                    }
                 } catch (JSONException e) {
                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                 }
@@ -251,7 +253,8 @@ public class AccountManagementFragment extends Fragment {
                             JSONArray accounts = response.getJSONArray("accounts");
                             if (accounts.length() > 0) {
                                 JSONObject account = accounts.getJSONObject(0);
-                                Long twitterId = account.getLong("twitterId");
+                                String twitterIdString = account.getString("twitterId");
+                                Long twitterId = Long.parseLong(twitterIdString);
                                 setTwitterProfilePic(twitterId, container);
                             }
                         } catch (JSONException e) {

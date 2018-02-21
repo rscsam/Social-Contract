@@ -1,28 +1,31 @@
 package jd7337.socialcontract.view.holder;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by sam on 11/26/17.
  */
 
 public class AccountListItem {
 
-    private int profilePicId, smTypePicId;
+    private Bitmap profilePicBitmap;
+    private int smTypePicId;
     private String profileName;
 
     private boolean showingExtraSettings = false;
 
-    public AccountListItem(int profilePicId, String profileName, int smTypePicId) {
-        this.profilePicId = profilePicId;
+    public AccountListItem(Bitmap profilePicBitmap, String profileName, int smTypePicId) {
+        this.profilePicBitmap = profilePicBitmap;
         this.smTypePicId = smTypePicId;
         this.profileName = profileName;
     }
 
-    public int getProfilePicId() {
-        return profilePicId;
+    public Bitmap getProfilePicBitmap() {
+        return profilePicBitmap;
     }
 
-    public void setProfilePicId(int profilePicId) {
-        this.profilePicId = profilePicId;
+    public void setProfilePicBitmap(Bitmap profilePicBitmap) {
+        this.profilePicBitmap = profilePicBitmap;
     }
 
     public int getSmTypePicId() {

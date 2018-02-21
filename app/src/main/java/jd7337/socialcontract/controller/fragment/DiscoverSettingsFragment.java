@@ -33,6 +33,7 @@ public class DiscoverSettingsFragment extends Fragment {
                 false);
 
         //Temporary arrays to fill list
+        /* Don't render list for now
         AccountListItem[] accounts = new AccountListItem[1];
         accounts[0] = new AccountListItem(R.drawable.george_burdell, "George Burdell",
                 R.drawable.twitter_icon);
@@ -49,6 +50,7 @@ public class DiscoverSettingsFragment extends Fragment {
                     }
                 }
         );
+        */
         return view;
     }
 

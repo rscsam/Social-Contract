@@ -44,4 +44,6 @@
     <string name="instagram_client_id">756d44111aca4f9da3151319b465700f</string>
     <string name="instagram_redirect_url">https://github.com/rscsam/Social-Contract</string>
     <string name="save_changes">Save Changes</string>
+    <string name="loading_accounts">Loading accounts&#8230;</string>
+    <string name="choose_which_account_to_grow">Choose which account to grow.</string>
 </resources>

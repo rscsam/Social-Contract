@@ -49,7 +49,7 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         ImageView smPlatform = row.findViewById(R.id.social_media_platform_picture);
 
         AccountListItem account = accounts[position];
-        profilePic.setImageResource(account.getProfilePicId());
+        profilePic.setImageBitmap(account.getProfilePicBitmap());
         userName.setText(account.getProfileName());
         smPlatform.setImageResource(account.getSmTypePicId());
         if (account.isShowingExtraSettings()) {
