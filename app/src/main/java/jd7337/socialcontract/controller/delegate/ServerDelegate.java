@@ -49,7 +49,6 @@ public class ServerDelegate {
                     public void onResponse(JSONObject response) {
                         try {
                             boolean success = response.getBoolean("success");
-                            Toast.makeText(context, "Successfully updated interest profile.", Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             Toast.makeText(context, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                         }

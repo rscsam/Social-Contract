@@ -108,7 +108,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                                 try {
                                     boolean success = response.getBoolean("success");
                                     if (success) {
-                                        Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
                                     }
                                 } catch (JSONException e) {
                                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
@@ -166,7 +165,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                                         try {
                                             boolean success = response.getBoolean("success");
                                             if (success) {
-                                                Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
                                             }
                                         } catch (JSONException e) {
                                             Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
@@ -273,7 +271,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                                                 try {
                                                     boolean success = response.getBoolean("success");
                                                     if (success) {
-                                                        Toast.makeText(getContext(), "It worked", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } catch (JSONException e) {
                                                     Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();

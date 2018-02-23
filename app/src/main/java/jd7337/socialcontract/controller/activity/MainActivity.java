@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
         editInterestProfileFragment = new EditInterestProfileFragment();
         accountManagementFragment = new AccountManagementFragment();
         profileFragment = ProfileFragment.newInstance(bundle);
-        accountSelectFragment = new AccountSelectFragment();
+        accountSelectFragment = AccountSelectFragment.newInstance(bundle);
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
         initialConnectAccountFragment = new InitialConnectAccountFragment();
 
