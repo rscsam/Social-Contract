@@ -8,15 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
-
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -140,49 +131,25 @@ public class EditInterestProfileFragment extends Fragment {
     }
 
     private void refreshFromServer() {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/interestProfile";
-
-        JSONObject requestParams = new JSONObject();
-        try {
-            requestParams.put("socialContractId", mListener.getSocialContractId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, requestParams,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                interestProfile.setMusic(response.getBoolean("music"));
-                                interestProfile.setFood(response.getBoolean("food"));
-                                interestProfile.setSports(response.getBoolean("sports"));
-                                interestProfile.setMovies(response.getBoolean("movies"));
-                                interestProfile.setVideoGames(response.getBoolean("videogames"));
-                                interestProfile.setMemes(response.getBoolean("memes"));
-
-                                refreshCheckboxes();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        String url = ServerDelegate.SERVER_URL + "/interestProfile";
+        Map<String, String> requestParams = new HashMap<>();
+        requestParams.put("socialContractId", mListener.getSocialContractId());
+        ServerDelegate.postRequest(getContext(), url, requestParams,
+                new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    interestProfile.setMusic(response.getBoolean("music"));
+                    interestProfile.setFood(response.getBoolean("food"));
+                    interestProfile.setSports(response.getBoolean("sports"));
+                    interestProfile.setMovies(response.getBoolean("movies"));
+                    interestProfile.setVideoGames(response.getBoolean("videogames"));
+                    interestProfile.setMemes(response.getBoolean("memes"));
+
+                    refreshCheckboxes();
+                }
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
+        });
     }
 
     private void refreshCheckboxes() {

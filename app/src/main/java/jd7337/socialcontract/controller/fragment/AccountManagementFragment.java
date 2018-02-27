@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.model.TwitterUserService;
 import jd7337.socialcontract.model.UserQueryTwitterApiClient;
 import retrofit2.Call;
@@ -155,128 +156,70 @@ public class AccountManagementFragment extends Fragment {
         final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
 
         userID = mListener.getSocialContractId();
-        queue = Volley.newRequestQueue(getContext());
 
         // retrieve and set facebook account info
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/facebookAccounts";
+        String url = ServerDelegate.SERVER_URL + "/facebookAccounts";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userID);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-        new Response.Listener<JSONObject>() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    if (response.getJSONArray("accounts").length() > 0) {
-                        //set facebook profile
-                        fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                        String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                        String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                        AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                        setFBPic(fbaccessToken, container);
-                        setFbName(fbaccessToken, container);
-                        ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
-                        fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                        fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                        fbLayout.addView(fbDeleteButton);
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (response.getJSONArray("accounts").length() > 0) {
+                    //set facebook profile
+                    fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
+                    String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
+                    AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                    setFBPic(fbaccessToken, container);
+                    setFbName(fbaccessToken, container);
+                    ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
+                    fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                    fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                    fbLayout.addView(fbDeleteButton);
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            public  Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
-
+        });
 
         final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
         igLayoutTemp = instaLayout;
         // retrieve and set instagram account info
-        String url2 = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
+        String url2 = ServerDelegate.SERVER_URL + "/instagramAccounts";
         Map<String, String> params2 = new HashMap<>();
         params2.put("socialContractId", userID);
-        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url2, new JSONObject(params2), new Response.Listener<JSONObject>() {
+        ServerDelegate.postRequest(getContext(), url2, params2, new ServerDelegate.OnResultListener() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //set instagram profile
-                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
-                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
-                    String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                    setInsData(insURL, container, instaName);
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                //set instagram profile
+                String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
+                String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                setInsData(insURL, container, instaName);
 
-                    ImageButton inDeleteButton = deleteInstagramButton(instaId);
-                    inDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                    inDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                    instaLayout.addView(inDeleteButton);
-
-                } catch (JSONException e) {
-                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                }
+                ImageButton inDeleteButton = deleteInstagramButton(instaId);
+                inDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+                inDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
+                instaLayout.addView(inDeleteButton);
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            public  Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest2);
-
+        });
 
         // retrieve and set twitter account info
-        String retrieveTwitterIdUrl = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
+        String retrieveTwitterIdUrl = ServerDelegate.SERVER_URL + "/twitterAccounts";
         Map<String, String> twitterParams = new HashMap<>();
         twitterParams.put("socialContractId", userID);
-        JsonObjectRequest jsonObjectRequestTwitter = new JsonObjectRequest(Request.Method.POST, retrieveTwitterIdUrl, new JSONObject(twitterParams),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray accounts = response.getJSONArray("accounts");
-                            if (accounts.length() > 0) {
-                                JSONObject account = accounts.getJSONObject(0);
-                                String twitterIdString = account.getString("twitterId");
-                                Long twitterId = Long.parseLong(twitterIdString);
-                                setTwitterProfilePic(twitterId, container);
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ) {
+        ServerDelegate.postRequest(getContext(), retrieveTwitterIdUrl, twitterParams,
+                new ServerDelegate.OnResultListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                if (accounts.length() > 0) {
+                    JSONObject account = accounts.getJSONObject(0);
+                    String twitterIdString = account.getString("twitterId");
+                    Long twitterId = Long.parseLong(twitterIdString);
+                    setTwitterProfilePic(twitterId, container);
+                }
             }
-        };
-        queue.add(jsonObjectRequestTwitter);
+        });
 
         return view;
     }
@@ -432,92 +375,57 @@ public class AccountManagementFragment extends Fragment {
     }
 
     private void setInsData(String url, final ViewGroup container, final String instaName) {
-
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
+        ServerDelegate.getRequest(getContext(), url, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, final JSONObject response) throws JSONException {
+                Thread thread = new Thread(new Runnable() {
                     @Override
-                    public void onResponse(final JSONObject response) {
-                        Thread thread = new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                try {
-                                    String picUrl = response.getJSONObject("data").getString("profile_picture");
-                                    URL url = new URL(picUrl);
-                                    final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
-                                    //Bitmap profilePic = getBitmapFromURL(picUrl);
-                                    getActivity().runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            ImageView igProfilePic = container.findViewById(R.id.igProfilePic);
-                                            igProfilePic.setImageBitmap(profilePic);
-                                            TextView igNameTxt = container.findViewById(R.id.igName);
-                                            igNameTxt.setText(instaName);
-                                        }
-                                    });
-
-                                } catch (Exception e) {
-                                    e.printStackTrace();
+                    public void run() {
+                        try {
+                            String picUrl = response.getJSONObject("data").getString("profile_picture");
+                            URL url = new URL(picUrl);
+                            final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+                            //Bitmap profilePic = getBitmapFromURL(picUrl);
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    ImageView igProfilePic = container.findViewById(R.id.igProfilePic);
+                                    igProfilePic.setImageBitmap(profilePic);
+                                    TextView igNameTxt = container.findViewById(R.id.igName);
+                                    igNameTxt.setText(instaName);
                                 }
-                            }
-                        });
-                        thread.start();
-
-
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.getStackTrace();
+                            });
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
-        queue.add(getRequest);
-
+                thread.start();
+            }
+        });
     }
 
     /**
      * Deletes a user's Instagram account
      */
     private void deleteInstagramAccount(String instagramId){
-        RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteInstagram";
+        String url = ServerDelegate.SERVER_URL + "/deleteInstagram";
 
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userID);
-
         params.put("instagramId", instagramId);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
-                            } else {
-                                String message = response.getString("message");
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
+                    //revokePermissions(ac, fId);
+                } else {
+                    String message = response.getString("message");
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                }
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
+        });
     }
 
     /**
@@ -525,95 +433,48 @@ public class AccountManagementFragment extends Fragment {
      */
     //private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
     private void deleteFacebookAccount(String facebookId){
-        RequestQueue queue = Volley.newRequestQueue(mContext);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteFacebook";
+        String url = ServerDelegate.SERVER_URL + "/deleteFacebook";
 
         final String fId = facebookId;
         //final AccessToken ac = accessToken;
 
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userID);
-
         params.put("facebookId", facebookId);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
-                                //revokePermissions(ac, fId);
-                            } else {
-                                String message = response.getString("message");
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
+                    //revokePermissions(ac, fId);
+                } else {
+                    String message = response.getString("message");
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                }
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
+        });
     }
 
     /**
      * Deletes a user's Twitter account
      */
     private void deleteTwitterAccount(String twitterId){
-        RequestQueue queue = Volley.newRequestQueue(mContext);
         String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteTwitter";
 
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userID);
-
         params.put("twitterId", twitterId);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(getActivity(), "Twitter account deleted", Toast.LENGTH_LONG).show();
-                            } else {
-                                String message = response.getString("message");
-                                Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), "An unexpected error has occurred", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), "Cannot contact server", Toast.LENGTH_LONG).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(getActivity(), "Twitter account deleted", Toast.LENGTH_LONG).show();
+                } else {
+                    String message = response.getString("message");
+                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                }
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        queue.add(jsonObjectRequest);
+        });
     }
 
 }

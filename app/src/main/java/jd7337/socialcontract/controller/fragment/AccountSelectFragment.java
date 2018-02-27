@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.model.TwitterUserService;
 import jd7337.socialcontract.model.UserQueryTwitterApiClient;
 import jd7337.socialcontract.view.adapter.AccountListAdapter;
@@ -98,51 +99,43 @@ public class AccountSelectFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(getContext());
 
         // Retrieve Facebook account
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/facebookAccounts";
+        String url = ServerDelegate.SERVER_URL + "/facebookAccounts";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userId);
-        JsonObjectRequest jsonObjectRequestFB = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray accounts = response.getJSONArray("accounts");
-                            for (int i = 0; i < accounts.length(); i++) {
-                                //set facebook profile
-                                String fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                                String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                                String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                                AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                                // send true as the last parameter if this is the last Facebook account
-                                getFBName(fbaccessToken, container, i == accounts.length() - 1);
-                            }
-                            if (accounts.length() == 0) {
-                                getTwitterAccounts(container);
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            // Continue chain of calls if there's a failure
-                            getTwitterAccounts(container);
-                        }
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
+                @Override
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    JSONArray accounts = response.getJSONArray("accounts");
+                    for (int i = 0; i < accounts.length(); i++) {
+                        //set facebook profile
+                        String fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
+                        String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                        String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
+                        AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
+                        // send true as the last parameter if this is the last Facebook account
+                        getFBName(fbaccessToken, container, i == accounts.length() - 1);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                System.out.println(error.getMessage());
-                Toast.makeText(getContext(), "Error retrieving Facebook accounts", Toast.LENGTH_SHORT).show();
-                // Continue chain of calls if there's a failure
-                getTwitterAccounts(container);
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequestFB);
+                    if (accounts.length() == 0) {
+                        getTwitterAccounts(container);
+                    }
+                }
+            }, new ServerDelegate.OnJSONErrorListener() {
+                @Override
+                public void onJSONError(JSONException e) {
+                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    // Continue chain of calls if there's a failure
+                    getTwitterAccounts(container);
+                }
+            }, new ServerDelegate.OnErrorListener() {
+                @Override
+                public void onError(VolleyError error) {
+                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                    System.out.println(error.getMessage());
+                    Toast.makeText(getContext(), "Error retrieving Facebook accounts", Toast.LENGTH_SHORT).show();
+                    // Continue chain of calls if there's a failure
+                    getTwitterAccounts(container);
+                }
+            });
     }
 
     private void getFBName(final AccessToken fbAccessToken, final ViewGroup container, final boolean lastAccount) {
@@ -212,57 +205,44 @@ public class AccountSelectFragment extends Fragment {
                     }
                 }
         ).executeAsync();
-
     }
 
     private void getTwitterAccounts(final ViewGroup container) {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String retrieveTwitterIdUrl = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/twitterAccounts";
+        String retrieveTwitterIdUrl = ServerDelegate.SERVER_URL + "/twitterAccounts";
         Map<String, String> twitterParams = new HashMap<>();
         twitterParams.put("socialContractId", userId);
-        JsonObjectRequest jsonObjectRequestTwitter = new JsonObjectRequest(Request.Method.POST, retrieveTwitterIdUrl, new JSONObject(twitterParams),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray accounts = response.getJSONArray("accounts");
-                            for (int i = 0; i < accounts.length(); i++) {
-                                JSONObject account = accounts.getJSONObject(i);
-                                String twitterIdString = account.getString("twitterId");
-                                Long twitterId = Long.parseLong(twitterIdString);
-                                // retrieves the profile picture and account name
-                                // sends true if this is the last Twitter profile
-                                setTwitterProfile(twitterId, container, i == accounts.length() - 1);
-                            }
-                            if (accounts.length() == 0) {
-                                getInstagramAccount(container);
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            // Continue chain of calls if there's a failure
-                            getInstagramAccount(container);
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getContext(), "Error retrieving Twitter accounts", Toast.LENGTH_SHORT).show();
-                        // Continue chain of calls if there's a failure
-                        getInstagramAccount(container);
-                    }
-                }
-        ) {
+        ServerDelegate.postRequest(getContext(), retrieveTwitterIdUrl, twitterParams, new ServerDelegate.OnResultListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                for (int i = 0; i < accounts.length(); i++) {
+                    JSONObject account = accounts.getJSONObject(i);
+                    String twitterIdString = account.getString("twitterId");
+                    Long twitterId = Long.parseLong(twitterIdString);
+                    // retrieves the profile picture and account name
+                    // sends true if this is the last Twitter profile
+                    setTwitterProfile(twitterId, container, i == accounts.length() - 1);
+                }
+                if (accounts.length() == 0) {
+                    getInstagramAccount(container);
+                }
             }
-        };
-        queue.add(jsonObjectRequestTwitter);
-
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                getInstagramAccount(container);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error retrieving Twitter accounts", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                getInstagramAccount(container);
+            }
+        });
     }
 
     /**
@@ -330,49 +310,40 @@ public class AccountSelectFragment extends Fragment {
     }
 
     private void getInstagramAccount(final ViewGroup container) {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/instagramAccounts";
+        String url = ServerDelegate.SERVER_URL + "/instagramAccounts";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", userId);
-        JsonObjectRequest jsonObjectRequest2 = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params), new Response.Listener<JSONObject>() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    //set instagram profile
-                    JSONArray accounts = response.getJSONArray("accounts");
-                    for (int i = 0; i < accounts.length(); i++) {
-                        String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                        String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
-                        String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                        // sends true for the last parameter if this is the last Instagram account
-                        setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
-                    }
-                    if (accounts.length() == 0) {
-                        settleAccounts(container);
-                    }
-                } catch (JSONException e) {
-                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                    // Continue chain of calls if there's a failure
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                for (int i = 0; i < accounts.length(); i++) {
+                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                    // sends true for the last parameter if this is the last Instagram account
+                    setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
+                }
+                if (accounts.length() == 0) {
                     settleAccounts(container);
                 }
             }
-        }, new Response.ErrorListener() {
+        }, new ServerDelegate.OnJSONErrorListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onJSONError(JSONException e) {
+                Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
                 Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
                 Toast.makeText(getContext(), "Error retrieving Instagram accounts", Toast.LENGTH_SHORT).show();
                 // Continue chain of calls if there's a failure
                 settleAccounts(container);
             }
-        }) {
-            @Override
-            public  Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest2);
+        });
     }
 
     private void setInstagramData(String url, final String instaName, final ViewGroup container, final boolean lastAccount) {
