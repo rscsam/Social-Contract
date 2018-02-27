@@ -10,14 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -36,15 +30,12 @@ import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.activity.LoginActivity;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
-import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
 public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
@@ -60,9 +51,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
     //facebook Related
     private CallbackManager callbackManager;
     private LoginButton fbLoginButton;
-    private AccessToken fbAccessToken;
-    private String fbAppID;
-    private String fbUserID;
 
     private AuthenticationDialog auth_dialog;
     private ImageButton inLoginButton;
@@ -92,8 +80,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                 secret = authToken.secret;
                 userId = result.data.getUserId();
                 userName = result.data.getUserName();
-                RequestQueue queue = Volley.newRequestQueue(getContext());
-                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addTwitter";
+                String url = ServerDelegate.SERVER_URL + "/addTwitter";
 
                 Map<String, String> params = new HashMap<>();
                 params.put("authToken", token);
@@ -101,32 +88,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                 params.put("twitterId", userId.toString());
                 params.put("authSecret", secret);
                 params.put("username", userName);
-                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                        new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                try {
-                                    boolean success = response.getBoolean("success");
-                                    if (success) {
-                                    }
-                                } catch (JSONException e) {
-                                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-                    @Override
-                    public Map<String, String> getHeaders() throws AuthFailureError {
-                        HashMap<String, String> headers = new HashMap<>();
-                        headers.put("Content-Type", "application/json; charset=utf-8");
-                        return headers;
-                    }
-                };
-                queue.add(jsonObjectRequest);
+                ServerDelegate.postRequest(getContext(), url, params);
             }
 
             @Override
@@ -150,56 +112,28 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
                     protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
                         this.stopTracking();
                         Profile.setCurrentProfile(currentProfile);
-                        RequestQueue queue = Volley.newRequestQueue(getContext());
-                        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addFacebook";
 
+                        String url = ServerDelegate.SERVER_URL + "/addFacebook";
                         Map<String, String> params = new HashMap<>();
                         params.put("accessToken", loginResult.getAccessToken().getToken());
                         params.put("socialContractId", mListener.getSocialContractId());
                         params.put("facebookId", Profile.getCurrentProfile().getId());
                         params.put("applicationId", getString(R.string.facebook_app_id));
-                        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                                new Response.Listener<JSONObject>() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
-                                        try {
-                                            boolean success = response.getBoolean("success");
-                                            if (success) {
-                                            }
-                                        } catch (JSONException e) {
-                                            Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        }) {
-                            @Override
-                            public Map<String, String> getHeaders() throws AuthFailureError {
-                                HashMap<String, String> headers = new HashMap<>();
-                                headers.put("Content-Type", "application/json; charset=utf-8");
-                                return headers;
-                            }
-                        };
-                        queue.add(jsonObjectRequest);
+                        ServerDelegate.postRequest(getContext(), url, params);
                     }
                 };
             }
+            @Override
+            public void onCancel () {
+                // App code
+                Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+            @Override
+            public void onError (FacebookException exception){
 
-                @Override
-                public void onCancel () {
-                    // App code
-                    Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-
-                @Override
-                public void onError (FacebookException exception){
-
-                }
-            });
+            }
+        });
 
         // Instagram connection
         inLoginButton = view.findViewById(R.id.in_login_button);
@@ -242,75 +176,25 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(final String access_token) {  // this is the actual instagram token
-        if (access_token == null) {
+    public void onCodeReceived(final String token) {  // this is the actual instagram token
+        if (token == null) {
             auth_dialog.dismiss();
         } else {
-            final Context mContext = getContext();
-            RequestQueue queue = Volley.newRequestQueue(mContext);
-
-            String url = "https://api.instagram.com/v1/users/self/?access_token=" + access_token;
-
-            final String token = access_token;
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                    new Response.Listener<JSONObject>() {
-                        RequestQueue queue = Volley.newRequestQueue(mContext);
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/addInstagram";
-                                Map<String, String> params = new HashMap<>();
-                                params.put("accessToken", token);
-                                params.put("socialContractId", mListener.getSocialContractId());
-                                params.put("instagramId", response.getJSONObject("data").getString("id"));
-                                params.put("username", response.getJSONObject("data").getString("username"));
-                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                try {
-                                                    boolean success = response.getBoolean("success");
-                                                    if (success) {
-                                                    }
-                                                } catch (JSONException e) {
-                                                    Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        }, new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                                ) {
-                                    @Override
-                                    public Map<String, String> getHeaders() throws AuthFailureError {
-                                        HashMap<String, String> headers = new HashMap<>();
-                                        headers.put("Content-Type", "application/json; charset=utf-8");
-                                        return headers;
-                                    }
-                                };
-                                queue.add(jsonObjectRequest);
-                            } catch (JSONException e) {
-                                Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
+            String url = "https://api.instagram.com/v1/users/self/?access_token=" + token;
+            ServerDelegate.getRequest(getContext(), url, new ServerDelegate.OnResultListener() {
                 @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    if (success) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("accessToken", token);
+                        params.put("socialContractId", mListener.getSocialContractId());
+                        params.put("instagramId", response.getJSONObject("data").getString("id"));
+                        params.put("username", response.getJSONObject("data").getString("username"));
+                        String url = ServerDelegate.SERVER_URL + "/addInstagram";
+                        ServerDelegate.postRequest(getContext(), url, params);
+                    }
                 }
-            }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application/json; charset=utf-8");
-                    return headers;
-                }
-            };
-
-            queue.add(jsonObjectRequest);
+            });
         }
     }
 

@@ -9,12 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
@@ -26,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 
 /**
  * Activity that lets the user log in, or go to registration and forgot password page
@@ -102,47 +99,35 @@ public class LoginActivity extends AppCompatActivity {
      * If successful, starts login
      */
     public void initLogin() {
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
+        String url = ServerDelegate.SERVER_URL + "/loginInit";
 
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                login(response.getString("salt"), response.getString("nonce"));
-                                userId = response.getString("userId");
-                            } else {
-                                Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
-                                loginButton.setEnabled(true);
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(LoginActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                            loginButton.setEnabled(true);
-                        }
+        ServerDelegate.postRequest(this, url, params,
+            new ServerDelegate.OnResultListener() {
+                @Override
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    if (success) {
+                        login(response.getString("salt"), response.getString("nonce"));
+                        userId = response.getString("userId");
+                    } else {
+                        Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        loginButton.setEnabled(true);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                loginButton.setEnabled(true);
-            }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        queue.add(jsonObjectRequest);
+                }
+            }, new ServerDelegate.OnJSONErrorListener() {
+                @Override
+                public void onJSONError(JSONException e) {
+                    Toast.makeText(LoginActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                    loginButton.setEnabled(true);
+                }
+            }, new ServerDelegate.OnErrorListener() {
+                @Override
+                public void onError(VolleyError error) {
+                    Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    loginButton.setEnabled(true);
+                }
+            });
     }
 
     /**
@@ -153,46 +138,34 @@ public class LoginActivity extends AppCompatActivity {
     private void login(String salt, String nonce) {
         String pass = hashPassword(salt, nonce);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/login";
+        String url = ServerDelegate.SERVER_URL + "/login";
 
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", pass);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                startMainActivity();
-                            } else {
-                                Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(LoginActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                        loginButton.setEnabled(true);
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(this, url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    startMainActivity();
+                } else {
+                    Toast.makeText(LoginActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+                loginButton.setEnabled(true);
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(LoginActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                loginButton.setEnabled(true);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
                 Toast.makeText(LoginActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 loginButton.setEnabled(true);
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        queue.add(jsonObjectRequest);
+        });
     }
 
     /**
@@ -251,8 +224,4 @@ public class LoginActivity extends AppCompatActivity {
     private boolean isValidEmail(CharSequence target) {
         return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
-
-
-
-
 }

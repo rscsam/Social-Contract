@@ -32,6 +32,7 @@ import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.activity.MainActivity;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 
 public class ProfileFragment extends Fragment {
 
@@ -46,11 +47,8 @@ public class ProfileFragment extends Fragment {
     }
 
     public static ProfileFragment newInstance(Bundle bundle) {
-
-        Bundle args = bundle;
-
         ProfileFragment fragment = new ProfileFragment();
-        fragment.setArguments(args);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -194,105 +192,51 @@ public class ProfileFragment extends Fragment {
      * @param newEmail - new email to change to
      */
     public void changeEmail(final String newEmail, final ViewGroup container) {
-        RequestQueue queue = Volley.newRequestQueue(this.getContext());
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changeEmail";
-
+        String url = ServerDelegate.SERVER_URL + "/changeEmail";
         Map<String, String> params = new HashMap<>();
         params.put("email", newEmail);
         params.put("userId", userId);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(ProfileFragment.super.getContext(),
-                                        "Successfully changed email", Toast.LENGTH_SHORT).show();
-                                email = newEmail;
-                                TextView emailTextView = (TextView) container.findViewById(R.id.displayed_email_tv);
-                                emailTextView.setText(newEmail);
-                                MainActivity activity = (MainActivity) getActivity();
-                                activity.setEmail(email);
-
-                            } else {
-                                Toast.makeText(ProfileFragment.super.getContext(),
-                                        response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(ProfileFragment.super.getContext(),
-                                    "Error parsing JSON response", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ProfileFragment.super.getContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ) {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(ProfileFragment.super.getContext(),
+                            "Successfully changed email", Toast.LENGTH_SHORT).show();
+                    email = newEmail;
+                    TextView emailTextView = (TextView) container.findViewById(R.id.displayed_email_tv);
+                    emailTextView.setText(newEmail);
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.setEmail(email);
+                } else {
+                    Toast.makeText(ProfileFragment.super.getContext(),
+                            response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
             }
-        };
-
-        queue.add(jsonObjectRequest);
+        });
     }
+
     /**
      * Connect to the change password endpoint on the server to change the user's password in the database
      * Hashes the password first
      * @param hashedPassword - hashed password to change to
      */
     public void changePassword(String hashedPassword) {
-        RequestQueue queue = Volley.newRequestQueue(this.getContext());
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
-
+        String url = ServerDelegate.SERVER_URL + "/changePassword";
         Map<String, String> params = new HashMap<>();
         params.put("password", hashedPassword);
         params.put("userId", userId);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                Toast.makeText(ProfileFragment.super.getContext(),
-                                        "Successfully changed password", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(ProfileFragment.super.getContext(),
-                                        response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(ProfileFragment.super.getContext(),
-                                    "Error parsing JSON response", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(ProfileFragment.super.getContext(),
-                                error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                }
-        ) {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(ProfileFragment.super.getContext(),
+                            "Successfully changed password", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProfileFragment.super.getContext(),
+                            response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
             }
-        };
-
-        queue.add(jsonObjectRequest);
+        });
     }
 
     /**
@@ -301,35 +245,19 @@ public class ProfileFragment extends Fragment {
      * Then calls hash password with the salt.
      */
     private void initChangePassword() {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
-
+        String url = ServerDelegate.SERVER_URL + "/loginInit";
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                hashPassword(password, response.getString("salt"));
-                            } else {
-                                Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    hashPassword(password, response.getString("salt"));
+                } else {
+                    Toast.makeText(getContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
             }
         });
-
-        queue.add(jsonObjectRequest);
     }
 
     /**
