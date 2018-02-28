@@ -7,7 +7,7 @@
     tools:context="jd7337.socialcontract.controller.fragment.AccountManagementFragment">
 
     <LinearLayout
-        android:id="@+id/fbLinearLayout"
+        android:id="@+id/twLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
@@ -18,39 +18,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
-        <ImageView
-            android:id="@+id/fbProfilePic"
-            android:layout_width="70dp"
-            android:layout_height="70dp" />
-
-        <TextView
-            android:id="@+id/fbName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="accountName"
-            android:textAlignment="center" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:src="@drawable/com_facebook_button_icon_blue" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/twLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:paddingStart="25dp"
-        android:paddingEnd="25dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fbLinearLayout">
 
         <ImageView
             android:id="@+id/twProfilePic"

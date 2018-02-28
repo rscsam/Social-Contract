@@ -9,18 +9,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
-import com.facebook.FacebookRequestError;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
-import com.facebook.login.widget.ProfilePictureView;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -30,13 +23,6 @@ import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
 import android.widget.ImageButton;
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,23 +42,10 @@ import retrofit2.Call;
 public class AccountManagementFragment extends Fragment {
 
     private AccountManagementFListener mListener;
-    private ProfilePictureView fbProfilePictureView;
     private String userID;  //the user id in our database
-    private String fbUserId;
-    private String twUserId;
-    private String twAccessToken;
-    private String insUrl;
-    private RequestQueue queue;
-    private Button connectAccountButton;
-    private AccessToken fbAccessToken;
 
     private ViewGroup viewTemp;
-    private LinearLayout fbLayoutTemp, twLayoutTemp, igLayoutTemp; // temp
-    private static final String TAG = "Error";
-
-    private Context mContext;
-
-    private String userId;
+    private LinearLayout twLayoutTemp, igLayoutTemp; // temp
 
     public AccountManagementFragment() {
         // Required empty public constructor
@@ -117,21 +90,6 @@ public class AccountManagementFragment extends Fragment {
         return deleteInstagramButton;
     }
 
-    public ImageButton deleteFacebookButton(String facebookId) {
-        final String fId = facebookId;
-        ImageButton deleteFacebookButton = new ImageButton(getActivity());
-        deleteFacebookButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteFacebookAccount(fId);
-                        viewTemp.removeView(fbLayoutTemp);
-                    }
-                }
-        );
-        return deleteFacebookButton;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -143,16 +101,12 @@ public class AccountManagementFragment extends Fragment {
         // Inflate the layout for this fragment
 
         if (getArguments() != null) {
-            userId = getArguments().getString("userId");
+            userID = getArguments().getString("userId");
         }
         Twitter.initialize(getContext());
 
-        mContext = getActivity();
         final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
         viewTemp = (ViewGroup) view;
-
-        fbLayoutTemp = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
-        final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
 
         view.findViewById(R.id.connectButtonAccountManagement).setOnClickListener(
                 new View.OnClickListener() {
@@ -164,29 +118,6 @@ public class AccountManagementFragment extends Fragment {
         );
 
         userID = mListener.getSocialContractId();
-
-        // retrieve and set facebook account info
-        String url = ServerDelegate.SERVER_URL + "/facebookAccounts";
-        Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userID);
-        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                if (response.getJSONArray("accounts").length() > 0) {
-                    //set facebook profile
-                    fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                    String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                    String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                    AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                    setFBPic(fbaccessToken, container);
-                    setFbName(fbaccessToken, container);
-                    ImageButton fbDeleteButton = deleteFacebookButton(fbUserId);
-                    fbDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                    fbDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                    fbLayout.addView(fbDeleteButton);
-                }
-            }
-        });
 
         final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
         igLayoutTemp = instaLayout;
@@ -294,86 +225,10 @@ public class AccountManagementFragment extends Fragment {
         }
     }
 
-    public void revokePermissions(AccessToken accessToken, String userID) {
-        GraphRequest delPermRequest = new GraphRequest(accessToken.getCurrentAccessToken(), "/" + userID + "/permissions/", null, HttpMethod.DELETE, new GraphRequest.Callback() {
-            @Override
-            public void onCompleted(GraphResponse graphResponse) {
-                if (graphResponse != null) {
-                    FacebookRequestError error = graphResponse.getError();
-                    if (error != null) {
-                        Log.e(TAG, error.toString());
-                    }
-                }
-            }
-        });
-        Log.d(TAG, "Executing revoke permissions with graph path" + delPermRequest.getGraphPath());
-        delPermRequest.executeAsync();
-    }
-
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    private void setFBPic(AccessToken accessToken, final ViewGroup container) {
-        Bundle params = new Bundle();
-        //params.putString("fields", "name");
-        params.putBoolean("redirect", false);
-        String graphPath = "me/picture";
-        new GraphRequest(accessToken, graphPath, params, HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(final GraphResponse response) {
-                        if (response != null) {
-                            Thread thread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        JSONObject data = response.getJSONObject();
-                                        String profilePicUrl = data.getJSONObject("data").getString("url");
-                                        URL picUrl = new URL(profilePicUrl);
-                                        //Should work from here
-                                        final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openStream());
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                ImageView fbProfilePic = container.findViewById(R.id.fbProfilePic);
-                                                fbProfilePic.setImageBitmap(profilePic);
-                                            }
-                                        });
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });
-                            thread.start();
-                        }
-                    }
-                }).executeAsync();
-
-    }
-
-    private void setFbName(AccessToken accessToken, final ViewGroup container) {
-        GraphRequest request = GraphRequest.newMeRequest(accessToken,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        try {
-                            String fbName = response.getJSONObject().getString("name");
-                            TextView fbNameTxt = container.findViewById(R.id.fbName);
-                            fbNameTxt.setText(fbName);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "name");
-        request.setParameters(parameters);
-        request.executeAsync();
     }
 
     private void setInsData(String url, final ViewGroup container, final String instaName) {
@@ -421,33 +276,6 @@ public class AccountManagementFragment extends Fragment {
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 if (success) {
                     Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
-                    //revokePermissions(ac, fId);
-                } else {
-                    String message = response.getString("message");
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
-    /**
-     * Deletes a user's Facebook account
-     */
-    //private void deleteFacebookAccount(String facebookId, AccessToken accessToken){
-    private void deleteFacebookAccount(String facebookId){
-        String url = ServerDelegate.SERVER_URL + "/deleteFacebook";
-
-        final String fId = facebookId;
-        //final AccessToken ac = accessToken;
-
-        Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userID);
-        params.put("facebookId", facebookId);
-        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                if (success) {
-                    Toast.makeText(getActivity(), "Facebook account deleted", Toast.LENGTH_LONG).show();
                     //revokePermissions(ac, fId);
                 } else {
                     String message = response.getString("message");
