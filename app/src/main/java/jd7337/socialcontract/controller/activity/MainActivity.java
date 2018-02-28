@@ -16,9 +16,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
+import jd7337.socialcontract.model.SocialMediaAccount;
+import jd7337.socialcontract.model.Request;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
+    private Queue<Request> requests;
 
     private AuthenticationDialog auth_dialog;
     private Button btn_get_access_token;
@@ -89,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements
         accountSelectFragment = AccountSelectFragment.newInstance(bundle);
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
         initialConnectAccountFragment = new InitialConnectAccountFragment();
+        requests = new LinkedList<Request>();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_view, homeFragment).commit();
@@ -222,11 +229,19 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
+    public void onClickAccount(SocialMediaAccount account) {
+        Bundle growBundle = new Bundle();
+        growBundle.putInt("typeInt", account.getTypeResource().ordinal());
+        growBundle.putString("username", account.getUsername());
+        growFragment = GrowFragment.newInstance(growBundle);
+        showFragment(R.id.main_activity_view, growFragment);
+    }
 
     @Override
     public void onClickConfirmPurchase(int totalCoins) {
         updateCoinNumber(numCoins - totalCoins);
+        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(), confirmPurchaseDialogFragment.getType());
+        requests.add(r);
         Bundle bundle = new Bundle();
         bundle.putString("request", "1");
         showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
