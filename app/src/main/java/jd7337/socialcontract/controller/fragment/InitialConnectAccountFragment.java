@@ -205,7 +205,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
      * activity.
      */
     public interface InitialConnectAccountFListener {
-        void onClickICAFConnectAccount();
         String getSocialContractId();
     }
 }

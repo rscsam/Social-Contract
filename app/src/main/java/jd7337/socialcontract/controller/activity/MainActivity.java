@@ -37,7 +37,9 @@ public class MainActivity extends AppCompatActivity implements
         AccountManagementFragment.AccountManagementFListener,
         ProfileFragment.ProfileFListener,
         AccountSelectFragment.AccountSelectFListener,
-        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener, UpdateProfileFragment.UpdateProfileFListener {
+        ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener,
+        UpdateProfileFragment.UpdateProfileFListener,
+        InitialConnectAccountFragment.InitialConnectAccountFListener {
 
     private HomeFragment homeFragment;
     private UpdateProfileFragment updateProfileFragment;
@@ -214,14 +216,13 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onClickInterestProfile() {showFragment(R.id.main_activity_view, editInterestProfileFragment);}
 
-//    @Override
-//    public void onClickAccountConnect() {
-//        showFragment(R.id.main_activity_view, initialConnectAccountFragment);
-//    }
+    @Override
+    public void onClickAccountConnect() {
+        showFragment(R.id.main_activity_view, initialConnectAccountFragment);
+    }
 
     @Override
     public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
-
 
     @Override
     public void onClickConfirmPurchase(int totalCoins) {

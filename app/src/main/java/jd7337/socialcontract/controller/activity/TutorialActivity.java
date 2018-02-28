@@ -296,17 +296,6 @@ public class TutorialActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    //make it easy to demo for now
-    @Override
-    public void onClickICAFConnectAccount() {
-        Context context = getApplicationContext();
-        CharSequence text = "Twitter Account Connected";
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
