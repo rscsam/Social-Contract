@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements
         updateProfileFragment = new UpdateProfileFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
-        accountManagementFragment = new AccountManagementFragment();
+        accountManagementFragment = AccountManagementFragment.newInstance(userId);
         profileFragment = ProfileFragment.newInstance(bundle);
         accountSelectFragment = AccountSelectFragment.newInstance(bundle);
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
@@ -230,6 +230,12 @@ public class MainActivity extends AppCompatActivity implements
         Bundle bundle = new Bundle();
         bundle.putString("request", "1");
         showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     // goes to the profile screen

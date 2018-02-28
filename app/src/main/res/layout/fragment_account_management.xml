@@ -6,75 +6,29 @@
     android:layout_height="match_parent"
     tools:context="jd7337.socialcontract.controller.fragment.AccountManagementFragment">
 
-    <LinearLayout
-        android:id="@+id/twLinearLayout"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/instruction_tv"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:layout_marginTop="50dp"
-        android:paddingStart="25dp"
-        android:paddingEnd="25dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="40dp"
+        android:text="@string/choose_which_account_to_grow"
+        android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/twProfilePic"
-            android:layout_width="70dp"
-            android:layout_height="70dp" />
-
-        <TextView
-            android:id="@+id/twaccountName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="accountName"
-            android:textAlignment="center" />
-
-        <ImageView
-            android:id="@+id/twittericon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:src="@drawable/twitter_icon" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/igLinearLayout"
+    <ListView
+        android:id="@+id/account_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:paddingStart="25dp"
-        android:paddingEnd="25dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">
-
-        <ImageView
-            android:id="@+id/igProfilePic"
-            android:layout_width="70dp"
-            android:layout_height="70dp" />
-
-        <TextView
-            android:id="@+id/igName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="accountName"
-            android:textAlignment="center"/>
-
-        <ImageView
-            android:id="@+id/instagramicon"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:src="@drawable/instagram_icon"/>
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/instruction_tv" />
 
     <Button
         android:id="@+id/connectButtonAccountManagement"

@@ -54,8 +54,10 @@ public class AccountSelectFragment extends Fragment {
 
     private String userId;
     private List<String> twUserNameList = new ArrayList<>();
+    private List<String> twIdList = new ArrayList<>();
     private List<Bitmap> twProfilePicList = new ArrayList<>();
     private List<String> inUserNameList = new ArrayList<>();
+    private List<String> inIdList = new ArrayList<>();
     private List<Bitmap> inProfilePicList = new ArrayList<>();
 
     public static AccountSelectFragment newInstance(Bundle bundle) {
@@ -75,8 +77,10 @@ public class AccountSelectFragment extends Fragment {
             userId = getArguments().getString("userId");
         }
         twUserNameList.clear();
+        twIdList.clear();
         twProfilePicList.clear();
         inUserNameList.clear();
+        inIdList.clear();
         inProfilePicList.clear();
         Twitter.initialize(getContext());
         View view = inflater.inflate(R.layout.fragment_account_select, container, false);
@@ -105,6 +109,7 @@ public class AccountSelectFragment extends Fragment {
                     // retrieves the profile picture and account name
                     // sends true if this is the last Twitter profile
                     setTwitterProfile(twitterId, container, i == accounts.length() - 1);
+                    twIdList.add(twitterIdString);
                 }
                 if (accounts.length() == 0) {
                     getInstagramAccount(container);
@@ -204,8 +209,10 @@ public class AccountSelectFragment extends Fragment {
                     String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
                     // sends true for the last parameter if this is the last Instagram account
                     setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
+                    inIdList.add(instaId);
                 }
                 if (accounts.length() == 0) {
                     settleAccounts(container);
@@ -281,14 +288,14 @@ public class AccountSelectFragment extends Fragment {
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), R.drawable.twitter_icon);
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), R.drawable.instagram_icon);
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
         }
         // Set adapter
-        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
+        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
         ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
         accountList.setOnItemClickListener(
