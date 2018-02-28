@@ -63,7 +63,6 @@ public class AccountManagementFragment extends Fragment {
     private String twAccessToken;
     private String insUrl;
     private RequestQueue queue;
-    private InitialConnectAccountFragment initialConnectAccountFragment;
     private Button connectAccountButton;
     private AccessToken fbAccessToken;
 
@@ -154,6 +153,15 @@ public class AccountManagementFragment extends Fragment {
 
         fbLayoutTemp = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
         final LinearLayout fbLayout = (LinearLayout) view.findViewById(R.id.fbLinearLayout);
+
+        view.findViewById(R.id.connectButtonAccountManagement).setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mListener.onClickAccountConnect();
+                    }
+                }
+        );
 
         userID = mListener.getSocialContractId();
 
@@ -307,12 +315,6 @@ public class AccountManagementFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-
-    public interface AccountManagementFListener {
-        String getSocialContractId();
-        //void onClickAccountConnect();
-    }
-
 
     private void setFBPic(AccessToken accessToken, final ViewGroup container) {
         Bundle params = new Bundle();
@@ -475,6 +477,11 @@ public class AccountManagementFragment extends Fragment {
                 }
             }
         });
+    }
+
+    public interface AccountManagementFListener {
+        String getSocialContractId();
+        void onClickAccountConnect();
     }
 
 }
