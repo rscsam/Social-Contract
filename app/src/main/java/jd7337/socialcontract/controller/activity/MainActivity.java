@@ -22,6 +22,7 @@ import java.util.Queue;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
+import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.Request;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
@@ -228,7 +229,13 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClickAccount() {showFragment(R.id.main_activity_view, growFragment);}
+    public void onClickAccount(SocialMediaAccount account) {
+        Bundle growBundle = new Bundle();
+        growBundle.putInt("typeInt", account.getTypeResource().ordinal());
+        growBundle.putString("username", account.getUsername());
+        growFragment = GrowFragment.newInstance(growBundle);
+        showFragment(R.id.main_activity_view, growFragment);
+    }
 
     @Override
     public void onClickConfirmPurchase(int totalCoins) {
