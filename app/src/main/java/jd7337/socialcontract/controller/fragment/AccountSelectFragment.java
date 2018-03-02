@@ -14,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,6 +41,7 @@ import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
+import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.TwitterUserService;
 import jd7337.socialcontract.model.UserQueryTwitterApiClient;
 import jd7337.socialcontract.view.adapter.AccountListAdapter;
@@ -59,6 +59,7 @@ public class AccountSelectFragment extends Fragment {
     private List<String> inUserNameList = new ArrayList<>();
     private List<String> inIdList = new ArrayList<>();
     private List<Bitmap> inProfilePicList = new ArrayList<>();
+    private List<SocialMediaAccount> accountsList = new ArrayList<>();
 
     public static AccountSelectFragment newInstance(Bundle bundle) {
         AccountSelectFragment fragment = new AccountSelectFragment();
@@ -82,6 +83,7 @@ public class AccountSelectFragment extends Fragment {
         inUserNameList.clear();
         inIdList.clear();
         inProfilePicList.clear();
+        accountsList.clear();
         Twitter.initialize(getContext());
         View view = inflater.inflate(R.layout.fragment_account_select, container, false);
         TextView instructionsTextView = view.findViewById(R.id.instruction_tv);
@@ -288,13 +290,20 @@ public class AccountSelectFragment extends Fragment {
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), R.drawable.twitter_icon);
+            accountsList.add(new SocialMediaAccount(twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
             accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
             accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), R.drawable.instagram_icon);
+            accountsList.add(new SocialMediaAccount(inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
+            i++;
         }
         // Set adapter
+        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
+        final ListView accountList = container.findViewById(R.id.account_list);
         AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
         ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
@@ -302,7 +311,8 @@ public class AccountSelectFragment extends Fragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        mListener.onClickAccount();
+                        System.out.println(view);
+                        mListener.onClickAccount(accountsList.get(position));
                     }
                 }
         );
@@ -334,6 +344,6 @@ public class AccountSelectFragment extends Fragment {
     }
 
     public interface AccountSelectFListener {
-        void onClickAccount();
+        void onClickAccount(SocialMediaAccount account);
     }
 }

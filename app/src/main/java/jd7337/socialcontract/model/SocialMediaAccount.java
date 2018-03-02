@@ -6,11 +6,15 @@ package jd7337.socialcontract.model;
 
 public class SocialMediaAccount {
     private String username;
-    private int typeResource;
+    private AccountType typeResource;
 
-    public SocialMediaAccount(String username, int typeResource) {
+    public SocialMediaAccount(String username, AccountType typeResource) {
         this.username = username;
         this.typeResource = typeResource;
+    }
+
+    public enum AccountType {
+        FACEBOOK, TWITTER, INSTAGRAM
     }
 
     public String getUsername() {
@@ -21,11 +25,11 @@ public class SocialMediaAccount {
         this.username = username;
     }
 
-    public int getTypeResource() {
+    public AccountType getTypeResource() {
         return typeResource;
     }
 
-    public void setTypeResource(int typeResource) {
+    public void setTypeResource(AccountType typeResource) {
         this.typeResource = typeResource;
     }
 }
