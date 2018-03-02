@@ -10,16 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.Profile;
-import com.facebook.ProfileTracker;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthToken;
@@ -47,10 +37,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
     private String secret;
     private Long userId;
     private String userName;
-
-    //facebook Related
-    private CallbackManager callbackManager;
-    private LoginButton fbLoginButton;
 
     private AuthenticationDialog auth_dialog;
     private ImageButton inLoginButton;
@@ -97,44 +83,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
             }
         });
 
-        // Facebook connection
-        callbackManager = CallbackManager.Factory.create();
-        fbLoginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
-        fbLoginButton.setFragment(this);
-        callbackManager = CallbackManager.Factory.create();
-
-        //callback registration for facebook
-        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(final LoginResult loginResult) {
-                ProfileTracker profileTracker = new ProfileTracker() {
-                    @Override
-                    protected void onCurrentProfileChanged(Profile oldProfile, Profile currentProfile) {
-                        this.stopTracking();
-                        Profile.setCurrentProfile(currentProfile);
-
-                        String url = ServerDelegate.SERVER_URL + "/addFacebook";
-                        Map<String, String> params = new HashMap<>();
-                        params.put("accessToken", loginResult.getAccessToken().getToken());
-                        params.put("socialContractId", mListener.getSocialContractId());
-                        params.put("facebookId", Profile.getCurrentProfile().getId());
-                        params.put("applicationId", getString(R.string.facebook_app_id));
-                        ServerDelegate.postRequest(getContext(), url, params);
-                    }
-                };
-            }
-            @Override
-            public void onCancel () {
-                // App code
-                Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-            @Override
-            public void onError (FacebookException exception){
-
-            }
-        });
-
         // Instagram connection
         inLoginButton = view.findViewById(R.id.in_login_button);
 
@@ -153,7 +101,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         twLoginButton.onActivityResult(requestCode, resultCode, data);
     }
