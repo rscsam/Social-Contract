@@ -290,20 +290,16 @@ public class AccountSelectFragment extends Fragment {
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), R.drawable.twitter_icon);
             accountsList.add(new SocialMediaAccount(twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
             accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
             accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
-            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), R.drawable.instagram_icon);
             accountsList.add(new SocialMediaAccount(inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
             i++;
         }
         // Set adapter
-        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
-        final ListView accountList = container.findViewById(R.id.account_list);
         AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
         ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
