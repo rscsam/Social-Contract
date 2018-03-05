@@ -290,13 +290,13 @@ public class AccountSelectFragment extends Fragment {
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
-            accountsList.add(new SocialMediaAccount(twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
+            accountsList.add(new SocialMediaAccount(twIdList.get(x), twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), SocialMediaAccount.AccountType.TWITTER);
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
-            accountsList.add(new SocialMediaAccount(inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), SocialMediaAccount.AccountType.INSTAGRAM);
+            accountsList.add(new SocialMediaAccount(inIdList.get(x), inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
             i++;
         }
         // Set adapter
@@ -307,7 +307,6 @@ public class AccountSelectFragment extends Fragment {
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        System.out.println(view);
                         mListener.onClickAccount(accountsList.get(position));
                     }
                 }

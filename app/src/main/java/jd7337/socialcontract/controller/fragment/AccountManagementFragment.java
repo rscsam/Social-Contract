@@ -41,6 +41,7 @@ import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
+import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.TwitterUserService;
 import jd7337.socialcontract.model.UserQueryTwitterApiClient;
 import jd7337.socialcontract.view.adapter.AccountListAdapter;
@@ -315,12 +316,12 @@ public class AccountManagementFragment extends Fragment {
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), SocialMediaAccount.AccountType.TWITTER);
             accounts[i].setShowDelete(true);
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), SocialMediaAccount.AccountType.INSTAGRAM);
             accounts[i].setShowDelete(true);
         }
         // Set adapter

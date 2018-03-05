@@ -25,6 +25,7 @@ import java.util.Map;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.activity.MainActivity;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
+import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.view.holder.AccountListItem;
 
 public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
@@ -40,8 +41,6 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         this.context = (MainActivity) context;
         this.accounts = new ArrayList<>();
         this.accounts.addAll(Arrays.asList(accounts));
-        System.out.println(accounts.length);
-        System.out.println(this.accounts.size());
         this.selectEnabled = selectEnabled;
         this.userId = userId;
     }
@@ -76,7 +75,7 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         if (accounts.get(position).isShowDelete()) {
             View deleteIB = row.findViewById(R.id.delete_ib);
             deleteIB.setVisibility(View.VISIBLE);
-            if (accounts.get(position).getSocialMediaType().equals("INSTAGRAM")) {
+            if (accounts.get(position).getSocialMediaType() == SocialMediaAccount.AccountType.INSTAGRAM) {
                 deleteIB.setOnClickListener(
                         new View.OnClickListener() {
                             @Override

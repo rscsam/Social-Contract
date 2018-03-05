@@ -3,6 +3,7 @@ package jd7337.socialcontract.view.holder;
 import android.graphics.Bitmap;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.model.SocialMediaAccount;
 
 /**
  * Created by sam on 11/26/17.
@@ -12,14 +13,14 @@ public class AccountListItem {
 
     private Bitmap profilePicBitmap;
     private String profileName;
-    private String socialMediaType; // "TWITTER" or "INSTAGRAM"
+    private SocialMediaAccount.AccountType socialMediaType; // "TWITTER" or "INSTAGRAM"
     private String smId;
 
     private boolean showingExtraSettings = false;
     private boolean showDelete = false;
 
     public AccountListItem(Bitmap profilePicBitmap, String profileName,
-                           String smId, String socialMediaType) {
+                           String smId, SocialMediaAccount.AccountType socialMediaType) {
         this.profilePicBitmap = profilePicBitmap;
         this.profileName = profileName;
         this.socialMediaType = socialMediaType;
@@ -35,7 +36,7 @@ public class AccountListItem {
     }
 
     public int getSmTypePicId() {
-        if (socialMediaType.equals("INSTAGRAM")) {
+        if (socialMediaType == SocialMediaAccount.AccountType.INSTAGRAM) {
             return R.drawable.instagram_icon;
         } else {
             return R.drawable.twitter_icon;
@@ -50,11 +51,11 @@ public class AccountListItem {
         this.profileName = profileName;
     }
 
-    public String getSocialMediaType() {
+    public SocialMediaAccount.AccountType getSocialMediaType() {
         return socialMediaType;
     }
 
-    public void setSocialMediaType(String socialMediaType) {
+    public void setSocialMediaType(SocialMediaAccount.AccountType socialMediaType) {
         this.socialMediaType = socialMediaType;
     }
 
