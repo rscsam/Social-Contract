@@ -1,5 +1,7 @@
 package jd7337.socialcontract.controller.activity;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.design.widget.NavigationView;
@@ -16,10 +18,18 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.twitter.sdk.android.core.Twitter;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
 import jd7337.socialcontract.model.SocialMediaAccount;
@@ -43,11 +53,9 @@ public class MainActivity extends AppCompatActivity implements
         ProfileFragment.ProfileFListener,
         AccountSelectFragment.AccountSelectFListener,
         ConfirmPurchaseDialogFragment.ConfirmPurchaseDialogFListener,
-        UpdateProfileFragment.UpdateProfileFListener,
         InitialConnectAccountFragment.InitialConnectAccountFListener {
 
     private HomeFragment homeFragment;
-    private UpdateProfileFragment updateProfileFragment;
     private DiscoverSettingsFragment discoverSettingsFragment;
     private DiscoverFragment discoverFragment;
     private GrowFragment growFragment;
@@ -62,19 +70,19 @@ public class MainActivity extends AppCompatActivity implements
     private NavigationView mDrawerList;
     private Queue<Request> requests;
 
-    private AuthenticationDialog auth_dialog;
-    private Button btn_get_access_token;
-
     private int numCoins;
     private String email;
     private String userId;
-
-    private Menu  menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // Initialize Twitter kit
+        Twitter.initialize(this);
+
+        updateCoinNumber();
 
         email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
@@ -87,7 +95,6 @@ public class MainActivity extends AppCompatActivity implements
         homeFragment = new HomeFragment();
         discoverSettingsFragment = new DiscoverSettingsFragment();
         discoverFragment = new DiscoverFragment();
-        updateProfileFragment = new UpdateProfileFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
         accountManagementFragment = AccountManagementFragment.newInstance(userId);
@@ -123,9 +130,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // model initialization
-        updateCoinNumber(20);
+        
 
     }
 
@@ -184,15 +189,28 @@ public class MainActivity extends AppCompatActivity implements
             default:
                 mDrawerLayout.closeDrawer(mDrawerList);
         }
-
     }
 
     @Override
-    public void onClickGrowPurchase(int quantity, String type, int individualPrice) {
-        confirmPurchaseDialogFragment.setQuantity(quantity);
-        confirmPurchaseDialogFragment.setType(type);
-        confirmPurchaseDialogFragment.setTotalPrice(quantity * individualPrice);
-        confirmPurchaseDialogFragment.show(this.getFragmentManager(), "confirm_purchase_dialog");
+    public void onClickGrowPurchase(final int quantity, final SocialMediaAccount account,
+                                    final String type, final int individualPrice) {
+        final Activity mContext = this;
+        updateCoinNumber(new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                int coins = response.getInt("coins");
+                if (coins >= quantity * individualPrice) {
+                    confirmPurchaseDialogFragment.setQuantity(quantity);
+                    confirmPurchaseDialogFragment.setType(type);
+                    confirmPurchaseDialogFragment.setTotalPrice(quantity * individualPrice);
+                    confirmPurchaseDialogFragment.setAccount(account);
+                    confirmPurchaseDialogFragment.show(mContext.getFragmentManager(), "confirm_purchase_dialog");
+                }  else {
+                    Toast.makeText(mContext, "You only have " + coins + " coins",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -233,24 +251,76 @@ public class MainActivity extends AppCompatActivity implements
         Bundle growBundle = new Bundle();
         growBundle.putInt("typeInt", account.getTypeResource().ordinal());
         growBundle.putString("username", account.getUsername());
+        growBundle.putString("id", account.getId());
         growFragment = GrowFragment.newInstance(growBundle);
         showFragment(R.id.main_activity_view, growFragment);
     }
 
     @Override
-    public void onClickConfirmPurchase(int totalCoins) {
-        updateCoinNumber(numCoins - totalCoins);
-        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(), confirmPurchaseDialogFragment.getType());
-        requests.add(r);
-        Bundle bundle = new Bundle();
-        bundle.putString("request", "1");
-        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+    public void onClickConfirmPurchase(SocialMediaAccount account, String type, int quantity,
+                                       int totalPrice) {
+        SocialMediaAccount.AccountType accountType = account.getTypeResource();
+        String username = account.getUsername();
+        if (accountType == SocialMediaAccount.AccountType.TWITTER) {
+            if (type.equals("Like") || type.equals("Retweet")) {
+                Intent startTwitter = new Intent(MainActivity.this, TwitterTimelineActivity.class);
+                startTwitter.putExtra("twitterId", account.getId());
+                startTwitter.putExtra("goal", quantity);
+                startTwitter.putExtra("username", username);
+                startTwitter.putExtra("type", type);
+                startTwitter.putExtra("cost", totalPrice);
+                startActivityForResult(startTwitter, 420);
+            }
+        } else if (accountType == SocialMediaAccount.AccountType.INSTAGRAM) {
+            if (type.equals("Like") || type.equals("Share")) {
+
+            }
+        }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 420) {  // Twitter feed returned
+            Long tweetId = data.getLongExtra("tweetId", -1);
+            String twitterId = data.getStringExtra("twitterId");
+            int goal = data.getIntExtra("goal", -1);
+            int cost = data.getIntExtra("cost", 0);
+            String type = data.getStringExtra("type");
+            JSONObject requestParams = new JSONObject();
+            try {
+                System.out.println(goal);
+                requestParams.put("socialContractId", getSocialContractId());
+                requestParams.put("twitterId", twitterId);
+                requestParams.put("mediaId", tweetId);
+                requestParams.put("goal", goal);
+                requestParams.put("type", type);
+                requestParams.put("cost", cost);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String url = ServerDelegate.SERVER_URL + "/addTwitterQueue";
+            final Context mContext = this;
+            ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+                @Override
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    if (success) {
+                        Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+            Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                    confirmPurchaseDialogFragment.getType());
+            requests.add(r);
+            Bundle bundle = new Bundle();
+            bundle.putString("request", "1");
+            updateCoinNumber();
+            showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+        } else {
+            initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     // goes to the profile screen
@@ -281,11 +351,39 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    private void updateCoinNumber(int newNumber) {
-        numCoins = newNumber;
-        TextView coinTV = findViewById(R.id.num_coins_tv);
-        String newCoinNumStr = newNumber + "";
-        coinTV.setText(newCoinNumStr);
+    private void updateCoinNumber() {
+        String url = ServerDelegate.SERVER_URL + "/getCoins";
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", getSocialContractId());
+        ServerDelegate.postRequest(this, url, params,
+                new ServerDelegate.OnResultListener() {
+                    @Override
+                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                        if (success) {
+                            numCoins = response.getInt("coins");
+                            TextView coinTV = findViewById(R.id.num_coins_tv);
+                            String newCoinNumStr = "" + numCoins;
+                            coinTV.setText(newCoinNumStr);
+                        }
+                    }
+                });
+    }
+
+    private void updateCoinNumber(final ServerDelegate.OnResultListener listener) {
+        String url = ServerDelegate.SERVER_URL + "/getCoins";
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", getSocialContractId());
+        ServerDelegate.postRequest(this, url, params,
+                new ServerDelegate.OnResultListener() {
+                    @Override
+                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                        numCoins = response.getInt("coins");
+                        TextView coinTV = findViewById(R.id.num_coins_tv);
+                        String newCoinNumStr = "" + numCoins;
+                        coinTV.setText(newCoinNumStr);
+                        listener.onResult(success, response);
+                    }
+                });
     }
 
     /**

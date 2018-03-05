@@ -6,9 +6,11 @@ package jd7337.socialcontract.model;
 
 public class SocialMediaAccount {
     private String username;
+    private String id;
     private AccountType typeResource;
 
-    public SocialMediaAccount(String username, AccountType typeResource) {
+    public SocialMediaAccount(String id, String username, AccountType typeResource) {
+        this.id = id;
         this.username = username;
         this.typeResource = typeResource;
     }
@@ -31,5 +33,13 @@ public class SocialMediaAccount {
 
     public void setTypeResource(AccountType typeResource) {
         this.typeResource = typeResource;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

@@ -40,6 +40,8 @@ public class GrowFragment extends Fragment {
                              Bundle savedInstanceState) {
         int typeOrdinal = getArguments().getInt("typeInt");
         accountType = SocialMediaAccount.AccountType.values()[typeOrdinal];
+        final String username = getArguments().getString("username");
+        final String id = getArguments().getString("id");
         // Inflate the layout for this fragment
         View view;
         switch (accountType) {
@@ -94,7 +96,7 @@ public class GrowFragment extends Fragment {
                                             price = 10;
                                             break;
                                     }
-                                    mListener.onClickGrowPurchase(quantity, type, price);
+                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
                                 } else {
                                     Toast.makeText(getContext(), "Please choose an interaction.",
                                             Toast.LENGTH_SHORT).show();
@@ -104,7 +106,6 @@ public class GrowFragment extends Fragment {
                 );
                 break;
             case TWITTER:
-                System.out.println("Twittered");
                 connectAccountButton.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
@@ -118,9 +119,7 @@ public class GrowFragment extends Fragment {
                                     return;
                                 }
 
-                                System.out.println("iT: " + interactionTypesRG);
                                 int selectId = interactionTypesRG.getCheckedRadioButtonId();
-                                System.out.println("sI: " + selectId);
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
@@ -130,7 +129,7 @@ public class GrowFragment extends Fragment {
                                         case "Like":
                                             price = 1;
                                             break;
-                                        case "Share":
+                                        case "Retweet":
                                             price = 5;
                                             break;
                                         case "Follow":
@@ -140,7 +139,7 @@ public class GrowFragment extends Fragment {
                                             price = 10;
                                             break;
                                     }
-                                    mListener.onClickGrowPurchase(quantity, type, price);
+                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
                                 } else {
                                     Toast.makeText(getContext(), "Please choose an interaction.",
                                             Toast.LENGTH_SHORT).show();
@@ -183,7 +182,7 @@ public class GrowFragment extends Fragment {
                                             price = 10;
                                             break;
                                     }
-                                    mListener.onClickGrowPurchase(quantity, type, price);
+                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
                                 } else {
                                     Toast.makeText(getContext(), "Please choose an interaction.",
                                             Toast.LENGTH_SHORT).show();
@@ -216,6 +215,6 @@ public class GrowFragment extends Fragment {
     }
 
     public interface GrowFListener {
-        void onClickGrowPurchase(int quantity, String type, int individualPrice);
+        void onClickGrowPurchase(int quantity, SocialMediaAccount account, String type, int individualPrice);
     }
 }
