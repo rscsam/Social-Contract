@@ -83,7 +83,6 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
-                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
                                         case "Likes":
@@ -123,7 +122,6 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
-                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
                                         case "Likes":
@@ -166,7 +164,6 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
-                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
                                         case "Likes":
