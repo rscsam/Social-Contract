@@ -37,12 +37,10 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Twitter;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;

@@ -20,10 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.facebook.AccessToken;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
-import com.facebook.HttpMethod;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -57,11 +53,11 @@ public class AccountSelectFragment extends Fragment {
     private AccountSelectFListener mListener;
 
     private String userId;
-    private List<Bitmap> fbProfilePicList = new ArrayList<>();
-    private List<String> fbUserNameList = new ArrayList<>();
     private List<String> twUserNameList = new ArrayList<>();
+    private List<String> twIdList = new ArrayList<>();
     private List<Bitmap> twProfilePicList = new ArrayList<>();
     private List<String> inUserNameList = new ArrayList<>();
+    private List<String> inIdList = new ArrayList<>();
     private List<Bitmap> inProfilePicList = new ArrayList<>();
     private List<SocialMediaAccount> accountsList = new ArrayList<>();
 
@@ -81,11 +77,11 @@ public class AccountSelectFragment extends Fragment {
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
-        fbUserNameList.clear();
-        fbProfilePicList.clear();
         twUserNameList.clear();
+        twIdList.clear();
         twProfilePicList.clear();
         inUserNameList.clear();
+        inIdList.clear();
         inProfilePicList.clear();
         accountsList.clear();
         Twitter.initialize(getContext());
@@ -97,115 +93,7 @@ public class AccountSelectFragment extends Fragment {
     }
 
     public void getAccountsInit(final ViewGroup container) {
-        RequestQueue queue = Volley.newRequestQueue(getContext());
-
-        // Retrieve Facebook account
-        String url = ServerDelegate.SERVER_URL + "/facebookAccounts";
-        Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userId);
-        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
-                @Override
-                public void onResult(boolean success, JSONObject response) throws JSONException {
-                    JSONArray accounts = response.getJSONArray("accounts");
-                    for (int i = 0; i < accounts.length(); i++) {
-                        //set facebook profile
-                        String fbUserId = response.getJSONArray("accounts").getJSONObject(0).getString("facebookId");
-                        String fbToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                        String appId = response.getJSONArray("accounts").getJSONObject(0).getString("applicationId");
-                        AccessToken fbaccessToken = new AccessToken(fbToken, appId, fbUserId, null, null, null, null, null);
-                        // send true as the last parameter if this is the last Facebook account
-                        getFBName(fbaccessToken, container, i == accounts.length() - 1);
-                    }
-                    if (accounts.length() == 0) {
-                        getTwitterAccounts(container);
-                    }
-                }
-            }, new ServerDelegate.OnJSONErrorListener() {
-                @Override
-                public void onJSONError(JSONException e) {
-                    Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                    // Continue chain of calls if there's a failure
-                    getTwitterAccounts(container);
-                }
-            }, new ServerDelegate.OnErrorListener() {
-                @Override
-                public void onError(VolleyError error) {
-                    Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    System.out.println(error.getMessage());
-                    Toast.makeText(getContext(), "Error retrieving Facebook accounts", Toast.LENGTH_SHORT).show();
-                    // Continue chain of calls if there's a failure
-                    getTwitterAccounts(container);
-                }
-            });
-    }
-
-    private void getFBName(final AccessToken fbAccessToken, final ViewGroup container, final boolean lastAccount) {
-        GraphRequest request = GraphRequest.newMeRequest(fbAccessToken,
-                new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(
-                            JSONObject object,
-                            GraphResponse response) {
-                        try {
-                            String fbName = response.getJSONObject().getString("name");
-                            setFBAccount(fbAccessToken, fbName, container, lastAccount);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            if (lastAccount) {
-                                // Continue chain of calls if there's a failure
-                                getTwitterAccounts(container);
-                            }
-                        }
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "name");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    public void setFBAccount(final AccessToken fbAccessToken, final String fbName, final ViewGroup container, final boolean lastAccount) {
-        // set FB pic
-        Bundle params = new Bundle();
-        params.putBoolean("redirect", false);
-        String graphPath = "me/picture";
-        new GraphRequest(fbAccessToken, graphPath, params, HttpMethod.GET,
-                new GraphRequest.Callback() {
-                    @Override
-                    public void onCompleted(final GraphResponse response) {
-                        if (response != null) {
-                            Thread thread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        JSONObject data = response.getJSONObject();
-                                        String profilePicUrl = data.getJSONObject("data").getString("url");
-                                        URL picUrl = new URL(profilePicUrl);
-                                        final Bitmap profilePic= BitmapFactory.decodeStream(picUrl.openStream());
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                fbProfilePicList.add(profilePic);
-                                                fbUserNameList.add(fbName);
-                                                if (lastAccount) {
-                                                    getTwitterAccounts(container);
-                                                }
-                                            }
-                                        });
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                        if (lastAccount) {
-                                            // Continue chain of calls if there's a failure
-                                            getTwitterAccounts(container);
-                                        }
-                                    }
-                                }
-                            });
-                            thread.start();
-                        }
-                    }
-                }
-        ).executeAsync();
+         getTwitterAccounts(container);
     }
 
     private void getTwitterAccounts(final ViewGroup container) {
@@ -223,6 +111,7 @@ public class AccountSelectFragment extends Fragment {
                     // retrieves the profile picture and account name
                     // sends true if this is the last Twitter profile
                     setTwitterProfile(twitterId, container, i == accounts.length() - 1);
+                    twIdList.add(twitterIdString);
                 }
                 if (accounts.length() == 0) {
                     getInstagramAccount(container);
@@ -322,8 +211,10 @@ public class AccountSelectFragment extends Fragment {
                     String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
                     String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
                     // sends true for the last parameter if this is the last Instagram account
                     setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
+                    inIdList.add(instaId);
                 }
                 if (accounts.length() == 0) {
                     settleAccounts(container);
@@ -394,35 +285,28 @@ public class AccountSelectFragment extends Fragment {
     }
 
     private void settleAccounts(ViewGroup container) {
-        int numAccounts = fbUserNameList.size();
-        numAccounts += twUserNameList.size();
+        int numAccounts = twUserNameList.size();
         numAccounts += inUserNameList.size();
         AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
-        for (int x = 0; x < fbUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(fbProfilePicList.get(x), fbUserNameList.get(x), R.drawable.facebookicon);
-            accountsList.add(new SocialMediaAccount(fbUserNameList.get(x), SocialMediaAccount.AccountType.FACEBOOK));
-            i++;
-        }
         for (int x = 0; x < twUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), R.drawable.twitter_icon);
-            accountsList.add(new SocialMediaAccount(twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
+            accountsList.add(new SocialMediaAccount(twIdList.get(x), twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), SocialMediaAccount.AccountType.TWITTER);
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
-            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), R.drawable.instagram_icon);
-            accountsList.add(new SocialMediaAccount(inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), SocialMediaAccount.AccountType.INSTAGRAM);
+            accountsList.add(new SocialMediaAccount(inIdList.get(x), inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
             i++;
         }
         // Set adapter
-        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts);
-        final ListView accountList = container.findViewById(R.id.account_list);
+        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
+        ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
         accountList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        System.out.println(view);
                         mListener.onClickAccount(accountsList.get(position));
                     }
                 }
