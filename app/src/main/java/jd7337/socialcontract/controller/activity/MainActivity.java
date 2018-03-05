@@ -82,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements
         // Initialize Twitter kit
         Twitter.initialize(this);
 
-        updateCoinNumber();
-
         email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
 
@@ -130,8 +128,8 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        
 
+        updateCoinNumber();
     }
 
     @Override
@@ -289,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements
             String type = data.getStringExtra("type");
             JSONObject requestParams = new JSONObject();
             try {
-                System.out.println(goal);
                 requestParams.put("socialContractId", getSocialContractId());
                 requestParams.put("twitterId", twitterId);
                 requestParams.put("mediaId", tweetId);
