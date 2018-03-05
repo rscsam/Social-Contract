@@ -130,9 +130,7 @@ public class MainActivity extends AppCompatActivity implements
 
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // model initialization
-        updateCoinNumber();
+        
 
     }
 
