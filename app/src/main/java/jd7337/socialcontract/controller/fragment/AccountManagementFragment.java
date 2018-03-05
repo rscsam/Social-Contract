@@ -9,11 +9,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -22,30 +28,36 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
-import android.widget.ImageButton;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.model.TwitterUserService;
 import jd7337.socialcontract.model.UserQueryTwitterApiClient;
+import jd7337.socialcontract.view.adapter.AccountListAdapter;
+import jd7337.socialcontract.view.holder.AccountListItem;
 import retrofit2.Call;
 
 public class AccountManagementFragment extends Fragment {
 
     private AccountManagementFListener mListener;
-    private String userID;  //the user id in our database
+    private String userId;  //the user id in our database
 
-    private ViewGroup viewTemp;
-    private LinearLayout twLayoutTemp, igLayoutTemp; // temp
+    private List<String> twUserNameList = new ArrayList<>();
+    private List<String> twIdList = new ArrayList<>();
+    private List<Bitmap> twProfilePicList = new ArrayList<>();
+    private List<String> inUserNameList = new ArrayList<>();
+    private List<String> inIdList = new ArrayList<>();
+    private List<Bitmap> inProfilePicList = new ArrayList<>();
 
     public AccountManagementFragment() {
         // Required empty public constructor
@@ -59,37 +71,6 @@ public class AccountManagementFragment extends Fragment {
         return fragment;
     }
 
-    public ImageButton deleteTwitterButton(String twitterId) {
-        final String tId = twitterId;
-        ImageButton deleteTwitterButton = new ImageButton(getActivity());
-        deleteTwitterButton.setOnClickListener(
-            new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    deleteTwitterAccount(tId);
-                    viewTemp.removeView(twLayoutTemp);
-                }
-            }
-        );
-        return deleteTwitterButton;
-    }
-
-    public ImageButton deleteInstagramButton(String instagramId) {
-        final String iId = instagramId;
-        ImageButton deleteInstagramButton = new ImageButton(getActivity());
-        deleteInstagramButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        deleteInstagramAccount(iId);
-                        viewTemp.removeView(igLayoutTemp);
-                    }
-                }
-        );
-
-        return deleteInstagramButton;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,13 +82,18 @@ public class AccountManagementFragment extends Fragment {
         // Inflate the layout for this fragment
 
         if (getArguments() != null) {
-            userID = getArguments().getString("userId");
+            userId = getArguments().getString("userId");
         }
+        twUserNameList.clear();
+        twIdList.clear();
+        twProfilePicList.clear();
+        inUserNameList.clear();
+        inIdList.clear();
+        inProfilePicList.clear();
         Twitter.initialize(getContext());
-
-        final View view = inflater.inflate(R.layout.fragment_account_management, container, false);
-        viewTemp = (ViewGroup) view;
-
+        View view = inflater.inflate(R.layout.fragment_account_management, container, false);
+        TextView instructionsTextView = view.findViewById(R.id.instruction_tv);
+        instructionsTextView.setText(R.string.loading_accounts);
         view.findViewById(R.id.connectButtonAccountManagement).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -116,54 +102,71 @@ public class AccountManagementFragment extends Fragment {
                     }
                 }
         );
-
-        userID = mListener.getSocialContractId();
-
-        final LinearLayout instaLayout = (LinearLayout) view.findViewById(R.id.igLinearLayout);
-        igLayoutTemp = instaLayout;
-        // retrieve and set instagram account info
-        String url2 = ServerDelegate.SERVER_URL + "/instagramAccounts";
-        Map<String, String> params2 = new HashMap<>();
-        params2.put("socialContractId", userID);
-        ServerDelegate.postRequest(getContext(), url2, params2, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                //set instagram profile
-                String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
-                String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
-                String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                setInsData(insURL, container, instaName);
-
-                ImageButton inDeleteButton = deleteInstagramButton(instaId);
-                inDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                inDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                instaLayout.addView(inDeleteButton);
-            }
-        });
-
-        // retrieve and set twitter account info
-        String retrieveTwitterIdUrl = ServerDelegate.SERVER_URL + "/twitterAccounts";
-        Map<String, String> twitterParams = new HashMap<>();
-        twitterParams.put("socialContractId", userID);
-        ServerDelegate.postRequest(getContext(), retrieveTwitterIdUrl, twitterParams,
-                new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                JSONArray accounts = response.getJSONArray("accounts");
-                if (accounts.length() > 0) {
-                    JSONObject account = accounts.getJSONObject(0);
-                    String twitterIdString = account.getString("twitterId");
-                    Long twitterId = Long.parseLong(twitterIdString);
-                    setTwitterProfilePic(twitterId, container);
-                }
-            }
-        });
-
+        getAccountsInit(container);
         return view;
     }
 
-    private void setTwitterProfilePic(final Long twitterId, final ViewGroup container) {
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof AccountManagementFListener) {
+            mListener = (AccountManagementFListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement AccountManagementFListener");
+        }
+    }
+
+    public void getAccountsInit(final ViewGroup container) {
+        getTwitterAccounts(container);
+    }
+
+    private void getTwitterAccounts(final ViewGroup container) {
+        String retrieveTwitterIdUrl = ServerDelegate.SERVER_URL + "/twitterAccounts";
+        Map<String, String> twitterParams = new HashMap<>();
+        twitterParams.put("socialContractId", userId);
+        ServerDelegate.postRequest(getContext(), retrieveTwitterIdUrl, twitterParams, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                for (int i = 0; i < accounts.length(); i++) {
+                    JSONObject account = accounts.getJSONObject(i);
+                    String twitterIdString = account.getString("twitterId");
+                    Long twitterId = Long.parseLong(twitterIdString);
+                    // retrieves the profile picture and account name
+                    // sends true if this is the last Twitter profile
+                    setTwitterProfile(twitterId, container, i == accounts.length() - 1);
+                    twIdList.add(twitterIdString);
+                }
+                if (accounts.length() == 0) {
+                    getInstagramAccount(container);
+                }
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                getInstagramAccount(container);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
+                Toast.makeText(getContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error retrieving Twitter accounts", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                getInstagramAccount(container);
+            }
+        });
+    }
+
+    /**
+     * Retrieves and stores profile pic and username
+     * @param twitterId - the user's twitter id
+     * @param container - view group for the layout
+     * @param lastProfile - true if this is the last Twitter profile and Instagram should be called next
+     */
+    private void setTwitterProfile(Long twitterId, final ViewGroup container, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
         TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
@@ -182,24 +185,27 @@ public class AccountManagementFragment extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    ImageView twProfilePic = container.findViewById(R.id.twProfilePic);
-                                    twProfilePic.setImageBitmap(profilePic);
-                                    TextView twNameTextView = container.findViewById(R.id.twaccountName);
-                                    twNameTextView.setText(userName);
-                                    ImageButton twDeleteButton = deleteTwitterButton(twitterId.toString());
-                                    twDeleteButton.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
-                                    twDeleteButton.setImageResource(R.drawable.ic_delete_black_24dp);
-                                    LinearLayout twitterLayout = (LinearLayout) container.findViewById(R.id.twLinearLayout);
-                                    twLayoutTemp = twitterLayout;
-                                    twitterLayout.addView(twDeleteButton);
+                                    twProfilePicList.add(profilePic);
+                                    twUserNameList.add(userName);
+                                    if (lastProfile) {
+                                        getInstagramAccount(container);
+                                    }
                                 }
                             });
                         } catch (MalformedURLException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
+                            // Continue chain of calls if there's a failure
+                            if (lastProfile) {
+                                getInstagramAccount(container);
+                            }
                         } catch (java.io.IOException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                             e.printStackTrace();
+                            // Continue chain of calls if there's a failure
+                            if (lastProfile) {
+                                getInstagramAccount(container);
+                            }
                         }
                     }
                 });
@@ -210,105 +216,128 @@ public class AccountManagementFragment extends Fragment {
             public void failure(TwitterException e) {
                 Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
                 Log.d("TwitterKit", "Set Twitter Image Error", e);
+                // Continue chain of calls if there's a failure
+                if (lastProfile) {
+                    getInstagramAccount(container);
+                }
             }
         });
     }
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof AccountManagementFListener) {
-            mListener = (AccountManagementFListener) context;
+    private void getInstagramAccount(final ViewGroup container) {
+        String url = ServerDelegate.SERVER_URL + "/instagramAccounts";
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", userId);
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                for (int i = 0; i < accounts.length(); i++) {
+                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
+                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
+                    // sends true for the last parameter if this is the last Instagram account
+                    setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
+                    inIdList.add(instaId);
+                }
+                if (accounts.length() == 0) {
+                    settleAccounts(container);
+                }
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error retrieving Instagram accounts", Toast.LENGTH_SHORT).show();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
+            }
+        });
+    }
+
+    private void setInstagramData(String url, final String instaName, final ViewGroup container, final boolean lastAccount) {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String picUrl = response.getJSONObject("data").getString("profile_picture");
+                                    URL url = new URL(picUrl);
+                                    final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            inProfilePicList.add(profilePic);
+                                            inUserNameList.add(instaName);
+                                            if (lastAccount) {
+                                                settleAccounts(container);
+                                            }
+                                        }
+                                    });
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    // Continue chain of calls if there's a failure
+                                    if (lastAccount) {
+                                        settleAccounts(container);
+                                    }
+                                }
+                            }
+                        });
+                        thread.start();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.getStackTrace();
+                // Continue chain of calls if there's a failure
+                settleAccounts(container);
+            }
+        });
+        queue.add(getRequest);
+    }
+
+    private void settleAccounts(ViewGroup container) {
+        int numAccounts = twUserNameList.size();
+        numAccounts += inUserNameList.size();
+        AccountListItem[] accounts = new AccountListItem[numAccounts];
+        int i = 0;
+        for (int x = 0; x < twUserNameList.size(); x++) {
+            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), "TWITTER");
+            accounts[i].setShowDelete(true);
+            i++;
+        }
+        for (int x = 0; x < inUserNameList.size(); x++) {
+            accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), "INSTAGRAM");
+            accounts[i].setShowDelete(true);
+        }
+        // Set adapter
+        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, false, userId);
+        ListView accountList = container.findViewById(R.id.account_list);
+        accountList.setAdapter(accountsAdapter);
+        TextView instructionTextView = container.findViewById(R.id.instruction_tv);
+        // Change instruction text if no accounts are connected
+        if (numAccounts == 0) {
+            instructionTextView.setText(R.string.no_accounts_connected);
         } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement AccountManagementFListener");
+            // Change instruction text back
+            instructionTextView.setText(R.string.choose_which_account_to_grow);
         }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    private void setInsData(String url, final ViewGroup container, final String instaName) {
-        ServerDelegate.getRequest(getContext(), url, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, final JSONObject response) throws JSONException {
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            String picUrl = response.getJSONObject("data").getString("profile_picture");
-                            URL url = new URL(picUrl);
-                            final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
-                            //Bitmap profilePic = getBitmapFromURL(picUrl);
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    ImageView igProfilePic = container.findViewById(R.id.igProfilePic);
-                                    igProfilePic.setImageBitmap(profilePic);
-                                    TextView igNameTxt = container.findViewById(R.id.igName);
-                                    igNameTxt.setText(instaName);
-                                }
-                            });
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                thread.start();
-            }
-        });
-    }
-
-    /**
-     * Deletes a user's Instagram account
-     */
-    private void deleteInstagramAccount(String instagramId){
-        String url = ServerDelegate.SERVER_URL + "/deleteInstagram";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userID);
-        params.put("instagramId", instagramId);
-        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                if (success) {
-                    Toast.makeText(getActivity(), "Instagram account deleted", Toast.LENGTH_LONG).show();
-                    //revokePermissions(ac, fId);
-                } else {
-                    String message = response.getString("message");
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
-    /**
-     * Deletes a user's Twitter account
-     */
-    private void deleteTwitterAccount(String twitterId){
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/deleteTwitter";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("socialContractId", userID);
-        params.put("twitterId", twitterId);
-        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
-            @Override
-            public void onResult(boolean success, JSONObject response) throws JSONException {
-                if (success) {
-                    Toast.makeText(getActivity(), "Twitter account deleted", Toast.LENGTH_LONG).show();
-                } else {
-                    String message = response.getString("message");
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-    }
-
     public interface AccountManagementFListener {
-        String getSocialContractId();
         void onClickAccountConnect();
     }
 

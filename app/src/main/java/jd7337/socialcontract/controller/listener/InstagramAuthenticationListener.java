@@ -6,6 +6,6 @@ package jd7337.socialcontract.controller.listener;
 
 public interface InstagramAuthenticationListener {
 
-    void onCodeReceived(final String auth_token);
+    void onInstagramAuthTokenReceived(final String auth_token);
 
 }

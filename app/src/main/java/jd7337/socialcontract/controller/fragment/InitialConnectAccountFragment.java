@@ -57,7 +57,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         View view = inflater.inflate(R.layout.fragment_initial_connect_account, container, false);
 
         // Twitter connection
-        twLoginButton = (TwitterLoginButton) view.findViewById(R.id.tw_login_button);
+        twLoginButton = view.findViewById(R.id.tw_login_button);
         twLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
@@ -123,7 +123,7 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(final String token) {  // this is the actual instagram token
+    public void onInstagramAuthTokenReceived(final String token) {  // this is the actual instagram token
         if (token == null) {
             auth_dialog.dismiss();
         } else {

@@ -2,6 +2,8 @@ package jd7337.socialcontract.view.holder;
 
 import android.graphics.Bitmap;
 
+import jd7337.socialcontract.R;
+
 /**
  * Created by sam on 11/26/17.
  */
@@ -9,15 +11,19 @@ import android.graphics.Bitmap;
 public class AccountListItem {
 
     private Bitmap profilePicBitmap;
-    private int smTypePicId;
     private String profileName;
+    private String socialMediaType; // "TWITTER" or "INSTAGRAM"
+    private String smId;
 
     private boolean showingExtraSettings = false;
+    private boolean showDelete = false;
 
-    public AccountListItem(Bitmap profilePicBitmap, String profileName, int smTypePicId) {
+    public AccountListItem(Bitmap profilePicBitmap, String profileName,
+                           String smId, String socialMediaType) {
         this.profilePicBitmap = profilePicBitmap;
-        this.smTypePicId = smTypePicId;
         this.profileName = profileName;
+        this.socialMediaType = socialMediaType;
+        this.smId = smId;
     }
 
     public Bitmap getProfilePicBitmap() {
@@ -29,11 +35,11 @@ public class AccountListItem {
     }
 
     public int getSmTypePicId() {
-        return smTypePicId;
-    }
-
-    public void setSmTypePicId(int smTypePicId) {
-        this.smTypePicId = smTypePicId;
+        if (socialMediaType.equals("INSTAGRAM")) {
+            return R.drawable.instagram_icon;
+        } else {
+            return R.drawable.twitter_icon;
+        }
     }
 
     public String getProfileName() {
@@ -44,11 +50,35 @@ public class AccountListItem {
         this.profileName = profileName;
     }
 
+    public String getSocialMediaType() {
+        return socialMediaType;
+    }
+
+    public void setSocialMediaType(String socialMediaType) {
+        this.socialMediaType = socialMediaType;
+    }
+
+    public String getSmId() {
+        return smId;
+    }
+
+    public void setSmId(String smId) {
+        this.smId = smId;
+    }
+
     public boolean isShowingExtraSettings() {
         return showingExtraSettings;
     }
 
     public void setShowingExtraSettings(boolean showingExtraSettings) {
         this.showingExtraSettings = showingExtraSettings;
+    }
+
+    public boolean isShowDelete() {
+        return showDelete;
+    }
+
+    public void setShowDelete(boolean showDelete) {
+        this.showDelete = showDelete;
     }
 }
