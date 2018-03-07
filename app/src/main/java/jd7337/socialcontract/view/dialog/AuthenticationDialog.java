@@ -80,7 +80,7 @@ public class AuthenticationDialog extends Dialog {
                     CookieManager cookieManager = CookieManager.getInstance();
                     cookieManager.removeAllCookies(null);
                 } else if (url.contains("?error")) {
-                    Toast.makeText(context, "Error Occured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error Occurred", Toast.LENGTH_SHORT).show();
                     dismiss();
                 }
             }

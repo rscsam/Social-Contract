@@ -58,8 +58,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="register_email">Email:</string>
     <string name="confirm_email_address">Confirm email address</string>
-    <string name="thanks_nsocial_contract_team">Thanks, Social Contract Team</string>
-    <string name="hi_nthakns_for_creating_a_social_contract_account_to_continue_please_confirm_your_email_address_by_clicking_the_button_below">Hi, Thakns for creating a Social Contract account. To continue, please confirm your email address by clicking the button below.</string>
+    <string name="thanks_social_contract_team">Thanks, Social Contract Team</string>
+    <string name="hi_thanks_for_creating_a_social_contract_account_to_continue_please_confirm_your_email_address_by_clicking_the_button_below">Hi, Thanks for creating a Social Contract account. To continue, please confirm your email address by clicking the button below.</string>
     <string name="skip">Skip</string>
     <string name="finish">Finish</string>
     <string name="no_tweets">No Tweets</string>
@@ -128,4 +128,5 @@
     <string name="edit_interest_profile">Edit Interest Profile</string>
     <string name="new_email">New Email</string>
     <string name="new_password">New Password</string>
+    <string name="retweets">Retweets</string>
 </resources>
