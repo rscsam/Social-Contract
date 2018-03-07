@@ -86,10 +86,10 @@ public class GrowFragment extends Fragment {
                                     type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
-                                        case "Like":
+                                        case "Likes":
                                             price = 1;
                                             break;
-                                        case "Share":
+                                        case "Shares":
                                             price = 5;
                                             break;
                                         default:

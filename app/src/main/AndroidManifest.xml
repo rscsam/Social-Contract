@@ -33,6 +33,8 @@
         </activity>
         <activity android:name=".controller.activity.ConfirmEmailActivity">
         </activity>
+        <activity android:name=".controller.activity.InstagramFeedActivity">
+        </activity>
     </application>
 
 </manifest>
