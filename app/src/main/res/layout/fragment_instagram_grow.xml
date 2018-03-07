@@ -108,21 +108,21 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/in_like_coin_iv" />
 
             <ImageView
                 android:id="@+id/in_share_coin_iv"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/in_share_coin_iv" />
 
             <ImageView
                 android:id="@+id/in_follow_coin_iv"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/in_follow_coin_iv" />
 
         </LinearLayout>
 

@@ -56,7 +56,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
 
             <ImageView
                 android:id="@+id/intro_indicator_1"
@@ -64,7 +65,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
 
             <ImageView
                 android:id="@+id/intro_indicator_2"
@@ -72,7 +74,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
 
             <ImageView
                 android:id="@+id/intro_indicator_3"
@@ -80,7 +83,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
 
             <ImageView
                 android:id="@+id/intro_indicator_4"
@@ -88,7 +92,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
 
             <ImageView
                 android:id="@+id/intro_indicator_5"
@@ -96,7 +101,8 @@
                 android:layout_height="8dp"
                 android:layout_marginStart="4dp"
                 android:layout_marginEnd="4dp"
-                android:background="@drawable/indicator_unselected"/>
+                android:background="@drawable/indicator_unselected"
+                android:contentDescription="@string/intro_indicator" />
         </LinearLayout>
 
         <Button
@@ -116,7 +122,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end|center"
             android:padding="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_chevron_right_white_24dp"/>
+            android:src="@drawable/ic_chevron_right_white_24dp"
+            android:contentDescription="@string/intro_next_button" />
     </FrameLayout>
 
 

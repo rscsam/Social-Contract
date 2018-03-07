@@ -107,21 +107,21 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/tw_coin_iv" />
 
             <ImageView
                 android:id="@+id/tw_retweet_coin_iv"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/tw_coin_iv" />
 
             <ImageView
                 android:id="@+id/tw_follow_coin_iv"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
-                />
+                android:contentDescription="@string/tw_coin_iv" />
 
         </LinearLayout>
 

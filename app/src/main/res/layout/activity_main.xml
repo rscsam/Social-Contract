@@ -33,7 +33,8 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:onClick="onClickProfile"
-                    app:srcCompat="@drawable/user_icon"/>
+                    app:srcCompat="@drawable/user_icon"
+                    android:contentDescription="user_logo" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/coin_layout"
@@ -47,7 +48,8 @@
                     android:id="@+id/toolbar_coin_iv"
                     android:layout_width="35dp"
                     android:layout_height="35dp"
-                    app:srcCompat="@drawable/coin_icon" />
+                    app:srcCompat="@drawable/coin_icon"
+                    android:contentDescription="toolbar_coin_iv" />
                 <TextView
                     android:id="@+id/num_coins_tv"
                     android:layout_width="wrap_content"

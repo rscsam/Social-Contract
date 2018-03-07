@@ -93,4 +93,22 @@
     <string name="tap_grow_to_gain_followers_likes_and_more">Tap Grow to gain followers, likes, and more!</string>
     <string name="or">OR</string>
     <string name="tap_discover_to_start_earning_coins">Tap Discover to start earning coins!.</string>
+    <string name="intro_indicator">intro_indicator</string>
+    <string name="intro_next_button">intro_next_button</string>
+    <string name="discover_like_icon">discover_like_icon</string>
+    <string name="discover_retweet_icon">discover_retweet_icon</string>
+    <string name="discover_follow_icon">discover_follow_icon</string>
+    <string name="coin_icon">coin_icon</string>
+    <string name="tweet_image">tweet_image</string>
+    <string name="fb_like_coin_iv">fb_like_coin_iv</string>
+    <string name="fb_share_coin_iv">fb_share_coin_iv</string>
+    <string name="home_request_image">home_request_image</string>
+    <string name="imageviewinstagram">imageViewInstagram</string>
+    <string name="imageviewtwitter">imageViewTwitter</string>
+    <string name="in_login_button">in_login_button</string>
+    <string name="in_like_coin_iv">in_like_coin_iv</string>
+    <string name="in_share_coin_iv">in_share_coin_iv</string>
+    <string name="in_follow_coin_iv">in_follow_coin_iv</string>
+    <string name="intro_image">intro_image</string>
+    <string name="tw_coin_iv">tw_coin_iv</string>
 </resources>

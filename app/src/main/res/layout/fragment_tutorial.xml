@@ -17,7 +17,8 @@
             android:layout_gravity="center"
             android:adjustViewBounds="true"
             android:src="@drawable/ic_search_white_48dp"
-            android:scaleType="fitCenter" />
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/intro_image" />
     </FrameLayout>
 
     <LinearLayout

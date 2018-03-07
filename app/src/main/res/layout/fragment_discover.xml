@@ -14,19 +14,22 @@
             android:id="@+id/discover_like_icon"
             android:layout_width="61dp"
             android:layout_height="49dp"
-            android:src="@drawable/like_selected"/>
+            android:src="@drawable/like_selected"
+            android:contentDescription="@string/discover_like_icon" />
 
         <ImageView
             android:id="@+id/discover_retweet_icon"
             android:layout_width="61dp"
             android:layout_height="49dp"
-            android:src="@drawable/retweet_transparent" />
+            android:src="@drawable/retweet_transparent"
+            android:contentDescription="@string/discover_retweet_icon" />
 
         <ImageView
             android:id="@+id/discover_follow_icon"
             android:layout_width="61dp"
             android:layout_height="49dp"
-            android:src="@drawable/follow_transparent" />
+            android:src="@drawable/follow_transparent"
+            android:contentDescription="@string/discover_follow_icon" />
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -51,7 +54,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginTop="2dp"
-            android:src="@drawable/coin_icon" />
+            android:src="@drawable/coin_icon"
+            android:contentDescription="@string/coin_icon" />
     </LinearLayout>
 
     <ImageView
@@ -59,7 +63,8 @@
         android:layout_width="380dp"
         android:layout_height="281dp"
         android:src="@drawable/tweet"
-        app:layout_constraintTop_toBottomOf="@+id/coin_text_group" />
+        app:layout_constraintTop_toBottomOf="@+id/coin_text_group"
+        android:contentDescription="@string/tweet_image" />
 
     <TextView
         android:id="@+id/skip_text"
