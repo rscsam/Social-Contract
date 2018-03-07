@@ -51,7 +51,7 @@ public class ProfileFragment extends Fragment {
         userId = getArguments().getString("userId");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        Button accountManagementButton = (Button) view.findViewById(R.id.account_management_button);
+        Button accountManagementButton = view.findViewById(R.id.account_management_button);
         accountManagementButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -61,7 +61,7 @@ public class ProfileFragment extends Fragment {
                 }
         );
 
-        Button editInterestProfileButton = (Button) view.findViewById(R.id.edit_interest_profile_button);
+        Button editInterestProfileButton = view.findViewById(R.id.edit_interest_profile_button);
         editInterestProfileButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -71,10 +71,10 @@ public class ProfileFragment extends Fragment {
                 }
         );
         // Set the user's email to display
-        TextView emailTextView = (TextView) view.findViewById(R.id.displayed_email_tv);
+        TextView emailTextView = view.findViewById(R.id.displayed_email_tv);
         emailTextView.setText(email);
         // Button to start changing user's email
-        Button changeEmailButton = (Button) view.findViewById(R.id.change_email_bt);
+        Button changeEmailButton = view.findViewById(R.id.change_email_bt);
         changeEmailButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -85,12 +85,12 @@ public class ProfileFragment extends Fragment {
                 }
         );
         // Submit change to user's email
-        final Button confirmEmailButton = (Button) view.findViewById(R.id.confirm_email_bt);
+        final Button confirmEmailButton = view.findViewById(R.id.confirm_email_bt);
         confirmEmailButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+                        EditText editEmailEditText = container.findViewById(R.id.edit_email_et);
                         String newEmail = editEmailEditText.getText().toString();
                         if (isValidEmail(newEmail)) {
                             changeEmail(newEmail, container);
@@ -104,13 +104,13 @@ public class ProfileFragment extends Fragment {
                     }
                 }
         );
-        Button cancelEmailButton = (Button) view.findViewById(R.id.cancel_email_bt);
+        Button cancelEmailButton = view.findViewById(R.id.cancel_email_bt);
         cancelEmailButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         //Clear the entered email
-                        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
+                        EditText editEmailEditText = container.findViewById(R.id.edit_email_et);
                         editEmailEditText.setText("");
                         stopEditingEmail(container);
                         hideKeyboard();
@@ -118,7 +118,7 @@ public class ProfileFragment extends Fragment {
                 }
         );
         // Allow user to begin editing password
-        Button changePasswordButton = (Button) view.findViewById(R.id.change_password_bt);
+        Button changePasswordButton = view.findViewById(R.id.change_password_bt);
         changePasswordButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -129,7 +129,7 @@ public class ProfileFragment extends Fragment {
                 }
         );
         // Submit change to password
-        Button confirmPasswordButton = (Button) view.findViewById(R.id.confirm_password_bt);
+        Button confirmPasswordButton = view.findViewById(R.id.confirm_password_bt);
         confirmPasswordButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -150,7 +150,7 @@ public class ProfileFragment extends Fragment {
                 }
         );
         // Stop editing password and don't change
-        Button cancelPasswordButton = (Button) view.findViewById(R.id.cancel_password_bt);
+        Button cancelPasswordButton = view.findViewById(R.id.cancel_password_bt);
         cancelPasswordButton.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
@@ -194,7 +194,7 @@ public class ProfileFragment extends Fragment {
                     Toast.makeText(ProfileFragment.super.getContext(),
                             "Successfully changed email", Toast.LENGTH_SHORT).show();
                     email = newEmail;
-                    TextView emailTextView = (TextView) container.findViewById(R.id.displayed_email_tv);
+                    TextView emailTextView = container.findViewById(R.id.displayed_email_tv);
                     emailTextView.setText(newEmail);
                     MainActivity activity = (MainActivity) getActivity();
                     activity.setEmail(email);
@@ -263,7 +263,7 @@ public class ProfileFragment extends Fragment {
     /**
      * Uses the salt to hash the password, and then calls change password
      * @param password - password to be hashed
-     * @return String - the hashed password
+     *
      */
     private void hashPassword(String password, String salt) {
         String concat = password + salt;
@@ -286,10 +286,10 @@ public class ProfileFragment extends Fragment {
      * @param container - ViewGroup with reference to layout's views
      */
     private void beginEditingEmail(ViewGroup container) {
-        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
-        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
-        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
-        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
+        Button changeEmailButton = container.findViewById(R.id.change_email_bt);
+        EditText editEmailEditText = container.findViewById(R.id.edit_email_et);
+        Button confirmEmailButton = container.findViewById(R.id.confirm_email_bt);
+        Button cancelEmailButton = container.findViewById(R.id.cancel_email_bt);
         changeEmailButton.setVisibility(View.GONE);
         editEmailEditText.setVisibility(View.VISIBLE);
         confirmEmailButton.setVisibility(View.VISIBLE);
@@ -301,10 +301,10 @@ public class ProfileFragment extends Fragment {
      * @param container - ViewGroup with reference to layout's views
      */
     private void stopEditingEmail(ViewGroup container) {
-        Button cancelEmailButton = (Button) container.findViewById(R.id.cancel_email_bt);
-        EditText editEmailEditText = (EditText) container.findViewById(R.id.edit_email_et);
-        Button confirmEmailButton = (Button) container.findViewById(R.id.confirm_email_bt);
-        Button changeEmailButton = (Button) container.findViewById(R.id.change_email_bt);
+        Button cancelEmailButton = container.findViewById(R.id.cancel_email_bt);
+        EditText editEmailEditText = container.findViewById(R.id.edit_email_et);
+        Button confirmEmailButton = container.findViewById(R.id.confirm_email_bt);
+        Button changeEmailButton = container.findViewById(R.id.change_email_bt);
         cancelEmailButton.setVisibility(View.GONE);
         editEmailEditText.setVisibility(View.GONE);
         confirmEmailButton.setVisibility(View.GONE);
@@ -316,10 +316,10 @@ public class ProfileFragment extends Fragment {
      * @param container - ViewGroup with reference to layout's views
      */
     private void beginEditingPassword(ViewGroup container) {
-        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
-        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
-        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
-        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
+        Button changePasswordButton = container.findViewById(R.id.change_password_bt);
+        EditText editPasswordEditText = container.findViewById(R.id.edit_password_et);
+        Button confirmPasswordButton = container.findViewById(R.id.confirm_password_bt);
+        Button cancelPasswordButton = container.findViewById(R.id.cancel_password_bt);
         changePasswordButton.setVisibility(View.GONE);
         editPasswordEditText.setVisibility(View.VISIBLE);
         confirmPasswordButton.setVisibility(View.VISIBLE);
@@ -331,10 +331,10 @@ public class ProfileFragment extends Fragment {
      * @param container - ViewGroup with reference to layout's views
      */
     private void stopEditingPassword(ViewGroup container) {
-        Button cancelPasswordButton = (Button) container.findViewById(R.id.cancel_password_bt);
-        EditText editPasswordEditText = (EditText) container.findViewById(R.id.edit_password_et);
-        Button confirmPasswordButton = (Button) container.findViewById(R.id.confirm_password_bt);
-        Button changePasswordButton = (Button) container.findViewById(R.id.change_password_bt);
+        Button cancelPasswordButton = container.findViewById(R.id.cancel_password_bt);
+        EditText editPasswordEditText = container.findViewById(R.id.edit_password_et);
+        Button confirmPasswordButton = container.findViewById(R.id.confirm_password_bt);
+        Button changePasswordButton = container.findViewById(R.id.change_password_bt);
         cancelPasswordButton.setVisibility(View.GONE);
         editPasswordEditText.setVisibility(View.GONE);
         confirmPasswordButton.setVisibility(View.GONE);

@@ -1,20 +1,3 @@
-/**
- * Certain portions of this activity were inspired by or derivative of
- * Suleiman19/Android-Material-Design-for-pre-Lollipop
- *
- * Copyright notice below
- *
- * Copyright 2017 Suleiman Ali Shakir
- Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
- compliance with the License. You may obtain a copy of the License at
- http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software distributed under the License is
- distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and limitations under the License.
- */
-
-
-
 package jd7337.socialcontract.controller.activity;
 
 import android.animation.ArgbEvaluator;
@@ -44,6 +27,20 @@ import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.EditInterestProfilePromptFragment;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 
+/**
+ * Certain portions of this activity were inspired by or derivative of
+ * Suleiman19/Android-Material-Design-for-pre-Lollipop
+ *
+ * Copyright notice below
+ *
+ * Copyright 2017 Suleiman Ali Shakir
+ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in
+ compliance with the License. You may obtain a copy of the License at
+ http://www.apache.org/licenses/LICENSE-2.0
+ Unless required by applicable law or agreed to in writing, software distributed under the License is
+ distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and limitations under the License.
+ */
 public class TutorialActivity extends AppCompatActivity implements
         InitialConnectAccountFragment.InitialConnectAccountFListener,
         EditInterestProfilePromptFragment.EditInterestProfilePromptFListener,
@@ -99,22 +96,22 @@ public class TutorialActivity extends AppCompatActivity implements
         eippFragment = new EditInterestProfilePromptFragment();
         eipFragment = new EditInterestProfileFragment();
 
-        mNextButton = (ImageButton) findViewById(R.id.intro_next_button);
-        mSkipButton = (Button) findViewById(R.id.intro_skip_button);
-        mFinishButton = (Button) findViewById(R.id.intro_finish_button);
+        mNextButton = findViewById(R.id.intro_next_button);
+        mSkipButton = findViewById(R.id.intro_skip_button);
+        mFinishButton = findViewById(R.id.intro_finish_button);
 
-        zero = (ImageView) findViewById(R.id.intro_indicator_0);
-        one = (ImageView) findViewById(R.id.intro_indicator_1);
-        two = (ImageView) findViewById(R.id.intro_indicator_2);
-        three = (ImageView) findViewById(R.id.intro_indicator_3);
-        four = (ImageView) findViewById(R.id.intro_indicator_4);
-        five = (ImageView) findViewById(R.id.intro_indicator_5);
+        zero = findViewById(R.id.intro_indicator_0);
+        one = findViewById(R.id.intro_indicator_1);
+        two = findViewById(R.id.intro_indicator_2);
+        three = findViewById(R.id.intro_indicator_3);
+        four = findViewById(R.id.intro_indicator_4);
+        five = findViewById(R.id.intro_indicator_5);
         indicators = new ImageView[]{zero, one, two, three, four, five};
 
-        mCoordinator = (CoordinatorLayout) findViewById(R.id.tutorial2_activity);
+        mCoordinator = findViewById(R.id.tutorial2_activity);
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.intro_container);
+        mViewPager = findViewById(R.id.intro_container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mViewPager.setCurrentItem(page);
@@ -232,11 +229,11 @@ public class TutorialActivity extends AppCompatActivity implements
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_tutorial, container, false);
-            ImageView imageView = (ImageView) rootView.findViewById(R.id.intro_image);
+            ImageView imageView = rootView.findViewById(R.id.intro_image);
             imageView.setImageResource(images[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
-            TextView labelText = (TextView) rootView.findViewById(R.id.intro_label);
+            TextView labelText = rootView.findViewById(R.id.intro_label);
             labelText.setText(titles[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
-            TextView bodyText = (TextView) rootView.findViewById(R.id.intro_text);
+            TextView bodyText = rootView.findViewById(R.id.intro_text);
             bodyText.setText(texts[getArguments().getInt(ARG_SECTION_NUMBER) - 1]);
             return rootView;
         }
