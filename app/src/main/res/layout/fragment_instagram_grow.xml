@@ -46,7 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Share"
+                android:text="Shares"
                 tools:layout_editor_absoluteX="64dp"
                 tools:layout_editor_absoluteY="204dp" />
 
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Follow"
+                android:text="Follows"
                 tools:layout_editor_absoluteX="64dp"
                 tools:layout_editor_absoluteY="236dp" />
 
