@@ -41,7 +41,7 @@
             android:id="@+id/like_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Like for 1"
+            android:text="@string/like_for_1"
             android:textSize="24sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tweet_image"
         android:layout_marginStart="239dp"
         android:textColor="@color/gray"
-        android:text="Swipe to skip" />
+        android:text="@string/swipe_to_skip" />
 
     <Button
         android:id="@+id/im_done_button"
@@ -81,6 +81,6 @@
         app:layout_constraintStart_toStartOf="@+id/icons_group"
         app:layout_constraintEnd_toEndOf="@+id/icons_group"
         app:layout_constraintTop_toBottomOf="@+id/skip_text"
-        android:text="I'm Done" />
+        android:text="@string/i_m_done" />
 
 </android.support.constraint.ConstraintLayout>
