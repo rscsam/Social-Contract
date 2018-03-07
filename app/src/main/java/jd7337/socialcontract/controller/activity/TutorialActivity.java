@@ -18,7 +18,6 @@
 package jd7337.socialcontract.controller.activity;
 
 import android.animation.ArgbEvaluator;
-import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentTransaction;

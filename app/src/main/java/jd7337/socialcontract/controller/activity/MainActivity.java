@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,10 +30,8 @@ import java.util.Queue;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
-import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
 import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.Request;
-import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
 import jd7337.socialcontract.controller.fragment.ConfirmPurchaseDialogFragment;

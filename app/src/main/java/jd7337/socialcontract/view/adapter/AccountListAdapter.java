@@ -1,7 +1,6 @@
 package jd7337.socialcontract.view.adapter;
 
 import android.app.Activity;
-import android.media.Image;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;

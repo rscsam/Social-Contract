@@ -8,8 +8,6 @@ import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.Timeline;
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
-import jd7337.socialcontract.controller.activity.TwitterTimelineActivity;
-
 /**
  * Created by sam on 3/4/18.
  */

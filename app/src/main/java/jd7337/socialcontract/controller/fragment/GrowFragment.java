@@ -14,8 +14,6 @@ import android.widget.Toast;
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.model.SocialMediaAccount;
 
-import java.util.ArrayList;
-
 public class GrowFragment extends Fragment {
 
     private GrowFListener mListener;
