@@ -85,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements
 
         email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
+        System.out.println(userId);
 
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
@@ -269,6 +270,29 @@ public class MainActivity extends AppCompatActivity implements
                 startTwitter.putExtra("type", type);
                 startTwitter.putExtra("cost", totalPrice);
                 startActivityForResult(startTwitter, 420);
+            } else {
+                JSONObject requestParams = new JSONObject();
+                try {
+                    requestParams.put("socialContractId", getSocialContractId());
+                    requestParams.put("twitterId", account.getId());
+                    requestParams.put("goal", quantity);
+                    requestParams.put("type", type);
+                    requestParams.put("cost", totalPrice);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String url = ServerDelegate.SERVER_URL + "/addTwitterQueue";
+                final Context mContext = this;
+                ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+                    @Override
+                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                        if (success) {
+                            Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         } else if (accountType == SocialMediaAccount.AccountType.INSTAGRAM) {
             if (type.equals("Like") || type.equals("Share")) {

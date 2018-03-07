@@ -83,6 +83,7 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
                                         case "Likes":
@@ -122,15 +123,16 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
-                                        case "Likes":
+                                        case "Like":
                                             price = 1;
                                             break;
-                                        case "Retweets":
+                                        case "Retweet":
                                             price = 5;
                                             break;
-                                        case "Follows":
+                                        case "Follow":
                                             price = 10;
                                             break;
                                         default:
@@ -164,15 +166,16 @@ public class GrowFragment extends Fragment {
                                 RadioButton selected = interactionTypesRG.findViewById(selectId);
                                 if (selected != null) {
                                     String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
                                     int price;
                                     switch (type) {
-                                        case "Likes":
+                                        case "Like":
                                             price = 1;
                                             break;
-                                        case "Shares":
+                                        case "Share":
                                             price = 5;
                                             break;
-                                        case "Follows":
+                                        case "Follow":
                                             price = 10;
                                             break;
                                         default:
