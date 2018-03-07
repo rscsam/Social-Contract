@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements
         accountSelectFragment = AccountSelectFragment.newInstance(bundle);
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
         initialConnectAccountFragment = new InitialConnectAccountFragment();
-        requests = new LinkedList<Request>();
+        requests = new LinkedList<>();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_view, homeFragment).commit();

@@ -15,6 +15,7 @@ import jd7337.socialcontract.R;
 
 /**
  * Created by sam on 2/18/18.
+ *
  */
 
 public class SocialMediaAccountAdapter extends ArrayAdapter<String> {

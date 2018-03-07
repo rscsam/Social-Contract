@@ -10,6 +10,7 @@ import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;
 
 /**
  * Created by sam on 3/4/18.
+ *
  */
 
 public class SCTweetTimelineAdapter extends TweetTimelineListAdapter {

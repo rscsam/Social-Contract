@@ -15,11 +15,11 @@ import java.util.Arrays;
 import java.util.List;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.controller.activity.MainActivity;
 import jd7337.socialcontract.model.InstagramPost;
 
 /**
  * Created by sam on 3/6/18.
+ *
  */
 
 public class InstagramPostAdapter  extends ArrayAdapter<InstagramPost> {
@@ -30,7 +30,7 @@ public class InstagramPostAdapter  extends ArrayAdapter<InstagramPost> {
     public InstagramPostAdapter(Activity context, InstagramPost[] posts, boolean selectEnabled,
                                 String userId) {
         super(context, R.layout.account_select_item, Arrays.asList(posts));
-        this.context = (MainActivity) context;
+        this.context = context;
         this.posts = new ArrayList<>();
         this.posts.addAll(Arrays.asList(posts));
         this.userId = userId;

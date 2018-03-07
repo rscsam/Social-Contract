@@ -12,6 +12,7 @@ import jd7337.socialcontract.R;
 
 /**
  * Created by Ali Khosravi on 2/9/2018.
+ *
  */
 public class UpdateProfileFragment extends Fragment {
 

@@ -21,6 +21,7 @@ import jd7337.socialcontract.model.InterestProfile;
 
 /**
  * Created by sam on 2/11/18.
+ *
  */
 public class ServerDelegate {
 
