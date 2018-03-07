@@ -34,7 +34,7 @@
                     android:layout_height="30dp"
                     android:onClick="onClickProfile"
                     app:srcCompat="@drawable/user_icon"
-                    android:contentDescription="user_logo" />
+                    android:contentDescription="@string/user_logo" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/coin_layout"
@@ -49,7 +49,7 @@
                     android:layout_width="35dp"
                     android:layout_height="35dp"
                     app:srcCompat="@drawable/coin_icon"
-                    android:contentDescription="toolbar_coin_iv" />
+                    android:contentDescription="@string/toolbar_coin_iv" />
                 <TextView
                     android:id="@+id/num_coins_tv"
                     android:layout_width="wrap_content"

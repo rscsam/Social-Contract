@@ -12,7 +12,7 @@
         android:layout_height="49dp"
         android:layout_marginStart="72dp"
         android:layout_marginTop="64dp"
-        android:text="I want"
+        android:text="@string/i_want"
         android:textSize="30sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -73,7 +73,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:gravity="center_vertical"
-                android:text="1"
+                android:text="@string/_1"
                 android:textSize="18sp" />
 
             <TextView
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:gravity="center_vertical"
-                android:text="5"
+                android:text="@string/_5"
                 android:textSize="18sp" />
 
             <TextView
@@ -89,7 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
                 android:gravity="center_vertical"
-                android:text="10"
+                android:text="@string/_10"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -132,7 +132,7 @@
         android:layout_width="112dp"
         android:layout_height="45dp"
         android:layout_marginStart="72dp"
-        android:text="Quantity"
+        android:text="@string/quantity"
         android:textSize="24sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/twitter_cl" />
@@ -154,7 +154,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="Go!"
+        android:text="@string/go"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
