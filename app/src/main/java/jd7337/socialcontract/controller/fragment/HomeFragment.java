@@ -13,6 +13,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -27,7 +33,9 @@ import org.json.JSONObject;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
@@ -45,6 +53,8 @@ public class HomeFragment extends Fragment {
     private QueueAdapter adapter;
     private ListView listView;
     private ViewGroup container;
+    final Map<String, String> instagramAccess = new HashMap<>();
+    final Map<String, String> instagramNames = new HashMap<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -151,7 +161,27 @@ public class HomeFragment extends Fragment {
             } catch (JSONException e) {
                 Log.e("HomeFragment", "Error parsing JSON");
             }
+        }
 
+        getInstagramInfo();
+
+        for (int i = 0; i < instagram.length(); i++) {
+            try {
+                JSONObject json = instagram.getJSONObject(i);
+                String instagramId = json.getString("instagramId");
+                String username = instagramNames.get(instagramId);
+                String instaAccessToken = instagramAccess.get(instagramId);
+                String url = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
+
+                QueueListItem item = new QueueListItem(null, username,
+                        json.getInt("progress"), json.getInt("goal"),
+                        json.getString("type"), SocialMediaAccount.AccountType.INSTAGRAM);
+
+                displayInstagramRequest(url, item);
+
+            } catch (JSONException e) {
+                Log.e("HomeFragment", "Error parsing JSON");
+            }
         }
 
     }
@@ -202,6 +232,74 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    private void getInstagramInfo() {
+        String url = ServerDelegate.SERVER_URL + "/instagramAccounts";
+        Map<String, String> params = new HashMap<>();
+        params.put("socialContractId", socialContractId);
+        ServerDelegate.postRequest(getContext(), url, params, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray accounts = response.getJSONArray("accounts");
+                for (int i = 0; i < accounts.length(); i++) {
+                    String instaAccessToken = accounts.getJSONObject(0).getString("accessToken");
+                    String instaId = accounts.getJSONObject(0).getString("instagramId");
+                    String instaName = accounts.getJSONObject(0).getString("username");
+                    instagramAccess.put(instaId, instaAccessToken);
+                    instagramNames.put(instaId, instaName);
+
+                }
+
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(getActivity(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
+                Toast.makeText(getActivity(), error.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Error retrieving Instagram accounts", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void displayInstagramRequest(String url, final QueueListItem item) {
+        RequestQueue queue = Volley.newRequestQueue(getContext());
+        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(final JSONObject response) {
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    String picUrl = response.getJSONObject("data").getString("profile_picture");
+                                    URL url = new URL(picUrl);
+                                    final Bitmap profilePic= BitmapFactory.decodeStream(url.openStream());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            item.setProfilePic(profilePic);
+                                            adapter.add(item);
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        thread.start();
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.getStackTrace();
+            }
+        });
+        queue.add(getRequest);
     }
 
     public void hideText(View view) {
