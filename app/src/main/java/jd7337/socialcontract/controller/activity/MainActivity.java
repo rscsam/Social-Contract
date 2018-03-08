@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
         bundle.putString("userId", userId);
 
         // set the home fragment
-        homeFragment = new HomeFragment();
+        homeFragment = HomeFragment.newInstance(userId);
         discoverSettingsFragment = new DiscoverSettingsFragment();
         discoverFragment = new DiscoverFragment();
         growFragment = new GrowFragment();
