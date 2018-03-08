@@ -208,10 +208,10 @@ public class AccountSelectFragment extends Fragment {
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray accounts = response.getJSONArray("accounts");
                 for (int i = 0; i < accounts.length(); i++) {
-                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String instaAccessToken = accounts.getJSONObject(i).getString("accessToken");
+                    String instaName = accounts.getJSONObject(i).getString("username");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
+                    String instaId = accounts.getJSONObject(i).getString("instagramId");
                     // sends true for the last parameter if this is the last Instagram account
                     setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
                     inIdList.add(instaId);

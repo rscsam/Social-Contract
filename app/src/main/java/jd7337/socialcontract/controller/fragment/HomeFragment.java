@@ -243,9 +243,9 @@ public class HomeFragment extends Fragment {
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray accounts = response.getJSONArray("accounts");
                 for (int i = 0; i < accounts.length(); i++) {
-                    String instaAccessToken = accounts.getJSONObject(0).getString("accessToken");
-                    String instaId = accounts.getJSONObject(0).getString("instagramId");
-                    String instaName = accounts.getJSONObject(0).getString("username");
+                    String instaAccessToken = accounts.getJSONObject(i).getString("accessToken");
+                    String instaId = accounts.getJSONObject(i).getString("instagramId");
+                    String instaName = accounts.getJSONObject(i).getString("username");
                     instagramAccess.put(instaId, instaAccessToken);
                     instagramNames.put(instaId, instaName);
 
