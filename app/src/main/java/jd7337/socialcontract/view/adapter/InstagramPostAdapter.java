@@ -35,10 +35,10 @@ import jd7337.socialcontract.view.holder.AccountListItem;
 public class InstagramPostAdapter  extends ArrayAdapter<InstagramPost> {
     private Activity context;
     private List<InstagramPost> posts;
+    private PostSelectListener listener;
     private String userId;
 
-    public InstagramPostAdapter(Activity context, InstagramPost[] posts, boolean selectEnabled,
-                                String userId) {
+    public InstagramPostAdapter(Activity context, InstagramPost[] posts, String userId) {
         super(context, R.layout.account_select_item, Arrays.asList(posts));
         this.context = (MainActivity) context;
         this.posts = new ArrayList<>();
@@ -55,12 +55,27 @@ public class InstagramPostAdapter  extends ArrayAdapter<InstagramPost> {
                 .setImageBitmap(posts.get(position).getBitmap());
         ((TextView) row.findViewById(R.id.instagram_post_caption_tv))
                 .setText(posts.get(position).getCaption());
-
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (null != listener) {
+                    listener.onPostSelect(posts.get(position).getMediaId());
+                }
+            }
+        });
         return row;
     }
 
     @Override
     public int getCount() {
         return posts.size();
+    }
+
+    public void setListener(PostSelectListener listener) {
+        this.listener = listener;
+    }
+
+    public interface PostSelectListener {
+        void onPostSelect(String mediaId);
     }
 }

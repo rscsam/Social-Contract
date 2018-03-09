@@ -17,10 +17,10 @@ import com.android.volley.toolbox.Volley;
 
 public class SocialMediaDelegate {
 
-    public void receiveBitmapFromInstagram(Context context, String accessToken, String mediaId,
+    public static void receiveBitmapFromInstagram(Context context, String url,
                                            final OnBitmapReceivedListener listener) {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        String url = "https://api.instagram.com/v1/media/" + mediaId + "?access_token=" + accessToken;
+        //String url = "https://api.instagram.com/v1/media/" + mediaId + "?access_token=" + accessToken;
         // Initialize a new ImageRequest
         ImageRequest imageRequest = new ImageRequest(
                 url, // Image URL
@@ -44,6 +44,8 @@ public class SocialMediaDelegate {
 
         requestQueue.add(imageRequest);
     }
+
+
 
     public interface OnBitmapReceivedListener {
         void onBitmapReceived(Bitmap response);

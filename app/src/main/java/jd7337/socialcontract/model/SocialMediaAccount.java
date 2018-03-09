@@ -9,6 +9,8 @@ public class SocialMediaAccount {
     private String id;
     private AccountType typeResource;
 
+    private String accessToken; // only for insta
+
     public SocialMediaAccount(String id, String username, AccountType typeResource) {
         this.id = id;
         this.username = username;
@@ -41,5 +43,13 @@ public class SocialMediaAccount {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 }
