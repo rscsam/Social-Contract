@@ -40,14 +40,14 @@ public class InstagramPostAdapter  extends ArrayAdapter<InstagramPost> {
 
     public InstagramPostAdapter(Activity context, InstagramPost[] posts, String userId) {
         super(context, R.layout.account_select_item, Arrays.asList(posts));
-        this.context = (MainActivity) context;
+        this.context = context;
         this.posts = new ArrayList<>();
         this.posts.addAll(Arrays.asList(posts));
         this.userId = userId;
     }
 
     @NonNull
-    public View getView(final int position, View view, ViewGroup parent) {
+    public View getView(final int position, View view, @NonNull ViewGroup parent) {
         LayoutInflater inflater = context.getLayoutInflater();
         LinearLayout row = (LinearLayout)
                 inflater.inflate(R.layout.instagram_post, null, false);

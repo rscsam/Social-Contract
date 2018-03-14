@@ -279,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements
                     requestParams.put("goal", quantity);
                     requestParams.put("type", type);
                     requestParams.put("cost", totalPrice);
+                    requestParams.put("mediaId", -1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -294,11 +295,18 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                 });
+                Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                        confirmPurchaseDialogFragment.getType());
+                requests.add(r);
+                Bundle bundle = new Bundle();
+                bundle.putString("request", "1");
+                updateCoinNumber();
+                showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
             }
         } else if (accountType == SocialMediaAccount.AccountType.INSTAGRAM) {
             if (type.equals("Like")) {
                 Intent startInstagram = new Intent(MainActivity.this, InstagramFeedActivity.class);
-                startInstagram.putExtra("mediaId", account.getId());
+                startInstagram.putExtra("instagramId", account.getId());
                 startInstagram.putExtra("accessToken", account.getAccessToken());
                 startInstagram.putExtra("goal", quantity);
                 startInstagram.putExtra("username", username);
@@ -313,6 +321,7 @@ public class MainActivity extends AppCompatActivity implements
                     requestParams.put("goal", quantity);
                     requestParams.put("type", type);
                     requestParams.put("cost", totalPrice);
+                    requestParams.put("mediaId", -1);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -328,6 +337,13 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                 });
+                Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                        confirmPurchaseDialogFragment.getType());
+                requests.add(r);
+                Bundle bundle = new Bundle();
+                bundle.putString("request", "1");
+                updateCoinNumber();
+                showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
             }
         }
     }
@@ -335,7 +351,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 420) {  // Twitter feed returned
+        if (requestCode == 420 && resultCode == -1) {  // Twitter feed returned
             Long tweetId = data.getLongExtra("tweetId", -1);
             String twitterId = data.getStringExtra("twitterId");
             int goal = data.getIntExtra("goal", -1);
@@ -371,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements
             bundle.putString("request", "1");
             updateCoinNumber();
             showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
-        } else if (requestCode == 421)  {
+        } else if (requestCode == 421 && resultCode == -1)  {  // Instagram feed returned
             String mediaId = data.getStringExtra("mediaId");
             String instagramId = data.getStringExtra("instagramId");
             int goal = data.getIntExtra("goal", -1);
@@ -407,7 +423,7 @@ public class MainActivity extends AppCompatActivity implements
             bundle.putString("request", "1");
             updateCoinNumber();
             showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
-        } else {
+        } else if (resultCode == -1) {
             initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
         }
     }

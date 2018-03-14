@@ -33,7 +33,6 @@ public class InstagramFeedActivity extends AppCompatActivity {
 
         String url = "https://api.instagram.com/v1/users/self/media/recent/?access_token="
                 + accessToken;
-        System.out.println(url);
         final Activity context = this;
         ServerDelegate.getRequest(this, url, new ServerDelegate.OnResultListener() {
             @Override
@@ -65,9 +64,8 @@ public class InstagramFeedActivity extends AppCompatActivity {
                 boolean wasteTime = true;
                 while (wasteTime) {
                     wasteTime = false;
-                    for (int i = 0; i < posts.length; i++) {
-                        if (posts[i] == null) {
-                            System.out.println(i);
+                    for (InstagramPost post : posts) {
+                        if (post == null) {
                             wasteTime = true;
                             try {
                                 Thread.sleep(50);
@@ -85,7 +83,7 @@ public class InstagramFeedActivity extends AppCompatActivity {
                         Intent result = new Intent();
                         if (getIntent().getExtras() != null) {
                             result.putExtras(getIntent().getExtras());
-                            result.putExtra("postId", mediaId);
+                            result.putExtra("mediaId", mediaId);
                             setResult(Activity.RESULT_OK, result);
                         } else {
                             setResult(Activity.RESULT_CANCELED);
