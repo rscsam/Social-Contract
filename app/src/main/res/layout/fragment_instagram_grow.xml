@@ -42,15 +42,6 @@
                 tools:layout_editor_absoluteY="172dp" />
 
             <RadioButton
-                android:id="@+id/instagram_share_rb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Shares"
-                tools:layout_editor_absoluteX="64dp"
-                tools:layout_editor_absoluteY="204dp" />
-
-            <RadioButton
                 android:id="@+id/instagram_follow_rb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,14 +69,6 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/in_share_price_tv"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:gravity="center_vertical"
-                android:text="5"
-                android:textSize="18sp" />
-
-            <TextView
                 android:id="@+id/in_follow_price_tv"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
@@ -105,13 +88,6 @@
 
             <ImageView
                 android:id="@+id/in_like_coin_iv"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/coin_icon"
-                />
-
-            <ImageView
-                android:id="@+id/in_share_coin_iv"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"

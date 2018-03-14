@@ -442,9 +442,6 @@ public class MainActivity extends AppCompatActivity implements
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray twitter = response.getJSONArray("twitter");
                 JSONArray instagram = response.getJSONArray("instagram");
-                System.out.println(twitter.toString());
-                System.out.println(instagram.toString());
-                System.out.println(response.toString());
             }
         });
     }

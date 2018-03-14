@@ -175,9 +175,6 @@ public class GrowFragment extends Fragment {
                                         case "Like":
                                             price = 1;
                                             break;
-                                        case "Share":
-                                            price = 5;
-                                            break;
                                         case "Follow":
                                             price = 10;
                                             break;
