@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Twitter;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -91,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements
         bundle.putString("userId", userId);
 
         // set the home fragment
-        homeFragment = new HomeFragment();
+        homeFragment = HomeFragment.newInstance(userId);
         discoverSettingsFragment = new DiscoverSettingsFragment();
         discoverFragment = new DiscoverFragment();
         growFragment = new GrowFragment();
@@ -342,6 +343,24 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
         }
+
+        String url = ServerDelegate.SERVER_URL + "/getQueue";
+        JSONObject requestParams = new JSONObject();
+        try {
+            requestParams.put("socialContractId", getSocialContractId());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                JSONArray twitter = response.getJSONArray("twitter");
+                JSONArray instagram = response.getJSONArray("instagram");
+                System.out.println(twitter.toString());
+                System.out.println(instagram.toString());
+                System.out.println(response.toString());
+            }
+        });
     }
 
     // goes to the profile screen
