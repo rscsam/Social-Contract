@@ -8,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -17,6 +15,7 @@ import jd7337.socialcontract.R;
 
 /**
  * Created by sam on 2/18/18.
+ *
  */
 
 public class SocialMediaAccountAdapter extends ArrayAdapter<String> {

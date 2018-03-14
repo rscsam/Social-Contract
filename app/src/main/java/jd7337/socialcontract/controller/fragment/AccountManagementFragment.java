@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -215,7 +214,7 @@ public class AccountManagementFragment extends Fragment {
 
             @Override
             public void failure(TwitterException e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT);
+                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.d("TwitterKit", "Set Twitter Image Error", e);
                 // Continue chain of calls if there's a failure
                 if (lastProfile) {

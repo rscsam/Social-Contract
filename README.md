@@ -27,7 +27,7 @@ In general, if two screens share common elements fixed to the same
 part of the screen, they should be coded as Fragments
 that are managed by the same activity.
 
-In order to maintain a level of reusability and easy refactoring,
+In order to maintain a level of re-usability and easy refactoring,
 all `Fragment`s will interact with their   `Activity` through
 interfaces defined by the `Fragment` and implemented by the
 `Activity`.  Many examples of this pattern are already being

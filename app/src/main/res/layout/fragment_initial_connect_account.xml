@@ -25,7 +25,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/twitter_icon" />
+            android:src="@drawable/twitter_icon"
+            android:contentDescription="@string/imageviewtwitter" />
 
         <com.twitter.sdk.android.core.identity.TwitterLoginButton
             android:id="@+id/tw_login_button"
@@ -51,14 +52,16 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@drawable/instagram_icon" />
+            android:src="@drawable/instagram_icon"
+            android:contentDescription="@string/imageviewinstagram" />
 
         <ImageButton
             android:id="@+id/in_login_button"
             android:layout_width="217dp"
             android:layout_height="48dp"
             android:layout_gravity="center"
-            android:src="@drawable/instagram_login_button" />
+            android:src="@drawable/instagram_login_button"
+            android:contentDescription="@string/in_login_button" />
 
     </LinearLayout>
 

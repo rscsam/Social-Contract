@@ -9,7 +9,7 @@
         android:id="@+id/edit_interest_profile_prompt_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fill out an interest profile to start connecting with cool content!"
+        android:text="@string/fill_out_an_interest_profile_to_start_connecting_with_cool_content"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="24sp"
@@ -33,49 +33,49 @@
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Music"
+            android:text="@string/music"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/music_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Food"
+            android:text="@string/food"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/food_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Movies"
+            android:text="@string/movies"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/movies_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Video Games"
+            android:text="@string/video_games"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/video_games_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Sports"
+            android:text="@string/sports"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/sports_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="News"
+            android:text="@string/news"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/news_interest_cb"/>
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Memes"
+            android:text="@string/memes"
             android:buttonTint="@color/white"
             android:textColor="@color/white"
             android:id="@+id/memes_interest_cb"/>

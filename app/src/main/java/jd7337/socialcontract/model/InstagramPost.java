@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 /**
  * Created by sam on 3/6/18.
+ *
  */
 
 public class InstagramPost {

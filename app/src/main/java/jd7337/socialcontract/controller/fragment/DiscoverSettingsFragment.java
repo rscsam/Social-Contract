@@ -6,14 +6,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 
 import jd7337.socialcontract.R;
-import jd7337.socialcontract.view.adapter.AccountListAdapter;
-import jd7337.socialcontract.view.holder.AccountListItem;
 
 public class DiscoverSettingsFragment extends Fragment {
 

@@ -7,6 +7,7 @@ import jd7337.socialcontract.model.SocialMediaAccount;
 
 /**
  * Created by sam on 11/26/17.
+ *
  */
 
 public class AccountListItem {

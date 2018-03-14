@@ -15,19 +15,19 @@
             android:id="@+id/cb_one"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Likes" />
+            android:text="@string/likes" />
 
         <CheckBox
             android:id="@+id/cb_two"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Shares" />
+            android:text="@string/shares" />
 
         <CheckBox
             android:id="@+id/cb_three"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Follows" />
+            android:text="@string/follows" />
 
         <Button
             android:id="@+id/discover_go_button"
@@ -36,7 +36,7 @@
             android:layout_gravity="center"
             android:background="@drawable/custom_button"
             android:textColor="@color/white"
-            android:text="Go" />
+            android:text="@string/go" />
     </LinearLayout>
 
 

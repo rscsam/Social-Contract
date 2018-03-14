@@ -2,6 +2,7 @@ package jd7337.socialcontract.model;
 
 /**
  * Created by sam on 2/18/18.
+ *
  */
 
 public class SocialMediaAccount {
