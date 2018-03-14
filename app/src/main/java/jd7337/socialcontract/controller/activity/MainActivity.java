@@ -33,6 +33,7 @@ import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.InitialConnectAccountFragment;
 import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
+import jd7337.socialcontract.model.InstagramPost;
 import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.Request;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
@@ -85,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements
 
         email = getIntent().getStringExtra("email");
         userId = getIntent().getStringExtra("userId");
-        System.out.println(userId);
 
         Bundle bundle = new Bundle();
         bundle.putString("email", email);
@@ -204,6 +204,7 @@ public class MainActivity extends AppCompatActivity implements
                     confirmPurchaseDialogFragment.setType(type);
                     confirmPurchaseDialogFragment.setTotalPrice(quantity * individualPrice);
                     confirmPurchaseDialogFragment.setAccount(account);
+                    confirmPurchaseDialogFragment.setAccessToken(account.getAccessToken());
                     confirmPurchaseDialogFragment.show(mContext.getFragmentManager(), "confirm_purchase_dialog");
                 }  else {
                     Toast.makeText(mContext, "You only have " + coins + " coins",
@@ -252,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements
         growBundle.putInt("typeInt", account.getTypeResource().ordinal());
         growBundle.putString("username", account.getUsername());
         growBundle.putString("id", account.getId());
+        growBundle.putString("accessToken", account.getAccessToken());
         growFragment = GrowFragment.newInstance(growBundle);
         showFragment(R.id.main_activity_view, growFragment);
     }
@@ -278,6 +280,7 @@ public class MainActivity extends AppCompatActivity implements
                     requestParams.put("goal", quantity);
                     requestParams.put("type", type);
                     requestParams.put("cost", totalPrice);
+                    requestParams.put("mediaId", account.getId());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -293,10 +296,55 @@ public class MainActivity extends AppCompatActivity implements
                         }
                     }
                 });
+                Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                        confirmPurchaseDialogFragment.getType());
+                requests.add(r);
+                Bundle bundle = new Bundle();
+                bundle.putString("request", "1");
+                updateCoinNumber();
+                showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
             }
         } else if (accountType == SocialMediaAccount.AccountType.INSTAGRAM) {
-            if (type.equals("Like") || type.equals("Share")) {
-
+            if (type.equals("Like")) {
+                Intent startInstagram = new Intent(MainActivity.this, InstagramFeedActivity.class);
+                startInstagram.putExtra("instagramId", account.getId());
+                startInstagram.putExtra("accessToken", account.getAccessToken());
+                startInstagram.putExtra("goal", quantity);
+                startInstagram.putExtra("username", username);
+                startInstagram.putExtra("type", type);
+                startInstagram.putExtra("cost", totalPrice);
+                startActivityForResult(startInstagram, 421);
+            } else {
+                JSONObject requestParams = new JSONObject();
+                try {
+                    requestParams.put("socialContractId", getSocialContractId());
+                    requestParams.put("instagramId", account.getId());
+                    requestParams.put("goal", quantity);
+                    requestParams.put("type", type);
+                    requestParams.put("cost", totalPrice);
+                    requestParams.put("mediaId", account.getId());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                String url = ServerDelegate.SERVER_URL + "/addInstagramQueue";
+                final Context mContext = this;
+                ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+                    @Override
+                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                        if (success) {
+                            Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+                Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                        confirmPurchaseDialogFragment.getType());
+                requests.add(r);
+                Bundle bundle = new Bundle();
+                bundle.putString("request", "1");
+                updateCoinNumber();
+                showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
             }
         }
     }
@@ -304,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 420) {  // Twitter feed returned
+        if (requestCode == 420 && resultCode == -1) {  // Twitter feed returned
             Long tweetId = data.getLongExtra("tweetId", -1);
             String twitterId = data.getStringExtra("twitterId");
             int goal = data.getIntExtra("goal", -1);
@@ -328,19 +376,57 @@ public class MainActivity extends AppCompatActivity implements
                 public void onResult(boolean success, JSONObject response) throws JSONException {
                     if (success) {
                         Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                                confirmPurchaseDialogFragment.getType());
+                        requests.add(r);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("request", "1");
+                        updateCoinNumber();
+                        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
                     } else {
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
-                    confirmPurchaseDialogFragment.getType());
-            requests.add(r);
-            Bundle bundle = new Bundle();
-            bundle.putString("request", "1");
-            updateCoinNumber();
-            showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
-        } else {
+
+        } else if (requestCode == 421 && resultCode == -1)  {  // Instagram feed returned
+            String mediaId = data.getStringExtra("mediaId");
+            String instagramId = data.getStringExtra("instagramId");
+            int goal = data.getIntExtra("goal", -1);
+            int cost = data.getIntExtra("cost", 0);
+            String type = data.getStringExtra("type");
+            JSONObject requestParams = new JSONObject();
+            try {
+                requestParams.put("socialContractId", getSocialContractId());
+                requestParams.put("instagramId", instagramId);
+                requestParams.put("mediaId", mediaId);
+                requestParams.put("goal", goal);
+                requestParams.put("type", type);
+                requestParams.put("cost", cost);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String url = ServerDelegate.SERVER_URL + "/addInstagramQueue";
+            final Context mContext = this;
+            ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+                @Override
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    if (success) {
+                        Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                                confirmPurchaseDialogFragment.getType());
+                        requests.add(r);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("request", "1");
+                        updateCoinNumber();
+                        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+                    } else {
+                        Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        } else if (resultCode == -1) {
             initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
         }
 

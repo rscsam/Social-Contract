@@ -190,6 +190,7 @@ public class ServerDelegate {
                                 jsonErrorListener.onJSONError(e);
                             } else {
                                 Toast.makeText(context, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
                             }
                         }
                     }

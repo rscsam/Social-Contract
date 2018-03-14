@@ -42,6 +42,7 @@ public class GrowFragment extends Fragment {
         accountType = SocialMediaAccount.AccountType.values()[typeOrdinal];
         final String username = getArguments().getString("username");
         final String id = getArguments().getString("id");
+        final String accessToken = getArguments().getString("accessToken");
         // Inflate the layout for this fragment
         View view;
         switch (accountType) {
@@ -96,7 +97,9 @@ public class GrowFragment extends Fragment {
                                             price = 10;
                                             break;
                                     }
-                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
+                                    SocialMediaAccount account = new SocialMediaAccount(id, username, accountType);
+                                    account.setAccessToken(accessToken);
+                                    mListener.onClickGrowPurchase(quantity, account, type, price);
                                 } else {
                                     Toast.makeText(getContext(), "Please choose an interaction.",
                                             Toast.LENGTH_SHORT).show();
@@ -182,7 +185,9 @@ public class GrowFragment extends Fragment {
                                             price = 10;
                                             break;
                                     }
-                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
+                                    SocialMediaAccount account = new SocialMediaAccount(id, username, accountType);
+                                    account.setAccessToken(accessToken);
+                                    mListener.onClickGrowPurchase(quantity, account, type, price);
                                 } else {
                                     Toast.makeText(getContext(), "Please choose an interaction.",
                                             Toast.LENGTH_SHORT).show();
