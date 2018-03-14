@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity implements
                     requestParams.put("goal", quantity);
                     requestParams.put("type", type);
                     requestParams.put("cost", totalPrice);
-                    requestParams.put("mediaId", -1);
+                    requestParams.put("mediaId", account.getId());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -321,7 +321,7 @@ public class MainActivity extends AppCompatActivity implements
                     requestParams.put("goal", quantity);
                     requestParams.put("type", type);
                     requestParams.put("cost", totalPrice);
-                    requestParams.put("mediaId", -1);
+                    requestParams.put("mediaId", account.getId());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
