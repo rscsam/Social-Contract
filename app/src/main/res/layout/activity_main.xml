@@ -56,7 +56,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/black"
                     android:textSize="12pt"
-                    android:text="@string/_999"/>
+                    android:text="0"/>
+                    android:text="@string/_0"/>
             </LinearLayout>
         </LinearLayout>
 

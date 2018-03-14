@@ -7,6 +7,20 @@
     tools:context="jd7337.socialcontract.controller.fragment.HomeFragment"
     tools:layout_editor_absoluteY="81dp">
 
+    <ListView
+        android:id="@+id/request_feed"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginRight="0dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@+id/home_your_request_tv"
+        app:layout_constraintBottom_toTopOf="@+id/discover_button" />
+
+
+
     <Button
         android:id="@+id/discover_button"
         android:layout_width="0dp"
@@ -41,6 +55,8 @@
         android:layout_marginStart="80dp"
         android:layout_marginTop="100dp"
         android:text="@string/your_requests"
+        android:layout_marginTop="40dp"
+        android:text="Your Requests:"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/home_no_request_tv"
         app:layout_constraintEnd_toEndOf="parent"

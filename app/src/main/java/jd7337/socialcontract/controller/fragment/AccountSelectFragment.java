@@ -59,6 +59,7 @@ public class AccountSelectFragment extends Fragment {
     private List<String> inUserNameList = new ArrayList<>();
     private List<String> inIdList = new ArrayList<>();
     private List<Bitmap> inProfilePicList = new ArrayList<>();
+    private List<String> inAccessTokenList = new ArrayList<>();
     private List<SocialMediaAccount> accountsList = new ArrayList<>();
 
     public static AccountSelectFragment newInstance(Bundle bundle) {
@@ -208,13 +209,14 @@ public class AccountSelectFragment extends Fragment {
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray accounts = response.getJSONArray("accounts");
                 for (int i = 0; i < accounts.length(); i++) {
-                    String instaAccessToken = response.getJSONArray("accounts").getJSONObject(0).getString("accessToken");
-                    String instaName = response.getJSONArray("accounts").getJSONObject(0).getString("username");
+                    String instaAccessToken = accounts.getJSONObject(i).getString("accessToken");
+                    String instaName = accounts.getJSONObject(i).getString("username");
                     String insURL = "https://api.instagram.com/v1/users/self/?access_token=" + instaAccessToken;
-                    String instaId = response.getJSONArray("accounts").getJSONObject(0).getString("instagramId");
+                    String instaId = accounts.getJSONObject(i).getString("instagramId");
                     // sends true for the last parameter if this is the last Instagram account
                     setInstagramData(insURL, instaName, container, i == accounts.length() - 1);
                     inIdList.add(instaId);
+                    inAccessTokenList.add(instaAccessToken);
                 }
                 if (accounts.length() == 0) {
                     settleAccounts(container);
@@ -296,12 +298,15 @@ public class AccountSelectFragment extends Fragment {
         }
         for (int x = 0; x < inUserNameList.size(); x++) {
             accounts[i] = new AccountListItem(inProfilePicList.get(x), inUserNameList.get(x), inIdList.get(x), SocialMediaAccount.AccountType.INSTAGRAM);
-            accountsList.add(new SocialMediaAccount(inIdList.get(x), inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM));
+            SocialMediaAccount account = new SocialMediaAccount(inIdList.get(x), inUserNameList.get(x), SocialMediaAccount.AccountType.INSTAGRAM);
+            account.setAccessToken(inAccessTokenList.get(x));
+            accountsList.add(account);
+
             i++;
         }
         // Set adapter
         AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
-        ListView accountList = container.findViewById(R.id.account_list);
+        final ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
         accountList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {

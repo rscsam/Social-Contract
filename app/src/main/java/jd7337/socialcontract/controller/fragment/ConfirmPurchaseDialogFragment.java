@@ -18,6 +18,7 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
     private SocialMediaAccount account;
     private String type;
     private int totalPrice;
+    private String accessToken;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -74,6 +75,14 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
 
     public void setTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
     public SocialMediaAccount getAccount() {
