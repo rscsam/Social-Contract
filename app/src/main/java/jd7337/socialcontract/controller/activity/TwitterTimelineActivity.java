@@ -3,10 +3,7 @@ package jd7337.socialcontract.controller.activity;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.twitter.sdk.android.tweetui.TweetTimelineListAdapter;

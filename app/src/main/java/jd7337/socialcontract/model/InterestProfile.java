@@ -2,6 +2,7 @@ package jd7337.socialcontract.model;
 
 /**
  * Created by sam on 2/13/18.
+ *
  */
 
 public class InterestProfile {

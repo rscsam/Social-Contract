@@ -9,10 +9,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.SslErrorHandler;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -22,6 +19,7 @@ import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener
 
 /**
  * Created by Ali Khosravi on 1/22/2018.
+ *
  */
 
 
@@ -82,7 +80,7 @@ public class AuthenticationDialog extends Dialog {
                     CookieManager cookieManager = CookieManager.getInstance();
                     cookieManager.removeAllCookies(null);
                 } else if (url.contains("?error")) {
-                    Toast.makeText(context, "Error Occured", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Error Occurred", Toast.LENGTH_SHORT).show();
                     dismiss();
                 }
             }

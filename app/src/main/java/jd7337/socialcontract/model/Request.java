@@ -2,6 +2,7 @@ package jd7337.socialcontract.model;
 
 /**
  * Created by Ali Khosravi on 2/28/2018.
+ *
  */
 
 public class Request {

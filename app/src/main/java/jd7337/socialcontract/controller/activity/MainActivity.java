@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,7 +35,6 @@ import jd7337.socialcontract.controller.fragment.UpdateProfileFragment;
 import jd7337.socialcontract.model.InstagramPost;
 import jd7337.socialcontract.model.SocialMediaAccount;
 import jd7337.socialcontract.model.Request;
-import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 import jd7337.socialcontract.controller.fragment.AccountManagementFragment;
 import jd7337.socialcontract.controller.fragment.AccountSelectFragment;
 import jd7337.socialcontract.controller.fragment.ConfirmPurchaseDialogFragment;
@@ -102,14 +100,14 @@ public class MainActivity extends AppCompatActivity implements
         accountSelectFragment = AccountSelectFragment.newInstance(bundle);
         confirmPurchaseDialogFragment = new ConfirmPurchaseDialogFragment();
         initialConnectAccountFragment = new InitialConnectAccountFragment();
-        requests = new LinkedList<Request>();
+        requests = new LinkedList<>();
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_view, homeFragment).commit();
 
         // set the navigation drawer
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (NavigationView) findViewById(R.id.navigation);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerList = findViewById(R.id.navigation);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open,
                 R.string.drawer_close) {
 
@@ -136,11 +134,8 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (mDrawerToggle.onOptionsItemSelected(item)) {
-            return true;
-        }
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
 
-        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -22,7 +22,7 @@
             android:id="@+id/checkbox1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox"
+            android:text="@string/checkbox"
             tools:layout_editor_absoluteX="50dp"
             tools:layout_editor_absoluteY="203dp" />
 
@@ -30,7 +30,7 @@
             android:id="@+id/checkBox2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox"
+            android:text="@string/checkbox"
             tools:layout_editor_absoluteX="50dp"
             tools:layout_editor_absoluteY="239dp" />
 
@@ -38,7 +38,7 @@
             android:id="@+id/checkBox3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="CheckBox"
+            android:text="@string/checkbox"
             tools:layout_editor_absoluteX="50dp"
             tools:layout_editor_absoluteY="271dp" />
 
@@ -46,7 +46,7 @@
             android:id="@+id/go_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Go"
+            android:text="@string/go"
             tools:layout_editor_absoluteX="50dp"
             tools:layout_editor_absoluteY="303dp" />
 

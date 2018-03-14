@@ -9,13 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     public void onClickRegisterDone(View view) {
 
-        // turn off register button while registration is occuring
+        // turn off register button while registration occur
         registerButton.setEnabled(false);
         email = emailET.getText().toString();
         password = passwordET.getText().toString();

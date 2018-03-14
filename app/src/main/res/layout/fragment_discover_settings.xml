@@ -12,7 +12,7 @@
         android:layout_marginTop="40dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Choose how you want to discover new content:"
+        android:text="@string/choose_how_you_want_to_discover_new_content"
         android:textSize="24sp"
         app:layout_constraintTop_toTopOf="parent" />
 
