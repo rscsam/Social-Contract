@@ -376,18 +376,19 @@ public class MainActivity extends AppCompatActivity implements
                 public void onResult(boolean success, JSONObject response) throws JSONException {
                     if (success) {
                         Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                                confirmPurchaseDialogFragment.getType());
+                        requests.add(r);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("request", "1");
+                        updateCoinNumber();
+                        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
                     } else {
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
-                    confirmPurchaseDialogFragment.getType());
-            requests.add(r);
-            Bundle bundle = new Bundle();
-            bundle.putString("request", "1");
-            updateCoinNumber();
-            showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+
         } else if (requestCode == 421 && resultCode == -1)  {  // Instagram feed returned
             String mediaId = data.getStringExtra("mediaId");
             String instagramId = data.getStringExtra("instagramId");
@@ -412,18 +413,19 @@ public class MainActivity extends AppCompatActivity implements
                 public void onResult(boolean success, JSONObject response) throws JSONException {
                     if (success) {
                         Toast.makeText(mContext, "Purchase Successful!", Toast.LENGTH_SHORT).show();
+                        Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
+                                confirmPurchaseDialogFragment.getType());
+                        requests.add(r);
+                        Bundle bundle = new Bundle();
+                        bundle.putString("request", "1");
+                        updateCoinNumber();
+                        showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
                     } else {
                         Toast.makeText(mContext, response.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-            Request r = new Request(confirmPurchaseDialogFragment.getQuantity(),
-                    confirmPurchaseDialogFragment.getType());
-            requests.add(r);
-            Bundle bundle = new Bundle();
-            bundle.putString("request", "1");
-            updateCoinNumber();
-            showFragmentWithBundle(R.id.main_activity_view, homeFragment, bundle);
+
         } else if (resultCode == -1) {
             initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
         }
