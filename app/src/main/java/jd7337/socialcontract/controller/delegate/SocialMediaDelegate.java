@@ -23,32 +23,6 @@ public class SocialMediaDelegate {
 
     public static void receiveBitmapFromInstagram(Context context, final String url,
                                            final OnBitmapReceivedListener listener) {
-//        RequestQueue requestQueue = Volley.newRequestQueue(context);
-//        //String url = "https://api.instagram.com/v1/media/" + mediaId + "?access_token=" + accessToken;
-//        // Initialize a new ImageRequest
-//        url = url.substring(0, 4) + url.substring(5);
-//        System.out.println(url);
-//        ImageRequest imageRequest = new ImageRequest(
-//                url, // Image URL
-//                new Response.Listener<Bitmap>() { // Bitmap listener
-//                    @Override
-//                    public void onResponse(Bitmap response) {
-//                        System.out.println("hi");
-//                        listener.onBitmapReceived(response);
-//                    }
-//                },
-//                0,
-//                0,
-//                ImageView.ScaleType.CENTER_CROP,
-//                Bitmap.Config.RGB_565,
-//                new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        error.printStackTrace();
-//                    }
-//                }
-//        );
-//        requestQueue.add(imageRequest);
         new Thread(new Runnable() {
             @Override
             public void run() {

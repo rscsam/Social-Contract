@@ -75,7 +75,6 @@ public class InstagramFeedActivity extends AppCompatActivity {
                         }
                     }
                 }
-                System.out.println("If it gets here it should have worked idk");
                 final InstagramPostAdapter adapter = new InstagramPostAdapter(context, posts, userId);
                 adapter.setListener(new InstagramPostAdapter.PostSelectListener() {
                     @Override
