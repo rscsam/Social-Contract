@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // set the home fragment
         homeFragment = HomeFragment.newInstance(userId);
-        discoverSettingsFragment = new DiscoverSettingsFragment();
+        discoverSettingsFragment = DiscoverSettingsFragment.newInstance(bundle);
         discoverFragment = new DiscoverFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
@@ -251,6 +251,11 @@ public class MainActivity extends AppCompatActivity implements
         growBundle.putString("accessToken", account.getAccessToken());
         growFragment = GrowFragment.newInstance(growBundle);
         showFragment(R.id.main_activity_view, growFragment);
+    }
+
+    @Override
+    public void onClickDiscoverAccount(SocialMediaAccount account) {
+
     }
 
     @Override
