@@ -2,6 +2,7 @@ package jd7337.socialcontract.view.adapter;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,16 +50,6 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         LayoutInflater inflater = context.getLayoutInflater();
         LinearLayout row = (LinearLayout)
                 inflater.inflate(R.layout.account_select_item, null, false);
-        final LinearLayout additionalSettingsLl =
-                (LinearLayout) inflater.inflate(R.layout.discover_settings_account_setting,
-                        parent, false);
-        Button goButton = additionalSettingsLl.findViewById(R.id.discover_go_button);
-        goButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                context.onClickDiscoverSettingsGo();
-            }
-        });
 
         ImageView profilePic = row.findViewById(R.id.profile_picture);
         TextView userName = row.findViewById(R.id.account_username);
@@ -68,8 +59,23 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
         profilePic.setImageBitmap(account.getProfilePicBitmap());
         userName.setText(account.getProfileName());
         smPlatform.setImageResource(account.getSmTypePicId());
+        ConstraintLayout additionalSettingsDropdown;
         if (account.isShowingExtraSettings()) {
-            row.addView(additionalSettingsLl);
+            if (account.getSocialMediaType() == SocialMediaAccount.AccountType.TWITTER) {
+                additionalSettingsDropdown = (ConstraintLayout) inflater.inflate(
+                        R.layout.discover_account_selected_twitter, parent, false);
+            } else {  // if it's an instagram account
+                additionalSettingsDropdown = (ConstraintLayout) inflater.inflate(
+                        R.layout.discover_account_selected_instagram, parent, false);
+            }
+            Button goButton = additionalSettingsDropdown.findViewById(R.id.go_button);
+            goButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    context.onClickDiscoverSettingsGo();
+                }
+            });
+            row.addView(additionalSettingsDropdown);
         }
         if (accounts.get(position).isShowDelete()) {
             View deleteIB = row.findViewById(R.id.delete_ib);

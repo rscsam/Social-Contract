@@ -294,7 +294,7 @@ public class DiscoverSettingsFragment extends Fragment {
     private void settleAccounts(final ViewGroup container) {
         int numAccounts = twUserNameList.size();
         numAccounts += inUserNameList.size();
-        AccountListItem[] accounts = new AccountListItem[numAccounts];
+        final AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
         for (int x = 0; x < twUserNameList.size(); x++) {
             accountsList.add(new SocialMediaAccount(twIdList.get(x), twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
@@ -310,37 +310,20 @@ public class DiscoverSettingsFragment extends Fragment {
             i++;
         }
         // Set adapter
-        AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
+        final AccountListAdapter accountsAdapter = new AccountListAdapter(getActivity(), accounts, true, userId);
         final ListView accountList = container.findViewById(R.id.account_list);
         accountList.setAdapter(accountsAdapter);
         accountList.setOnItemClickListener(
                 new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView parent, View view, int position, long id) {
-                        ConstraintLayout discoverDropdown = (ConstraintLayout) view.findViewById(R.id.discover_dropdown);
-                        SocialMediaAccount account = accountsList.get(position);
-                        SocialMediaAccount.AccountType type = account.getTypeResource();
-                        View child;
-                        if(type == SocialMediaAccount.AccountType.TWITTER) {
-                            child = getLayoutInflater().inflate(R.layout.discover_account_selected_twitter, null, false);
-                        } else {
-                            child = getLayoutInflater().inflate(R.layout.discover_account_selected_instagram, null, false);
+                        for (AccountListItem a : accounts) {
+                            a.setShowingExtraSettings(false);
                         }
-                        discoverDropdown.addView(child);
+                        AccountListItem currentlySelectedItem = accounts[position];
+                        currentlySelectedItem.setShowingExtraSettings(true);
 
-                        ViewGroup.LayoutParams params = accountList.getLayoutParams();
-                        params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        accountList.setLayoutParams(params);
-                        accountList.requestLayout();
-
-                        Button goButton = container.findViewById(R.id.go_button);
-                        goButton.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                mListener.onClickDiscoverSettingsGo();
-                            }
-                        });
-                        //mListener.onClickDiscoverAccount(accountsList.get(position));
+                        accountsAdapter.notifyDataSetChanged();
                     }
                 }
         );
