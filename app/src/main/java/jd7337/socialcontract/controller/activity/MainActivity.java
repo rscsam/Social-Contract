@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements
 
         // set the home fragment
         homeFragment = HomeFragment.newInstance(userId);
-        discoverSettingsFragment = new DiscoverSettingsFragment();
+        discoverSettingsFragment = DiscoverSettingsFragment.newInstance(bundle);
         discoverFragment = new DiscoverFragment();
         growFragment = new GrowFragment();
         editInterestProfileFragment = new EditInterestProfileFragment();
@@ -214,8 +214,18 @@ public class MainActivity extends AppCompatActivity implements
         showFragment(R.id.main_activity_view, homeFragment);
     }
 
+    /**
+     * Sends an int representing the social media platform and an array representing interaction types
+     * @param socialMediaTypeOrdinal - ordinal of the social media platform based on the ordinal
+     * @param selectedInteractions - byte array corresponding to the interaction types selected.
+     *                             Sends a 1 for selected and 0 for unselected.
+     */
     @Override
-    public void onClickDiscoverSettingsGo() {
+    public void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] selectedInteractions) {
+        Bundle bundle = new Bundle();
+        bundle.putInt("SocialMediaTypeOrdinal", socialMediaTypeOrdinal);
+        bundle.putByteArray("SelectedInteractions", selectedInteractions);
+        discoverFragment = DiscoverFragment.newInstance(bundle);
         showFragment(R.id.main_activity_view, discoverFragment);
     }
 
