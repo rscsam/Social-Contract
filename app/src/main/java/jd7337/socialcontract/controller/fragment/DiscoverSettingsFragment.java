@@ -4,14 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -82,7 +80,6 @@ public class DiscoverSettingsFragment extends Fragment {
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
-        System.out.println("id:" + userId);
         twUserNameList.clear();
         twIdList.clear();
         twProfilePicList.clear();
@@ -355,7 +352,6 @@ public class DiscoverSettingsFragment extends Fragment {
     }
 
     public interface DiscoverSettingsFListener {
-        void onClickDiscoverSettingsGo();
-        void onClickDiscoverAccount(SocialMediaAccount account);
+        void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] interactionsSelected);
     }
 }

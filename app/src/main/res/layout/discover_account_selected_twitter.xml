@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
-            android:id="@+id/checkbox1"
+            android:id="@+id/checkBox1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/likes" />
@@ -37,9 +37,12 @@
             android:text="@string/follows" />
 
         <Button
-            android:id="@+id/go_button"
-            android:layout_width="match_parent"
+            android:id="@+id/discover_go_button"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/custom_button"
+            android:textColor="@color/white"
             android:text="@string/go" />
 
     </LinearLayout>
