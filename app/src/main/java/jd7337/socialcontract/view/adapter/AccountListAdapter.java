@@ -68,8 +68,8 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
                         R.layout.discover_account_selected_twitter, parent, false);
                 checkBoxes = new CheckBox[3];
                 checkBoxes[0] = additionalSettingsDropdown.findViewById(R.id.checkBox1);
-                checkBoxes[1] = additionalSettingsDropdown.findViewById(R.id.checkBox2);
-                checkBoxes[2] = additionalSettingsDropdown.findViewById(R.id.checkBox3);
+                checkBoxes[1] = additionalSettingsDropdown.findViewById(R.id.checkBox3);
+                checkBoxes[2] = additionalSettingsDropdown.findViewById(R.id.checkBox2);
             } else {  // if it's an instagram account
                 additionalSettingsDropdown = (ConstraintLayout) inflater.inflate(
                         R.layout.discover_account_selected_instagram, parent, false);

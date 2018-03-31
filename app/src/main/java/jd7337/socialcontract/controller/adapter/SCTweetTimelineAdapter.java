@@ -39,6 +39,7 @@ public class SCTweetTimelineAdapter extends TweetTimelineListAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Tweet t = getItem(position);
                     tweetSelectListener.onTweetSelect(getItem(position).getId());
                 }
             });

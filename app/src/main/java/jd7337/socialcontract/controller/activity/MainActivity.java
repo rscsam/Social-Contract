@@ -359,6 +359,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 420 && resultCode == -1) {  // Twitter feed returned
             Long tweetId = data.getLongExtra("tweetId", -1);
+            String mediaId = tweetId.toString();
             String twitterId = data.getStringExtra("twitterId");
             int goal = data.getIntExtra("goal", -1);
             int cost = data.getIntExtra("cost", 0);
@@ -367,7 +368,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 requestParams.put("socialContractId", getSocialContractId());
                 requestParams.put("twitterId", twitterId);
-                requestParams.put("mediaId", tweetId);
+                requestParams.put("mediaId", mediaId);
                 requestParams.put("goal", goal);
                 requestParams.put("type", type);
                 requestParams.put("cost", cost);
@@ -479,7 +480,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.commit();
     }
 
-    private void updateCoinNumber() {
+    public void updateCoinNumber() {
         String url = ServerDelegate.SERVER_URL + "/getCoins";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", getSocialContractId());
@@ -512,6 +513,10 @@ public class MainActivity extends AppCompatActivity implements
                         listener.onResult(success, response);
                     }
                 });
+    }
+
+    public int getNumCoins() {
+        return numCoins;
     }
 
     /**
