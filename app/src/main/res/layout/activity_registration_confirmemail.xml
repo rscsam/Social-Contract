@@ -14,6 +14,8 @@
         android:layout_marginTop="8dp"
         android:onClick="onClickConfirm"
         android:text="@string/confirm_email_address"
+        android:textColor="@color/white"
+        android:background="@drawable/new_custom_button"
         app:layout_constraintStart_toStartOf="@+id/textView15"
         app:layout_constraintTop_toBottomOf="@+id/textView16" />
 

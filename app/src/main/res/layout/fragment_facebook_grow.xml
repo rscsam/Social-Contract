@@ -133,6 +133,8 @@
         android:layout_marginTop="8dp"
         android:text="@string/facebook_grow_go"
         android:textSize="24sp"
+        android:textColor="@color/white"
+        android:background="@drawable/new_custom_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
