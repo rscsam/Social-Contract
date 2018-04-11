@@ -131,6 +131,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:background="@drawable/new_custom_button"
         android:text="@string/go"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
