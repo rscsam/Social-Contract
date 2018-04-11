@@ -29,7 +29,6 @@
             android:layout_height="49dp"
             android:src="@drawable/retweet_transparent"
             android:contentDescription="@string/discover_retweet_icon" />
-
     </LinearLayout>
 
     <LinearLayout android:layout_width="match_parent"
@@ -57,6 +56,14 @@
             android:src="@drawable/coin_icon"
             android:contentDescription="@string/coin_icon" />
     </LinearLayout>
+    <ImageView
+        android:id="@+id/interaction_ib"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/coin_text_group"
+        android:src="@drawable/like_transparent"/>
 
     <LinearLayout
         android:id="@+id/content_ll"
@@ -64,7 +71,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/coin_text_group">
+        app:layout_constraintTop_toBottomOf="@+id/interaction_ib">
         <TextView
             android:id="@+id/no_content_tv"
             android:layout_width="wrap_content"

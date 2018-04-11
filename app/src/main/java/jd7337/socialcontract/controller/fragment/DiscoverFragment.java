@@ -1,18 +1,30 @@
 package jd7337.socialcontract.controller.fragment;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.Tweet;
+import com.twitter.sdk.android.core.models.User;
+import com.twitter.sdk.android.core.services.FavoriteService;
+import com.twitter.sdk.android.core.services.StatusesService;
 import com.twitter.sdk.android.tweetui.TweetUtils;
 import com.twitter.sdk.android.tweetui.TweetView;
 
@@ -20,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +43,9 @@ import jd7337.socialcontract.R;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.model.QueueItem;
 import jd7337.socialcontract.model.SocialMediaAccount;
+import jd7337.socialcontract.model.TwitterUserService;
+import jd7337.socialcontract.model.UserQueryTwitterApiClient;
+import retrofit2.Call;
 
 public class DiscoverFragment extends Fragment {
 
@@ -40,6 +57,8 @@ public class DiscoverFragment extends Fragment {
     private View likeButton, followButton, shareButton;
     private boolean showLikes, showFollows, showShares;
     private LinearLayout contentLL;
+
+    private TwitterAuthClient client;
 
     public static DiscoverFragment newInstance(Bundle bundle) {
         DiscoverFragment fragment = new DiscoverFragment();
@@ -71,6 +90,7 @@ public class DiscoverFragment extends Fragment {
                 }
         );
         initButtons(view);
+        verify(getArguments().getLong("twitterId"));
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", mListener.getSocialContractId());
         params.put("type", type.toString());
@@ -121,44 +141,128 @@ public class DiscoverFragment extends Fragment {
             getActivity().findViewById(R.id.like_text).setVisibility(View.GONE);
             getActivity().findViewById(R.id.skip_text).setVisibility(View.GONE);
             getActivity().findViewById(R.id.coin_icon).setVisibility(View.GONE);
+            getActivity().findViewById(R.id.interaction_ib).setVisibility(View.GONE);
         }
-        final Callback<Tweet> actionCallback = new Callback<Tweet>() {
-            @Override
-            public void success(Result<Tweet> result) {
-                QueueItem curr = queue.get(index);
-                Map<String, String> params = new HashMap<>();
-                params.put("requestId", curr.getRequestId());
-                params.put("socialContractId", mListener.getSocialContractId());
-                params.put("mediaId", curr.getMediaId());
-                params.put("type", type.toString());
-                params.put("coins", "" + (mListener.getNumCoins() + 1));
-                ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
-                        params, new ServerDelegate.OnResultListener() {
-                            @Override
-                            public void onResult(boolean success, JSONObject response) throws JSONException {
-                                mListener.updateCoinNumber();
-                            }
-                        });
-                index++;
-                setIndex();
-            }
-
-            @Override
-            public void failure(TwitterException exception) {
-            }
-        };
         if (index < queue.size() && type == SocialMediaAccount.AccountType.TWITTER) {
             final long tweetId = Long.parseLong(queue.get(index).getMediaId());
+            final ImageView interactionIv = getActivity().findViewById(R.id.interaction_ib);
+            QueueItem curr = queue.get(index);
+            String typeStr = curr.getInteractionType();
+            if (typeStr.equals("RETWEET")) {
+                interactionIv.setImageResource(R.drawable.retweet_transparent);
+                ((TextView) getActivity().findViewById(R.id.like_text)).setText("Retweet for 5");
+            } else if (typeStr.equals("LIKE")) {
+                interactionIv.setImageResource(R.drawable.like_transparent);
+                ((TextView) getActivity().findViewById(R.id.like_text)).setText("Like for 1");
+            } else if (typeStr.equals("FOLLOW")) {
+                interactionIv.setImageResource(R.drawable.follow_transparent);
+                ((TextView) getActivity().findViewById(R.id.like_text)).setText("Follow for 10");
+            }
             TweetUtils.loadTweet(tweetId, new Callback<Tweet>() {
                 @Override
                 public void success(Result<Tweet> result) {
                     TweetView tweet = new TweetView(getContext(), result.data);
-                    tweet.setTweetActionsEnabled(true);
-                    tweet.setOnActionCallback(actionCallback);
+                    tweet.setTweetActionsEnabled(false);
                     if (contentLL.getChildCount() > 1) {
                         contentLL.removeViewAt(1);
                     }
                     contentLL.addView(tweet);
+                    interactionIv.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            QueueItem curr = queue.get(index);
+                            String typeStr = curr.getInteractionType();
+                            TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                            UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+                            if (typeStr.equals("RETWEET")) {
+                                StatusesService statusesService = userQueryTwitterApiClient.getStatusesService();
+                                Call<Tweet> call = statusesService.retweet(tweetId, false);
+                                call.enqueue(new Callback<Tweet>() {
+                                    @Override
+                                    public void success(Result<Tweet> result) {
+                                        QueueItem curr = queue.get(index);
+                                        Map<String, String> params = new HashMap<>();
+                                        params.put("requestId", curr.getRequestId());
+                                        params.put("socialContractId", mListener.getSocialContractId());
+                                        params.put("mediaId", curr.getMediaId());
+                                        params.put("type", type.toString());
+                                        params.put("coins", "" + (mListener.getNumCoins() + 5));
+                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                params, new ServerDelegate.OnResultListener() {
+                                                    @Override
+                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                        mListener.updateCoinNumber();
+                                                    }
+                                                });
+                                        index++;
+                                        setIndex();
+                                    }
+
+                                    public void failure(TwitterException exception) {
+                                        QueueItem curr = queue.get(index);
+                                        Map<String, String> params = new HashMap<>();
+                                        params.put("requestId", curr.getRequestId());
+                                        params.put("socialContractId", mListener.getSocialContractId());
+                                        params.put("mediaId", curr.getMediaId());
+                                        params.put("type", type.toString());
+                                        params.put("coins", "" + (mListener.getNumCoins() + 5));
+                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                params, new ServerDelegate.OnResultListener() {
+                                                    @Override
+                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                        mListener.updateCoinNumber();
+                                                    }
+                                                });
+                                        index++;
+                                        setIndex();
+                                    }
+                                });
+                            } else if (typeStr.equals("LIKE")) {
+                                FavoriteService favoriteService = userQueryTwitterApiClient.getFavoriteService();
+                                Call<Tweet> call = favoriteService.create(tweetId, false);
+                                call.enqueue(new Callback<Tweet>() {
+                                    @Override
+                                    public void success(Result<Tweet> result) {
+                                        QueueItem curr = queue.get(index);
+                                        Map<String, String> params = new HashMap<>();
+                                        params.put("requestId", curr.getRequestId());
+                                        params.put("socialContractId", mListener.getSocialContractId());
+                                        params.put("mediaId", curr.getMediaId());
+                                        params.put("type", type.toString());
+                                        params.put("coins", "" + (mListener.getNumCoins() + 1));
+                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                params, new ServerDelegate.OnResultListener() {
+                                                    @Override
+                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                        mListener.updateCoinNumber();
+                                                    }
+                                                });
+                                        index++;
+                                        setIndex();
+                                    }
+
+                                    public void failure(TwitterException exception) {
+                                        QueueItem curr = queue.get(index);
+                                        Map<String, String> params = new HashMap<>();
+                                        params.put("requestId", curr.getRequestId());
+                                        params.put("socialContractId", mListener.getSocialContractId());
+                                        params.put("mediaId", curr.getMediaId());
+                                        params.put("type", type.toString());
+                                        params.put("coins", "" + (mListener.getNumCoins() + 1));
+                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                params, new ServerDelegate.OnResultListener() {
+                                                    @Override
+                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                        mListener.updateCoinNumber();
+                                                    }
+                                                });
+                                        index++;
+                                        setIndex();
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
 
                 @Override
@@ -289,6 +393,45 @@ public class DiscoverFragment extends Fragment {
                 showFollows = false;
                 break;
         }
+    }
+
+    private void verify(final Long twitterId) {
+        TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        if (null == activeSession || activeSession.getUserId() != twitterId) {
+            Toast.makeText(getContext(), "Please log in with the account you want to interact using",
+                    Toast.LENGTH_LONG);
+            client = new TwitterAuthClient();
+            client.authorize(getActivity(), new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    //feedback
+                    TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                    UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+                    TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
+                    Call<User> userCall = twitterUserService.show(twitterId);
+                    userCall.enqueue(new Callback<User>() {
+                        @Override
+                        public void success(Result<User> userResult) {
+                            verify(twitterId);
+                        }
+
+                        @Override
+                        public void failure(TwitterException e) {
+                            verify(twitterId);
+                        }
+                    });
+                }
+
+                @Override
+                public void failure(TwitterException exception) {
+                    verify(twitterId);
+                }
+            });
+        }
+    }
+
+    public void onActivityResult(int request, int result, Intent data) {
+        client.onActivityResult(request, result, data);
     }
 
     @Override

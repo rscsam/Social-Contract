@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     private AccountSelectFragment accountSelectFragment;
     private ConfirmPurchaseDialogFragment confirmPurchaseDialogFragment;
     private InitialConnectAccountFragment initialConnectAccountFragment;
+    private Fragment currFragment;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_view, homeFragment).commit();
+        currFragment = homeFragment;
 
         // set the navigation drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -221,10 +223,11 @@ public class MainActivity extends AppCompatActivity implements
      *                             Sends a 1 for selected and 0 for unselected.
      */
     @Override
-    public void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] selectedInteractions) {
+    public void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] selectedInteractions, Long twitterId) {
         Bundle bundle = new Bundle();
         bundle.putInt("SocialMediaTypeOrdinal", socialMediaTypeOrdinal);
         bundle.putByteArray("SelectedInteractions", selectedInteractions);
+        bundle.putLong("twitterId", twitterId);
         discoverFragment = DiscoverFragment.newInstance(bundle);
         showFragment(R.id.main_activity_view, discoverFragment);
     }
@@ -432,8 +435,13 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
 
-        } else if (resultCode == -1) {
-            initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            if (currFragment instanceof InitialConnectAccountFragment)
+                initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+            else if (currFragment instanceof DiscoverFragment)
+                discoverFragment.onActivityResult(requestCode, resultCode, data);
+            else if (currFragment instanceof DiscoverSettingsFragment)
+                discoverSettingsFragment.onActivityResult(requestCode, resultCode, data);
         }
 
         String url = ServerDelegate.SERVER_URL + "/getQueue";
@@ -470,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.replace(viewId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        currFragment = fragment;
     }
 
     private void showFragmentWithBundle(int viewId, Fragment fragment, Bundle bundle) {
@@ -478,6 +487,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.replace(viewId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        currFragment = fragment;
     }
 
     public void updateCoinNumber() {

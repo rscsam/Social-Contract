@@ -101,8 +101,10 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        twLoginButton.onActivityResult(requestCode, resultCode, data);
+        if (twLoginButton != null) {
+            super.onActivityResult(requestCode, resultCode, data);
+            twLoginButton.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
 

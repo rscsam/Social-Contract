@@ -85,7 +85,7 @@ public class AccountListAdapter extends ArrayAdapter<AccountListItem> {
                     for (int i = 0; i < checkBoxes.length; i++) {
                         selectedInteractions[i] = checkBoxes[i].isChecked() ? (byte) 0b1 : 0;
                     }
-                    context.onClickDiscoverSettingsGo(account.getSocialMediaType().ordinal(), selectedInteractions);
+                    context.onClickDiscoverSettingsGo(account.getSocialMediaType().ordinal(), selectedInteractions, Long.parseLong(account.getSmId()));
                 }
             });
             row.addView(additionalSettingsDropdown);
