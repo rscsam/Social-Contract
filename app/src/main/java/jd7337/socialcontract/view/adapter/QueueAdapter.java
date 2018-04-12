@@ -47,6 +47,8 @@ public class QueueAdapter extends ArrayAdapter<QueueListItem> {
         ((ProgressBar) row.findViewById(R.id.downloadProgressBar))
                 .setProgress(queue.get(position).getProgressToGoal());
         ((TextView) row.findViewById(R.id.num_request))
+                .setText(queue.get(position).getNum());
+        ((TextView) row.findViewById(R.id.request_type))
                 .setText(queue.get(position).getText());
         ((ImageView) row.findViewById(R.id.social_icon))
                 .setImageResource(queue.get(position).getImageResource());
