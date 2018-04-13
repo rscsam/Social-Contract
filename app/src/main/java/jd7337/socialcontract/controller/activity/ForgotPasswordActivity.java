@@ -50,15 +50,26 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         startActivity(startLogin);
         email = emailET.getText().toString();
         setDefaultPassword();
-        String emailBody = "Your new password is: " + newPass;
-        try {
-            GMailSender sender = new GMailSender("socialContractTest@gmail.com", "TheRipGetRipper");
-            sender.sendMail("Password Reset Request",
-                    emailBody,
-                    "socialContractTest@gmail.com", email);
-        } catch (Exception e) {
-            Log.e("SendMail", e.getMessage(), e);
-        }
+        final String emailBody = "Your new password is: " + newPass;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    GMailSender sender = new GMailSender("socialContractTest@gmail.com", "TheRipGetRipper");
+                    sender.sendMail("Password Reset Request",
+                            emailBody,
+                            "socialContractTest@gmail.com", email);
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+            }
+
+        }).start();
+
+
+
+
         //
 
     }
