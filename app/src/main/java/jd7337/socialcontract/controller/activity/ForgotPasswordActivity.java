@@ -1,5 +1,6 @@
 package jd7337.socialcontract.controller.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,9 +47,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     public void onClickSend(View view) {
-        Intent startLogin = new Intent(this, LoginActivity.class);
-        startActivity(startLogin);
+
         email = emailET.getText().toString();
+        Log.i("debug", "reached here");
         setDefaultPassword();
         final String emailBody = "Your new password is: " + newPass;
 
@@ -68,66 +69,95 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         }).start();
 
 
-
-
-        //
-
     }
 
     /**
      * Connect to the change password endpoint on the server to change the user's password in the database
      * Hashes the password first
      */
-    public void setDefaultPassword() {
+    private void setDefaultPassword() {
+
         //ensures the salt and nonce have been retrieved
-        String hashedPassword;
-        if (checkUser()) {
-            newPass = new String(randomPassword(8));
-            hashedPassword = hashPassword(newPass);
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
 
-            Map<String, String> params = new HashMap<>();
-            params.put("password", hashedPassword);
-            params.put("userId", userId);
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        final Context thisContext = this;
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            boolean success = response.getBoolean("success");
+                            if (success) {
+                                String hashedPassword;
+                                salt = response.getString("salt");
+                                nonce = response.getString("nonce");
+                                userId = response.getString("userId");
+                                newPass = new String(randomPassword(8));
+                                hashedPassword = hashPassword(newPass);
+                                Log.i("debug", hashedPassword);
+                                RequestQueue queue = Volley.newRequestQueue(thisContext);
+                                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            try {
-                                boolean success = response.getBoolean("success");
-                                if (success) {
-                                    Toast.makeText(getApplicationContext(),
-                                            "Successfully changed password", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getApplicationContext(),
-                                            response.getString("message"), Toast.LENGTH_SHORT).show();
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(getApplicationContext(),
-                                        "Error parsing JSON response", Toast.LENGTH_SHORT).show();
+                                Map<String, String> params = new HashMap<>();
+                                params.put("password", hashedPassword);
+                                params.put("userId", userId);
+
+                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
+                                        new Response.Listener<JSONObject>() {
+                                            @Override
+                                            public void onResponse(JSONObject response) {
+                                                try {
+                                                    boolean success = response.getBoolean("success");
+                                                    if (success) {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                "Successfully changed password", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                response.getString("message"), Toast.LENGTH_SHORT).show();
+                                                    }
+                                                } catch (JSONException e) {
+                                                    Toast.makeText(getApplicationContext(),
+                                                            "Error parsing JSON response", Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Toast.makeText(getApplicationContext(),
+                                                        error.getMessage(), Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                ) {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        Map<String, String> headers = new HashMap<>();
+                                        headers.put("Content-Type", "application.json; charset=utf-8");
+                                        return headers;
+                                    }
+                                };
+                                queue.add(jsonObjectRequest);
+                            } else {
+                                Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
                             }
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(),
-                                    error.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (JSONException e) {
+                            Toast.makeText(getApplicationContext(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
                         }
                     }
-            ) {
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Content-Type", "application.json; charset=utf-8");
-                    return headers;
-                }
-            };
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        queue.add(jsonObjectRequest);
 
-            queue.add(jsonObjectRequest);
-        }
+
+
+
 
 
     }
