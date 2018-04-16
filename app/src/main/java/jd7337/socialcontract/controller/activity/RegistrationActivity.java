@@ -9,13 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 
 public class RegistrationActivity extends AppCompatActivity {
 
@@ -54,7 +49,7 @@ public class RegistrationActivity extends AppCompatActivity {
      */
     public void onClickRegisterDone(View view) {
 
-        // turn off register button while registration is occuring
+        // turn off register button while registration occur
         registerButton.setEnabled(false);
         email = emailET.getText().toString();
         password = passwordET.getText().toString();
@@ -77,9 +72,10 @@ public class RegistrationActivity extends AppCompatActivity {
      * @param id the id of the user
      */
     private void launchTutorial(String id) {
-        Intent startConfirmEmail = new Intent(this, TutorialActivity.class);
-        startConfirmEmail.putExtra("userId", id);
-        startActivity(startConfirmEmail);
+        Intent startTutorial = new Intent(this, TutorialActivity.class);
+        startTutorial.putExtra("userId", id);
+        startTutorial.putExtra("email", email);
+        startActivity(startTutorial);
     }
 
     /**
@@ -87,55 +83,35 @@ public class RegistrationActivity extends AppCompatActivity {
      * Launches register() if it succeeds
      */
     private void getSalt() {
-        // create a requestqueue to start volley requests
-        RequestQueue queue = Volley.newRequestQueue(this);
-        // use the url of the endpoint you are trying to connect to
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/initRegistration";
+        String url = ServerDelegate.SERVER_URL + "/initRegistration";
 
         // put all the parameters in a map
         // these will be converted into a JSON object and passed to the server
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
-
-        // the volley request
-        // be sure to use POST or GET as necessary
-        // onResponse and onErrorResponse are the callbacks: get called after the async request finishes
-        // needs to override getHeaders or the server will not accept it
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                register(response.getString("result"));
-                            } else {
-                                Toast.makeText(RegistrationActivity.this, response.getString("result"), Toast.LENGTH_SHORT).show();
-                                registerButton.setEnabled(true);
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                            registerButton.setEnabled(true);
-                        }
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(this, url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    register(response.getString("result"));
+                } else {
+                    Toast.makeText(RegistrationActivity.this, response.getString("result"), Toast.LENGTH_SHORT).show();
+                    registerButton.setEnabled(true);
+                }
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                registerButton.setEnabled(true);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
                 Toast.makeText(RegistrationActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 registerButton.setEnabled(true);
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        // adding the request to the queue is all you have to do to start it
-        queue.add(stringRequest);
+        });
     }
 
     /**
@@ -143,49 +119,35 @@ public class RegistrationActivity extends AppCompatActivity {
      * @param salt the salt returned from the database
      */
     private void register(String salt) {
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/register";
+        String url = ServerDelegate.SERVER_URL + "/register";
 
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", hash(salt));
         params.put("salt", salt);
-
-
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                launchTutorial(response.getString("userId"));
-                            } else {
-                                Toast.makeText(RegistrationActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                        registerButton.setEnabled(true);
-                    }
-                }, new Response.ErrorListener() {
+        ServerDelegate.postRequest(this, url, params, new ServerDelegate.OnResultListener() {
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    launchTutorial(response.getString("userId"));
+                } else {
+                    Toast.makeText(RegistrationActivity.this, response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+                registerButton.setEnabled(true);
+            }
+        }, new ServerDelegate.OnJSONErrorListener() {
+            @Override
+            public void onJSONError(JSONException e) {
+                Toast.makeText(RegistrationActivity.this, "Failure parsing JSON", Toast.LENGTH_SHORT).show();
+                registerButton.setEnabled(true);
+            }
+        }, new ServerDelegate.OnErrorListener() {
+            @Override
+            public void onError(VolleyError error) {
                 Toast.makeText(RegistrationActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
                 registerButton.setEnabled(true);
             }
-        }
-        ) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        queue.add(stringRequest);
+        });
     }
 
     /**

@@ -8,14 +8,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.model.SocialMediaAccount;
 
 public class ConfirmPurchaseDialogFragment extends DialogFragment{
 
     private ConfirmPurchaseDialogFListener mListener;
 
     private int quantity;
+    private SocialMediaAccount account;
     private String type;
     private int totalPrice;
+    private String accessToken;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -28,7 +31,7 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
                 .setPositiveButton(R.string.dialog_confirm, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mListener.onClickConfirmPurchase(totalPrice);
+                        mListener.onClickConfirmPurchase(account, type, quantity, totalPrice);
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
@@ -74,8 +77,25 @@ public class ConfirmPurchaseDialogFragment extends DialogFragment{
         this.totalPrice = totalPrice;
     }
 
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public SocialMediaAccount getAccount() {
+        return account;
+    }
+
+    public void setAccount(SocialMediaAccount account) {
+        this.account = account;
+    }
+
     public interface ConfirmPurchaseDialogFListener {
-        void onClickConfirmPurchase(int totalPrice);
+        void onClickConfirmPurchase(SocialMediaAccount account, String type, int quantity,
+                                    int individualPrice);
     }
 
 }

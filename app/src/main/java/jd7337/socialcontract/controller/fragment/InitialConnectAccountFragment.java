@@ -10,12 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthToken;
@@ -23,14 +17,19 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterLoginButton;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.listener.InstagramAuthenticationListener;
 import jd7337.socialcontract.view.dialog.AuthenticationDialog;
 
 public class InitialConnectAccountFragment extends Fragment implements InstagramAuthenticationListener {
     private InitialConnectAccountFListener mListener;
-    private CallbackManager callbackManager;
-    private LoginButton fbLoginButton;
 
     private TwitterLoginButton twLoginButton;
     private TwitterAuthToken authToken;
@@ -58,50 +57,30 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         View view = inflater.inflate(R.layout.fragment_initial_connect_account, container, false);
 
         // Twitter connection
-        twLoginButton = (TwitterLoginButton) view.findViewById(R.id.tw_login_button);
+        twLoginButton = view.findViewById(R.id.tw_login_button);
         twLoginButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Toast.makeText(getContext(), "Successful log in", Toast.LENGTH_SHORT).show();
                 authToken = result.data.getAuthToken();
                 token = authToken.token;
                 secret = authToken.secret;
                 userId = result.data.getUserId();
                 userName = result.data.getUserName();
+                String url = ServerDelegate.SERVER_URL + "/addTwitter";
+
+                Map<String, String> params = new HashMap<>();
+                params.put("authToken", token);
+                params.put("socialContractId", mListener.getSocialContractId());
+                params.put("twitterId", userId.toString());
+                params.put("authSecret", secret);
+                params.put("username", userName);
+                ServerDelegate.postRequest(getContext(), url, params);
             }
 
             @Override
             public void failure(TwitterException exception) {
                 Toast.makeText(getContext(), exception.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        });
-
-        // Facebook connection
-        callbackManager = CallbackManager.Factory.create();
-        fbLoginButton = (LoginButton) view.findViewById(R.id.fb_login_button);
-        fbLoginButton.setFragment(this);
-        callbackManager = CallbackManager.Factory.create();
-        //callback registration
-        fbLoginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Toast toast = Toast.makeText(getActivity(),"Logged In", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-                Toast toast = Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_SHORT);
-                toast.show();
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-
-            }
-
-
         });
 
         // Instagram connection
@@ -122,7 +101,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        callbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         twLoginButton.onActivityResult(requestCode, resultCode, data);
     }
@@ -145,9 +123,25 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         mListener = null;
     }
 
-    public void onCodeReceived(String access_token) {  // this is the actual instagram token
-        if (access_token == null) {
+    public void onInstagramAuthTokenReceived(final String token) {  // this is the actual instagram token
+        if (token == null) {
             auth_dialog.dismiss();
+        } else {
+            String url = "https://api.instagram.com/v1/users/self/?access_token=" + token;
+            ServerDelegate.getRequest(getContext(), url, new ServerDelegate.OnResultListener() {
+                @Override
+                public void onResult(boolean success, JSONObject response) throws JSONException {
+                    if (success) {
+                        Map<String, String> params = new HashMap<>();
+                        params.put("accessToken", token);
+                        params.put("socialContractId", mListener.getSocialContractId());
+                        params.put("instagramId", response.getJSONObject("data").getString("id"));
+                        params.put("username", response.getJSONObject("data").getString("username"));
+                        String url = ServerDelegate.SERVER_URL + "/addInstagram";
+                        ServerDelegate.postRequest(getContext(), url, params);
+                    }
+                }
+            });
         }
     }
 
@@ -158,6 +152,6 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
      * activity.
      */
     public interface InitialConnectAccountFListener {
-        void onClickICAFConnectAccount();
+        String getSocialContractId();
     }
 }

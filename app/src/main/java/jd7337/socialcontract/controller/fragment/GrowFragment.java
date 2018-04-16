@@ -12,10 +12,13 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.model.SocialMediaAccount;
 
 public class GrowFragment extends Fragment {
 
     private GrowFListener mListener;
+
+    private SocialMediaAccount.AccountType accountType;
 
     private RadioGroup interactionTypesRG;
     private EditText quantityET;
@@ -24,48 +27,173 @@ public class GrowFragment extends Fragment {
         // Required empty public constructor
     }
 
+    public static GrowFragment newInstance(Bundle bundle) {
+        GrowFragment growFragment = new GrowFragment();
+        growFragment.setArguments(bundle);
+        return growFragment;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        int typeOrdinal = getArguments().getInt("typeInt");
+        accountType = SocialMediaAccount.AccountType.values()[typeOrdinal];
+        final String username = getArguments().getString("username");
+        final String id = getArguments().getString("id");
+        final String accessToken = getArguments().getString("accessToken");
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_grow, container, false);
+        View view;
+        switch (accountType) {
+            case FACEBOOK:
+                view = inflater.inflate(R.layout.fragment_facebook_grow, container, false);
+                interactionTypesRG = view.findViewById(R.id.facebook_interaction_type_rg);
+                break;
+            case TWITTER:
+                view = inflater.inflate(R.layout.fragment_twitter_grow, container, false);
+                interactionTypesRG = view.findViewById(R.id.twitter_interaction_type_rg);
+                break;
+            case INSTAGRAM:
+                view = inflater.inflate(R.layout.fragment_instagram_grow, container, false);
+                interactionTypesRG = view.findViewById(R.id.instagram_interaction_type_rg);
+                break;
+            // If for some reason the type is different, inflate the facebook view instead.
+            default:
+                view = inflater.inflate(R.layout.fragment_facebook_grow, container, false);
+                break;
+        }
         View connectAccountButton = view.findViewById(R.id.purchase_button);
-        interactionTypesRG = view.findViewById(R.id.interaction_type_rg);
         quantityET = view.findViewById(R.id.quantityET);
-        connectAccountButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        int quantity;
-                        try {
-                            quantity = Integer.parseInt(quantityET.getText().toString());
-                        } catch (NumberFormatException e) {
-                            Toast.makeText(getContext(), "Please choose a quantity.",
-                                    Toast.LENGTH_SHORT).show();
-                            return;
-                        }
+        switch (accountType) {
+            case FACEBOOK:
+                connectAccountButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                int quantity;
+                                try {
+                                    quantity = Integer.parseInt(quantityET.getText().toString());
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(getContext(), "Please choose a quantity.",
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
-                        int selectId = interactionTypesRG.getCheckedRadioButtonId();
-                        RadioButton selected = interactionTypesRG.findViewById(selectId);
-                        String type = selected.getText().toString();
-                        type = type.substring(0, type.length() - 1);
-                        int price;
-                        switch (type) {
-                            case "Like":
-                                price = 1;
-                                break;
-                            case "Retweet":
-                                price = 5;
-                                break;
-                            default:
-                                price = 10;
-                                break;
+                                int selectId = interactionTypesRG.getCheckedRadioButtonId();
+                                RadioButton selected = interactionTypesRG.findViewById(selectId);
+                                if (selected != null) {
+                                    String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
+                                    int price;
+                                    switch (type) {
+                                        case "Likes":
+                                            price = 1;
+                                            break;
+                                        case "Shares":
+                                            price = 5;
+                                            break;
+                                        default:
+                                            price = 10;
+                                            break;
+                                    }
+                                    SocialMediaAccount account = new SocialMediaAccount(id, username, accountType);
+                                    account.setAccessToken(accessToken);
+                                    mListener.onClickGrowPurchase(quantity, account, type, price);
+                                } else {
+                                    Toast.makeText(getContext(), "Please choose an interaction.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
                         }
+                );
+                break;
+            case TWITTER:
+                connectAccountButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                int quantity;
+                                try {
+                                    quantity = Integer.parseInt(quantityET.getText().toString());
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(getContext(), "Please choose a quantity.",
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
 
-                        mListener.onClickGrowPurchase(quantity, type, price);
-                    }
-                }
-        );
+                                int selectId = interactionTypesRG.getCheckedRadioButtonId();
+                                RadioButton selected = interactionTypesRG.findViewById(selectId);
+                                if (selected != null) {
+                                    String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
+                                    int price;
+                                    switch (type) {
+                                        case "Like":
+                                            price = 1;
+                                            break;
+                                        case "Retweet":
+                                            price = 5;
+                                            break;
+                                        case "Follow":
+                                            price = 10;
+                                            break;
+                                        default:
+                                            price = 10;
+                                            break;
+                                    }
+                                    mListener.onClickGrowPurchase(quantity, new SocialMediaAccount(id, username, accountType), type, price);
+                                } else {
+                                    Toast.makeText(getContext(), "Please choose an interaction.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+                break;
+            case INSTAGRAM:
+                connectAccountButton.setOnClickListener(
+                        new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                int quantity;
+                                try {
+                                    quantity = Integer.parseInt(quantityET.getText().toString());
+                                } catch (NumberFormatException e) {
+                                    Toast.makeText(getContext(), "Please choose a quantity.",
+                                            Toast.LENGTH_SHORT).show();
+                                    return;
+                                }
+
+                                int selectId = interactionTypesRG.getCheckedRadioButtonId();
+                                RadioButton selected = interactionTypesRG.findViewById(selectId);
+                                if (selected != null) {
+                                    String type = selected.getText().toString();
+                                    type = type.substring(0, type.length() - 1);
+                                    int price;
+                                    switch (type) {
+                                        case "Like":
+                                            price = 1;
+                                            break;
+                                        case "Follow":
+                                            price = 10;
+                                            break;
+                                        default:
+                                            price = 10;
+                                            break;
+                                    }
+                                    SocialMediaAccount account = new SocialMediaAccount(id, username, accountType);
+                                    account.setAccessToken(accessToken);
+                                    mListener.onClickGrowPurchase(quantity, account, type, price);
+                                } else {
+                                    Toast.makeText(getContext(), "Please choose an interaction.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                );
+                break;
+            default:
+                break;
+        }
         return view;
     }
 
@@ -87,6 +215,6 @@ public class GrowFragment extends Fragment {
     }
 
     public interface GrowFListener {
-        void onClickGrowPurchase(int quantity, String type, int individualPrice);
+        void onClickGrowPurchase(int quantity, SocialMediaAccount account, String type, int individualPrice);
     }
 }

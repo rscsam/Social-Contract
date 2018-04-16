@@ -14,6 +14,11 @@ public class DiscoverFragment extends Fragment {
 
     private DiscoverFListener mListener;
 
+    public static DiscoverFragment newInstance(Bundle bundle) {
+        DiscoverFragment fragment = new DiscoverFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
     public DiscoverFragment() {
         // Required empty public constructor
     }
@@ -23,6 +28,16 @@ public class DiscoverFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         // Inflate the layout for this fragment
+        if (getArguments() != null) {
+            int socialMediaTypeOrdinal = getArguments().getInt("SocialMediaTypeOrdinal");
+            byte[] selectedInteractions = getArguments().getByteArray("SelectedInteractions");
+            System.out.println(socialMediaTypeOrdinal);
+            for (byte b : selectedInteractions) {
+                System.out.println(b);
+            }
+        } else {
+            System.out.println("Null params");
+        }
         View view = inflater.inflate(R.layout.fragment_discover, container, false);
         View imDoneButton = view.findViewById(R.id.im_done_button);
         imDoneButton.setOnClickListener(

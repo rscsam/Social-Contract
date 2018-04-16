@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -9,7 +8,7 @@
 
     <LinearLayout
         android:id="@+id/account_ll"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -18,27 +17,40 @@
             android:id="@+id/profile_picture"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_weight="1"
             android:padding="10dp"
-            app:srcCompat="@mipmap/ic_launcher" />
+            app:srcCompat="@mipmap/ic_launcher"
+            android:contentDescription="@string/profile_picture" />
 
         <TextView
             android:id="@+id/account_username"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="1"
             android:padding="10dp"
-            android:text="Account Username"
+            android:text=""
             android:textSize="24sp" />
 
         <ImageView
             android:id="@+id/social_media_platform_picture"
             android:layout_width="72dp"
             android:layout_height="72dp"
-            android:layout_weight="1"
             android:padding="10dp"
-            app:srcCompat="@android:drawable/star_big_on" />
+            app:srcCompat="@android:drawable/star_big_on"
+            android:contentDescription="@string/social_media_platform_picture" />
+        
+        <ImageButton
+            android:id="@+id/delete_ib"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_delete_black_24dp"
+            android:visibility="gone"
+            android:contentDescription="@string/delete_ib" />
 
     </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/discover_dropdown"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

@@ -1,0 +1,144 @@
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/grow_cl"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="jd7337.socialcontract.controller.fragment.GrowFragment">
+
+    <TextView
+        android:id="@+id/header_tv"
+        android:layout_width="117dp"
+        android:layout_height="49dp"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/instagram_i_want"
+        android:textSize="30sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/instagram_cl"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="82dp"
+        app:layout_constraintTop_toBottomOf="@+id/header_tv"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <RadioGroup
+            android:id="@+id/instagram_interaction_type_rg"
+            android:layout_width="111dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/instagram_like_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/instagram_likes"
+                tools:layout_editor_absoluteX="64dp"
+                tools:layout_editor_absoluteY="172dp" />
+
+            <RadioButton
+                android:id="@+id/instagram_follow_rb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/instagram_follows"
+                tools:layout_editor_absoluteX="64dp"
+                tools:layout_editor_absoluteY="236dp" />
+
+        </RadioGroup>
+
+        <LinearLayout
+            android:id="@+id/instagram_price_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/instagram_interaction_type_rg"
+            app:layout_constraintTop_toTopOf="@id/instagram_interaction_type_rg">
+
+            <TextView
+                android:id="@+id/in_like_price_tv"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="@string/_1"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/in_follow_price_tv"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:gravity="center_vertical"
+                android:text="@string/_10"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/instagram_coins_ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintStart_toEndOf="@id/instagram_price_ll"
+            app:layout_constraintTop_toTopOf="@+id/instagram_price_ll">
+
+            <ImageView
+                android:id="@+id/in_like_coin_iv"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/coin_icon"
+                android:contentDescription="@string/in_like_coin_iv" />
+
+            <ImageView
+                android:id="@+id/in_follow_coin_iv"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/coin_icon"
+                android:contentDescription="@string/in_follow_coin_iv" />
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/quantityTV"
+        android:layout_width="112dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="72dp"
+        android:text="@string/quantity"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/instagram_cl" />
+
+    <EditText
+        android:id="@+id/quantityET"
+        android:layout_width="141dp"
+        android:layout_height="45dp"
+        android:ems="10"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/quantityTV"
+        app:layout_constraintTop_toTopOf="@+id/quantityTV" />
+
+    <Button
+        android:id="@+id/purchase_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="64dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:background="@drawable/new_custom_button"
+        android:text="@string/go"
+        android:textSize="24sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quantityTV"
+        app:layout_constraintVertical_bias="0.25" />
+
+</android.support.constraint.ConstraintLayout>
