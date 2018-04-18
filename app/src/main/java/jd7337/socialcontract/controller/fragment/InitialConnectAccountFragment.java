@@ -84,17 +84,17 @@ public class InitialConnectAccountFragment extends Fragment implements Instagram
         });
 
         // Instagram connection
-        inLoginButton = view.findViewById(R.id.in_login_button);
+       // inLoginButton = view.findViewById(R.id.in_login_button);
 
-        final InstagramAuthenticationListener l = this;
-        inLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                auth_dialog = new AuthenticationDialog(getContext(), l);
-                auth_dialog.setCancelable(true);
-                auth_dialog.show();
-            }
-        });
+//        final InstagramAuthenticationListener l = this;
+//        inLoginButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                auth_dialog = new AuthenticationDialog(getContext(), l);
+//                auth_dialog.setCancelable(true);
+//                auth_dialog.show();
+//            }
+//        });
 
         return view;
     }

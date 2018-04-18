@@ -27,11 +27,14 @@ import com.twitter.sdk.android.core.services.FavoriteService;
 import com.twitter.sdk.android.core.services.StatusesService;
 import com.twitter.sdk.android.tweetui.TweetUtils;
 import com.twitter.sdk.android.tweetui.TweetView;
+import com.twitter.sdk.android.tweetui.UserTimeline;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -113,6 +116,13 @@ public class DiscoverFragment extends Fragment {
                         setQueue(queue);
                     }
                 });
+        view.findViewById(R.id.skip_text).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                index++;
+                setIndex();
+            }
+        });
         return view;
     }
 
@@ -157,120 +167,171 @@ public class DiscoverFragment extends Fragment {
             } else if (typeStr.equals("FOLLOW")) {
                 interactionIv.setImageResource(R.drawable.follow_transparent);
                 ((TextView) getActivity().findViewById(R.id.like_text)).setText("Follow for 10");
-            }
-            TweetUtils.loadTweet(tweetId, new Callback<Tweet>() {
-                @Override
-                public void success(Result<Tweet> result) {
-                    TweetView tweet = new TweetView(getContext(), result.data);
-                    tweet.setTweetActionsEnabled(false);
-                    if (contentLL.getChildCount() > 1) {
-                        contentLL.removeViewAt(1);
-                    }
-                    contentLL.addView(tweet);
-                    interactionIv.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            QueueItem curr = queue.get(index);
-                            String typeStr = curr.getInteractionType();
-                            TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                            UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
-                            if (typeStr.equals("RETWEET")) {
-                                StatusesService statusesService = userQueryTwitterApiClient.getStatusesService();
-                                Call<Tweet> call = statusesService.retweet(tweetId, false);
-                                call.enqueue(new Callback<Tweet>() {
-                                    @Override
-                                    public void success(Result<Tweet> result) {
-                                        QueueItem curr = queue.get(index);
-                                        Map<String, String> params = new HashMap<>();
-                                        params.put("requestId", curr.getRequestId());
-                                        params.put("socialContractId", mListener.getSocialContractId());
-                                        params.put("mediaId", curr.getMediaId());
-                                        params.put("type", type.toString());
-                                        params.put("coins", "" + (mListener.getNumCoins() + 5));
-                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
-                                                params, new ServerDelegate.OnResultListener() {
-                                                    @Override
-                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
-                                                        mListener.updateCoinNumber();
-                                                    }
-                                                });
-                                        index++;
-                                        setIndex();
-                                    }
-
-                                    public void failure(TwitterException exception) {
-                                        QueueItem curr = queue.get(index);
-                                        Map<String, String> params = new HashMap<>();
-                                        params.put("requestId", curr.getRequestId());
-                                        params.put("socialContractId", mListener.getSocialContractId());
-                                        params.put("mediaId", curr.getMediaId());
-                                        params.put("type", type.toString());
-                                        params.put("coins", "" + (mListener.getNumCoins() + 5));
-                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
-                                                params, new ServerDelegate.OnResultListener() {
-                                                    @Override
-                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
-                                                        mListener.updateCoinNumber();
-                                                    }
-                                                });
-                                        index++;
-                                        setIndex();
-                                    }
-                                });
-                            } else if (typeStr.equals("LIKE")) {
-                                FavoriteService favoriteService = userQueryTwitterApiClient.getFavoriteService();
-                                Call<Tweet> call = favoriteService.create(tweetId, false);
-                                call.enqueue(new Callback<Tweet>() {
-                                    @Override
-                                    public void success(Result<Tweet> result) {
-                                        QueueItem curr = queue.get(index);
-                                        Map<String, String> params = new HashMap<>();
-                                        params.put("requestId", curr.getRequestId());
-                                        params.put("socialContractId", mListener.getSocialContractId());
-                                        params.put("mediaId", curr.getMediaId());
-                                        params.put("type", type.toString());
-                                        params.put("coins", "" + (mListener.getNumCoins() + 1));
-                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
-                                                params, new ServerDelegate.OnResultListener() {
-                                                    @Override
-                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
-                                                        mListener.updateCoinNumber();
-                                                    }
-                                                });
-                                        index++;
-                                        setIndex();
-                                    }
-
-                                    public void failure(TwitterException exception) {
-                                        QueueItem curr = queue.get(index);
-                                        Map<String, String> params = new HashMap<>();
-                                        params.put("requestId", curr.getRequestId());
-                                        params.put("socialContractId", mListener.getSocialContractId());
-                                        params.put("mediaId", curr.getMediaId());
-                                        params.put("type", type.toString());
-                                        params.put("coins", "" + (mListener.getNumCoins() + 1));
-                                        ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
-                                                params, new ServerDelegate.OnResultListener() {
-                                                    @Override
-                                                    public void onResult(boolean success, JSONObject response) throws JSONException {
-                                                        mListener.updateCoinNumber();
-                                                    }
-                                                });
-                                        index++;
-                                        setIndex();
-                                    }
-                                });
-                            }
+                TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+                TwitterUserService service = userQueryTwitterApiClient.getTwitterUserService();
+                Call<User> call = service.show(Long.parseLong(curr.getMediaId()));
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void success(Result<User> result) {
+                        String bio = result.data.description;
+                        String name = result.data.screenName;
+                        final LinearLayout follow = (LinearLayout) getLayoutInflater().inflate(R.layout.follow_layout,
+                                null);
+                        follow.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                        ((TextView) follow.findViewById(R.id.bio_txt)).setText(bio);
+                        ((TextView) follow.findViewById(R.id.name_txt)).setText(name);
+                        if (contentLL.getChildCount() > 1) {
+                            contentLL.removeViewAt(1);
                         }
-                    });
-                }
+                        contentLL.addView(follow);
+                        final String photoUrl = result.data.profileImageUrl;
+                        Thread thread = new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    URL picUrl = new URL(photoUrl);
+                                    final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            ((ImageView) follow.findViewById(R.id.profile_iv)).setImageBitmap(profilePic);
+                                        }
+                                    });
+                                } catch (MalformedURLException e) {
+                                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                } catch (java.io.IOException e) {
+                                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                        thread.start();
 
-                @Override
-                public void failure(TwitterException exception) {
-                    // Toast.makeText(...).show();
-                    int i = 0;
-                }
-            });
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        Log.e("fail", exception.getMessage());
+                    }
+                });
+            }
+            if (!typeStr.equals("FOLLOW")) {
+                TweetUtils.loadTweet(tweetId, new Callback<Tweet>() {
+                    @Override
+                    public void success(Result<Tweet> result) {
+                        TweetView tweet = new TweetView(getContext(), result.data);
+                        tweet.setTweetActionsEnabled(false);
+                        if (contentLL.getChildCount() > 1) {
+                            contentLL.removeViewAt(1);
+                        }
+                        contentLL.addView(tweet);
+                        interactionIv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                QueueItem curr = queue.get(index);
+                                String typeStr = curr.getInteractionType();
+                                TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                                UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+                                if (typeStr.equals("RETWEET")) {
+                                    StatusesService statusesService = userQueryTwitterApiClient.getStatusesService();
+                                    Call<Tweet> call = statusesService.retweet(tweetId, false);
+                                    call.enqueue(new Callback<Tweet>() {
+                                        @Override
+                                        public void success(Result<Tweet> result) {
+                                            QueueItem curr = queue.get(index);
+                                            Map<String, String> params = new HashMap<>();
+                                            params.put("requestId", curr.getRequestId());
+                                            params.put("socialContractId", mListener.getSocialContractId());
+                                            params.put("mediaId", curr.getMediaId());
+                                            params.put("type", type.toString());
+                                            params.put("coins", "" + (mListener.getNumCoins() + 5));
+                                            ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                    params, new ServerDelegate.OnResultListener() {
+                                                        @Override
+                                                        public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                            mListener.updateCoinNumber();
+                                                        }
+                                                    });
+                                            index++;
+                                            setIndex();
+                                        }
+
+                                        public void failure(TwitterException exception) {
+                                            QueueItem curr = queue.get(index);
+                                            Map<String, String> params = new HashMap<>();
+                                            params.put("requestId", curr.getRequestId());
+                                            params.put("socialContractId", mListener.getSocialContractId());
+                                            params.put("mediaId", curr.getMediaId());
+                                            params.put("type", type.toString());
+                                            params.put("coins", "" + (mListener.getNumCoins() + 5));
+                                            ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                    params, new ServerDelegate.OnResultListener() {
+                                                        @Override
+                                                        public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                            mListener.updateCoinNumber();
+                                                        }
+                                                    });
+                                            index++;
+                                            setIndex();
+                                        }
+                                    });
+                                } else if (typeStr.equals("LIKE")) {
+                                    FavoriteService favoriteService = userQueryTwitterApiClient.getFavoriteService();
+                                    Call<Tweet> call = favoriteService.create(tweetId, false);
+                                    call.enqueue(new Callback<Tweet>() {
+                                        @Override
+                                        public void success(Result<Tweet> result) {
+                                            QueueItem curr = queue.get(index);
+                                            Map<String, String> params = new HashMap<>();
+                                            params.put("requestId", curr.getRequestId());
+                                            params.put("socialContractId", mListener.getSocialContractId());
+                                            params.put("mediaId", curr.getMediaId());
+                                            params.put("type", type.toString());
+                                            params.put("coins", "" + (mListener.getNumCoins() + 1));
+                                            ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                    params, new ServerDelegate.OnResultListener() {
+                                                        @Override
+                                                        public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                            mListener.updateCoinNumber();
+                                                        }
+                                                    });
+                                            index++;
+                                            setIndex();
+                                        }
+
+                                        public void failure(TwitterException exception) {
+                                            QueueItem curr = queue.get(index);
+                                            Map<String, String> params = new HashMap<>();
+                                            params.put("requestId", curr.getRequestId());
+                                            params.put("socialContractId", mListener.getSocialContractId());
+                                            params.put("mediaId", curr.getMediaId());
+                                            params.put("type", type.toString());
+                                            params.put("coins", "" + (mListener.getNumCoins() + 1));
+                                            ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                                    params, new ServerDelegate.OnResultListener() {
+                                                        @Override
+                                                        public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                            mListener.updateCoinNumber();
+                                                        }
+                                                    });
+                                            index++;
+                                            setIndex();
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        // Toast.makeText(...).show();
+                        int i = 0;
+                    }
+                });
+            }
         }
     }
 
@@ -397,7 +458,7 @@ public class DiscoverFragment extends Fragment {
 
     private void verify(final Long twitterId) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if (null == activeSession || activeSession.getUserId() != twitterId) {
+        if (null == activeSession) {
             Toast.makeText(getContext(), "Please log in with the account you want to interact using",
                     Toast.LENGTH_LONG);
             client = new TwitterAuthClient();
@@ -424,7 +485,7 @@ public class DiscoverFragment extends Fragment {
 
                 @Override
                 public void failure(TwitterException exception) {
-                    verify(twitterId);
+                    mListener.onClickDiscoverImDone();
                 }
             });
         }

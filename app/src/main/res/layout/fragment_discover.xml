@@ -1,106 +1,110 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             tools:context="jd7337.socialcontract.controller.fragment.DiscoverFragment">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:context="jd7337.socialcontract.controller.fragment.DiscoverFragment">
+    <android.support.constraint.ConstraintLayout
+                 android:layout_width="match_parent"
+                 android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/icons_group"
-        android:orientation="horizontal"
-        >
-        <ImageView
-            android:id="@+id/discover_follow_icon"
-            android:layout_width="61dp"
-            android:layout_height="49dp"
-            android:src="@drawable/follow_transparent"
-            android:contentDescription="@string/discover_follow_icon" />
-        <ImageView
-            android:id="@+id/discover_like_icon"
-            android:layout_width="61dp"
-            android:layout_height="49dp"
-            android:src="@drawable/like_transparent"
-            android:contentDescription="@string/discover_like_icon" />
-
-        <ImageView
-            android:id="@+id/discover_retweet_icon"
-            android:layout_width="61dp"
-            android:layout_height="49dp"
-            android:src="@drawable/retweet_transparent"
-            android:contentDescription="@string/discover_retweet_icon" />
-    </LinearLayout>
-
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="36dp"
-        android:id="@+id/coin_text_group"
-        android:layout_marginStart="120dp"
-        app:layout_constraintTop_toBottomOf="@+id/icons_group"
-        >
-        <TextView
-            android:id="@+id/like_text"
-            android:layout_width="wrap_content"
+        <LinearLayout android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/like_for_1"
-            android:textSize="24sp"
+            android:id="@+id/icons_group"
+            android:orientation="horizontal"
+            >
+            <ImageView
+                android:id="@+id/discover_follow_icon"
+                android:layout_width="61dp"
+                android:layout_height="49dp"
+                android:src="@drawable/follow_transparent"
+                android:contentDescription="@string/discover_follow_icon" />
+            <ImageView
+                android:id="@+id/discover_like_icon"
+                android:layout_width="61dp"
+                android:layout_height="49dp"
+                android:src="@drawable/like_transparent"
+                android:contentDescription="@string/discover_like_icon" />
+
+            <ImageView
+                android:id="@+id/discover_retweet_icon"
+                android:layout_width="61dp"
+                android:layout_height="49dp"
+                android:src="@drawable/retweet_transparent"
+                android:contentDescription="@string/discover_retweet_icon" />
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="36dp"
+            android:id="@+id/coin_text_group"
+            android:layout_marginStart="120dp"
+            app:layout_constraintTop_toBottomOf="@+id/icons_group"
+            >
+            <TextView
+                android:id="@+id/like_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/like_for_1"
+                android:textSize="24sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+
+            <ImageView
+                android:id="@+id/coin_icon"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="2dp"
+                android:src="@drawable/coin_icon"
+                android:contentDescription="@string/coin_icon" />
+        </LinearLayout>
+        <ImageView
+            android:id="@+id/interaction_ib"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioGroup" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/coin_text_group"
+            android:src="@drawable/like_transparent"/>
 
-        <ImageView
-            android:id="@+id/coin_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginTop="2dp"
-            android:src="@drawable/coin_icon"
-            android:contentDescription="@string/coin_icon" />
-    </LinearLayout>
-    <ImageView
-        android:id="@+id/interaction_ib"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coin_text_group"
-        android:src="@drawable/like_transparent"/>
+        <LinearLayout
+            android:id="@+id/content_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            app:layout_constraintTop_toBottomOf="@+id/interaction_ib">
+            <TextView
+                android:id="@+id/no_content_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="There is no content to discover at the moment"/>
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/content_ll"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        app:layout_constraintTop_toBottomOf="@+id/interaction_ib">
         <TextView
-            android:id="@+id/no_content_tv"
+            android:id="@+id/skip_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:text="There is no content to discover at the moment"/>
-    </LinearLayout>
+            app:layout_constraintStart_toStartOf="@+id/icons_group"
+            app:layout_constraintEnd_toEndOf="@+id/icons_group"
+            app:layout_constraintTop_toBottomOf="@+id/content_ll"
+            android:layout_marginStart="239dp"
+            android:textColor="@color/gray"
+            android:text="@string/skip" />
 
-    <TextView
-        android:id="@+id/skip_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@+id/icons_group"
-        app:layout_constraintEnd_toEndOf="@+id/icons_group"
-        app:layout_constraintTop_toBottomOf="@+id/content_ll"
-        android:layout_marginStart="239dp"
-        android:textColor="@color/gray"
-        android:text="@string/skip" />
+        <Button
+            android:id="@+id/im_done_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:background="@drawable/new_custom_button"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="@+id/icons_group"
+            app:layout_constraintEnd_toEndOf="@+id/icons_group"
+            app:layout_constraintTop_toBottomOf="@+id/skip_text"
+            android:text="@string/i_m_done" />
 
-    <Button
-        android:id="@+id/im_done_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:background="@drawable/new_custom_button"
-        android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="@+id/icons_group"
-        app:layout_constraintEnd_toEndOf="@+id/icons_group"
-        app:layout_constraintTop_toBottomOf="@+id/skip_text"
-        android:text="@string/i_m_done" />
-
-</android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+</ScrollView>
