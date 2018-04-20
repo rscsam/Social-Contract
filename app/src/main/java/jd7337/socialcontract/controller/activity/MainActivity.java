@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     private AccountSelectFragment accountSelectFragment;
     private ConfirmPurchaseDialogFragment confirmPurchaseDialogFragment;
     private InitialConnectAccountFragment initialConnectAccountFragment;
+    private Fragment currFragment;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private NavigationView mDrawerList;
@@ -104,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportFragmentManager().beginTransaction()
                 .add(R.id.main_activity_view, homeFragment).commit();
+        currFragment = homeFragment;
 
         // set the navigation drawer
         mDrawerLayout = findViewById(R.id.drawer_layout);
@@ -221,10 +223,11 @@ public class MainActivity extends AppCompatActivity implements
      *                             Sends a 1 for selected and 0 for unselected.
      */
     @Override
-    public void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] selectedInteractions) {
+    public void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] selectedInteractions, Long twitterId) {
         Bundle bundle = new Bundle();
         bundle.putInt("SocialMediaTypeOrdinal", socialMediaTypeOrdinal);
         bundle.putByteArray("SelectedInteractions", selectedInteractions);
+        bundle.putLong("twitterId", twitterId);
         discoverFragment = DiscoverFragment.newInstance(bundle);
         showFragment(R.id.main_activity_view, discoverFragment);
     }
@@ -359,6 +362,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 420 && resultCode == -1) {  // Twitter feed returned
             Long tweetId = data.getLongExtra("tweetId", -1);
+            String mediaId = tweetId.toString();
             String twitterId = data.getStringExtra("twitterId");
             int goal = data.getIntExtra("goal", -1);
             int cost = data.getIntExtra("cost", 0);
@@ -367,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements
             try {
                 requestParams.put("socialContractId", getSocialContractId());
                 requestParams.put("twitterId", twitterId);
-                requestParams.put("mediaId", tweetId);
+                requestParams.put("mediaId", mediaId);
                 requestParams.put("goal", goal);
                 requestParams.put("type", type);
                 requestParams.put("cost", cost);
@@ -431,8 +435,13 @@ public class MainActivity extends AppCompatActivity implements
                 }
             });
 
-        } else if (resultCode == -1) {
-            initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+        } else {
+            if (currFragment instanceof InitialConnectAccountFragment)
+                initialConnectAccountFragment.onActivityResult(requestCode, resultCode, data);
+            else if (currFragment instanceof DiscoverFragment)
+                discoverFragment.onActivityResult(requestCode, resultCode, data);
+            else if (currFragment instanceof DiscoverSettingsFragment)
+                discoverSettingsFragment.onActivityResult(requestCode, resultCode, data);
         }
 
         String url = ServerDelegate.SERVER_URL + "/getQueue";
@@ -469,6 +478,7 @@ public class MainActivity extends AppCompatActivity implements
         transaction.replace(viewId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        currFragment = fragment;
     }
 
     private void showFragmentWithBundle(int viewId, Fragment fragment, Bundle bundle) {
@@ -477,9 +487,10 @@ public class MainActivity extends AppCompatActivity implements
         transaction.replace(viewId, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        currFragment = fragment;
     }
 
-    private void updateCoinNumber() {
+    public void updateCoinNumber() {
         String url = ServerDelegate.SERVER_URL + "/getCoins";
         Map<String, String> params = new HashMap<>();
         params.put("socialContractId", getSocialContractId());
@@ -512,6 +523,10 @@ public class MainActivity extends AppCompatActivity implements
                         listener.onResult(success, response);
                     }
                 });
+    }
+
+    public int getNumCoins() {
+        return numCoins;
     }
 
     /**

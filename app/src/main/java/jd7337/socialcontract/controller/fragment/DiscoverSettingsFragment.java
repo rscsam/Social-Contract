@@ -1,6 +1,7 @@
 package jd7337.socialcontract.controller.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONArray;
@@ -73,6 +75,7 @@ public class DiscoverSettingsFragment extends Fragment {
     private List<Bitmap> inProfilePicList = new ArrayList<>();
     private List<String> inAccessTokenList = new ArrayList<>();
     private List<SocialMediaAccount> accountsList = new ArrayList<>();
+    private TwitterAuthClient client;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -144,62 +147,134 @@ public class DiscoverSettingsFragment extends Fragment {
      * @param container - view group for the layout
      * @param lastProfile - true if this is the last Twitter profile and Instagram should be called next
      */
-    private void setTwitterProfile(Long twitterId, final ViewGroup container, final boolean lastProfile) {
+    private void setTwitterProfile(final Long twitterId, final ViewGroup container, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
-        TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
-        Call<User> userCall = twitterUserService.show(twitterId);
-        userCall.enqueue(new Callback<User>() {
-            @Override
-            public void success(Result<User> userResult) {
-                final String photoUrl = userResult.data.profileImageUrl;
-                final String userName = userResult.data.screenName;
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            URL picUrl = new URL(photoUrl);
-                            final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
-                            getActivity().runOnUiThread(new Runnable() {
+        if (null == activeSession) {
+            Toast.makeText(getContext(), "Please log in with the account you intend to use",
+                    Toast.LENGTH_LONG);
+            client = new TwitterAuthClient();
+            client.authorize(getActivity(), new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    //feedback
+                    TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                    UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+                    TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
+                    Call<User> userCall = twitterUserService.show(twitterId);
+                    userCall.enqueue(new Callback<User>() {
+                        @Override
+                        public void success(Result<User> userResult) {
+                            final String photoUrl = userResult.data.profileImageUrl;
+                            final String userName = userResult.data.screenName;
+                            Thread thread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    twProfilePicList.add(profilePic);
-                                    twUserNameList.add(userName);
-                                    if (lastProfile) {
-                                        getInstagramAccount(container);
+                                    try {
+                                        URL picUrl = new URL(photoUrl);
+                                        final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
+                                        getActivity().runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                twProfilePicList.add(profilePic);
+                                                twUserNameList.add(userName);
+                                                if (lastProfile) {
+                                                    getInstagramAccount(container);
+                                                }
+                                            }
+                                        });
+                                    } catch (MalformedURLException e) {
+                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
+                                        // Continue chain of calls if there's a failure
+                                        if (lastProfile) {
+                                            getInstagramAccount(container);
+                                        }
+                                    } catch (java.io.IOException e) {
+                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        e.printStackTrace();
+                                        // Continue chain of calls if there's a failure
+                                        if (lastProfile) {
+                                            getInstagramAccount(container);
+                                        }
                                     }
                                 }
                             });
-                        } catch (MalformedURLException e) {
+                            thread.start();
+                        }
+
+                        @Override
+                        public void failure(TwitterException e) {
                             Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
-                            // Continue chain of calls if there's a failure
-                            if (lastProfile) {
-                                getInstagramAccount(container);
-                            }
-                        } catch (java.io.IOException e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            e.printStackTrace();
+                            Log.d("TwitterKit", "Set Twitter Image Error", e);
                             // Continue chain of calls if there's a failure
                             if (lastProfile) {
                                 getInstagramAccount(container);
                             }
                         }
-                    }
-                });
-                thread.start();
-            }
-
-            @Override
-            public void failure(TwitterException e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                Log.d("TwitterKit", "Set Twitter Image Error", e);
-                // Continue chain of calls if there's a failure
-                if (lastProfile) {
-                    getInstagramAccount(container);
+                    });
                 }
-            }
-        });
+
+                @Override
+                public void failure(TwitterException exception) {
+
+                }
+            });
+        } else {
+            UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
+            TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
+            Call<User> userCall = twitterUserService.show(twitterId);
+            userCall.enqueue(new Callback<User>() {
+                @Override
+                public void success(Result<User> userResult) {
+                    final String photoUrl = userResult.data.profileImageUrl;
+                    final String userName = userResult.data.screenName;
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                URL picUrl = new URL(photoUrl);
+                                final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        twProfilePicList.add(profilePic);
+                                        twUserNameList.add(userName);
+                                        if (lastProfile) {
+                                            getInstagramAccount(container);
+                                        }
+                                    }
+                                });
+                            } catch (MalformedURLException e) {
+                                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                                // Continue chain of calls if there's a failure
+                                if (lastProfile) {
+                                    getInstagramAccount(container);
+                                }
+                            } catch (java.io.IOException e) {
+                                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                                e.printStackTrace();
+                                // Continue chain of calls if there's a failure
+                                if (lastProfile) {
+                                    getInstagramAccount(container);
+                                }
+                            }
+                        }
+                    });
+                    thread.start();
+                }
+
+                @Override
+                public void failure(TwitterException e) {
+                    Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Log.d("TwitterKit", "Set Twitter Image Error", e);
+                    // Continue chain of calls if there's a failure
+                    if (lastProfile) {
+                        getInstagramAccount(container);
+                    }
+                }
+            });
+        }
     }
 
     private void getInstagramAccount(final ViewGroup container) {
@@ -351,7 +426,11 @@ public class DiscoverSettingsFragment extends Fragment {
         mListener = null;
     }
 
+    public void onActivityResult(int request, int result, Intent data) {
+        client.onActivityResult(request, result, data);
+    }
+
     public interface DiscoverSettingsFListener {
-        void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] interactionsSelected);
+        void onClickDiscoverSettingsGo(int socialMediaTypeOrdinal, byte[] interactionsSelected, Long twitterId);
     }
 }

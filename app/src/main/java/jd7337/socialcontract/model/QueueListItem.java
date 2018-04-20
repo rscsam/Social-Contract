@@ -45,17 +45,23 @@ public class QueueListItem {
 
     public int getProgressToGoal() {
         if (goal > 0) {
-            return (progress / goal);
+            double value = (double) progress / (double) goal;
+            return (int)(value * 100);
         } else {
             return 0;
         }
 
     }
 
-    public String getText() {
+    public String getNum() {
         String text = "";
         text += progress + " / " + goal;
 
+        return text;
+
+    }
+
+    public String getText() {
         String properRequestType = requestType.substring(0,1);
         properRequestType += requestType.substring(1).toLowerCase();
 
@@ -63,9 +69,7 @@ public class QueueListItem {
             properRequestType += "s";
         }
 
-        text += " " + properRequestType;
-
-        return text;
+        return properRequestType;
 
     }
 

@@ -36,33 +36,33 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/inLinearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="102dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/inLinearLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="102dp"-->
+        <!--android:layout_marginEnd="8dp"-->
+        <!--android:layout_marginStart="8dp"-->
+        <!--android:layout_marginTop="32dp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--app:layout_constraintTop_toBottomOf="@+id/twLinearLayout">-->
 
-        <ImageView
-            android:id="@+id/imageViewInstagram"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:src="@drawable/instagram_icon"
-            android:contentDescription="@string/imageviewinstagram" />
+        <!--<ImageView-->
+            <!--android:id="@+id/imageViewInstagram"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_weight="1"-->
+            <!--android:src="@drawable/instagram_icon"-->
+            <!--android:contentDescription="@string/imageviewinstagram" />-->
 
-        <ImageButton
-            android:id="@+id/in_login_button"
-            android:layout_width="217dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:src="@drawable/instagram_login_button"
-            android:contentDescription="@string/in_login_button" />
+        <!--<ImageButton-->
+            <!--android:id="@+id/in_login_button"-->
+            <!--android:layout_width="217dp"-->
+            <!--android:layout_height="48dp"-->
+            <!--android:layout_gravity="center"-->
+            <!--android:src="@drawable/instagram_login_button"-->
+            <!--android:contentDescription="@string/in_login_button" />-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
 </android.support.constraint.ConstraintLayout>
