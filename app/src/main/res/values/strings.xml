@@ -46,8 +46,8 @@
     <string name="instagram_media_picture">Instagram Media Picture</string>
     <string name="enter_your_email_address">Enter your Email address:</string>
     <string name="forget_your_password">Forget Your Password?</string>
-    <string name="enter_your_email_address_below_and_we_ll_send_you_password_reset_instructions">Enter your Email address below and we\'ll send you password reset instructions.</string>
-    <string name="send_me_reset_instructions">Send me reset instructions</string>
+    <string name="enter_your_email_address_below_and_we_ll_send_you_password_reset_instructions">Enter your Email address below and we\'ll send you a new password.</string>
+    <string name="send_me_reset_instructions">Reset my Password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="login_register">Register</string>
     <string name="login">Login</string>

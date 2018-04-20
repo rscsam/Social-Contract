@@ -17,7 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-   <android.support.constraint.ConstraintLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/instagram_cl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -40,15 +40,6 @@
                 android:text="@string/instagram_likes"
                 tools:layout_editor_absoluteX="64dp"
                 tools:layout_editor_absoluteY="172dp" />
-
-            <RadioButton
-                android:id="@+id/instagram_share_rb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/instagram_shares"
-                tools:layout_editor_absoluteX="64dp"
-                tools:layout_editor_absoluteY="204dp" />
 
             <RadioButton
                 android:id="@+id/instagram_follow_rb"
@@ -78,14 +69,6 @@
                 android:textSize="18sp" />
 
             <TextView
-                android:id="@+id/in_share_price_tv"
-                android:layout_width="match_parent"
-                android:layout_height="32dp"
-                android:gravity="center_vertical"
-                android:text="@string/_5"
-                android:textSize="18sp" />
-
-            <TextView
                 android:id="@+id/in_follow_price_tv"
                 android:layout_width="match_parent"
                 android:layout_height="32dp"
@@ -109,13 +92,6 @@
                 android:layout_height="32dp"
                 android:src="@drawable/coin_icon"
                 android:contentDescription="@string/in_like_coin_iv" />
-
-            <ImageView
-                android:id="@+id/in_share_coin_iv"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:src="@drawable/coin_icon"
-                android:contentDescription="@string/in_share_coin_iv" />
 
             <ImageView
                 android:id="@+id/in_follow_coin_iv"
@@ -155,6 +131,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:textColor="@color/white"
+        android:background="@drawable/new_custom_button"
         android:text="@string/go"
         android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
