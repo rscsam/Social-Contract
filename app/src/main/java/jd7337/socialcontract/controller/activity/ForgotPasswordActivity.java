@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Random;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.controller.fragment.ProfileFragment;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
@@ -46,13 +47,70 @@ public class ForgotPasswordActivity extends AppCompatActivity {
         emailET = findViewById(R.id.forgot_email);
     }
 
-    public void onClickSend(View view) {
-
+    public void onClickSend(View view) throws JSONException {
         email = emailET.getText().toString();
-        Log.i("debug", "reached here");
         setDefaultPassword();
-        final String emailBody = "Your new password is: " + newPass;
+        finish();
 
+    }
+
+    /**
+     * Connect to the change password endpoint on the server to change the user's password in the database
+     * Hashes the password first
+     */
+    private void setDefaultPassword() throws JSONException {
+
+        String url = ServerDelegate.SERVER_URL + "/loginInit";
+        final Context mContext = this;
+        JSONObject requestParams = new JSONObject();
+        requestParams.put("email", email);
+        ServerDelegate.postRequest(this, url, requestParams, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    salt = response.getString("salt");
+                    nonce = response.getString("nonce");
+                    userId = response.getString("userId");
+                    newPass = new String(randomPassword(8));
+                    hashPassword(newPass, salt);
+                } else {
+                    Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
+
+    /**
+     * Connect to the change password endpoint on the server to change the user's password in the database
+     * Hashes the password first
+     * @param hashedPassword - hashed password to change to
+     */
+    public void changePassword(String hashedPassword) {
+        String url = ServerDelegate.SERVER_URL + "/changePassword";
+        Map<String, String> params = new HashMap<>();
+        params.put("password", hashedPassword);
+        params.put("userId", userId);
+        ServerDelegate.postRequest(getApplicationContext(), url, params, new ServerDelegate.OnResultListener() {
+            @Override
+            public void onResult(boolean success, JSONObject response) throws JSONException {
+                if (success) {
+                    Toast.makeText(getApplicationContext(),
+                            "Successfully changed password", Toast.LENGTH_SHORT).show();
+                    sentEmail();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            response.getString("message"), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+
+    private void sentEmail() {
+        final String emailBody = "Your new password is: " + newPass;
+        Log.i("debug", newPass);
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -67,138 +125,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             }
 
         }).start();
-
-
     }
 
-    /**
-     * Connect to the change password endpoint on the server to change the user's password in the database
-     * Hashes the password first
-     */
-    private void setDefaultPassword() {
-
-        //ensures the salt and nonce have been retrieved
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-        final Context thisContext = this;
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                String hashedPassword;
-                                salt = response.getString("salt");
-                                nonce = response.getString("nonce");
-                                userId = response.getString("userId");
-                                newPass = new String(randomPassword(8));
-                                hashedPassword = hashPassword(newPass);
-                                Log.i("debug", hashedPassword);
-                                RequestQueue queue = Volley.newRequestQueue(thisContext);
-                                String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/changePassword";
-
-                                Map<String, String> params = new HashMap<>();
-                                params.put("password", hashedPassword);
-                                params.put("userId", userId);
-
-                                JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                                        new Response.Listener<JSONObject>() {
-                                            @Override
-                                            public void onResponse(JSONObject response) {
-                                                try {
-                                                    boolean success = response.getBoolean("success");
-                                                    if (success) {
-                                                        Toast.makeText(getApplicationContext(),
-                                                                "Successfully changed password", Toast.LENGTH_SHORT).show();
-                                                    } else {
-                                                        Toast.makeText(getApplicationContext(),
-                                                                response.getString("message"), Toast.LENGTH_SHORT).show();
-                                                    }
-                                                } catch (JSONException e) {
-                                                    Toast.makeText(getApplicationContext(),
-                                                            "Error parsing JSON response", Toast.LENGTH_SHORT).show();
-                                                }
-                                            }
-                                        },
-                                        new Response.ErrorListener() {
-                                            @Override
-                                            public void onErrorResponse(VolleyError error) {
-                                                Toast.makeText(getApplicationContext(),
-                                                        error.getMessage(), Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                ) {
-                                    @Override
-                                    public Map<String, String> getHeaders() throws AuthFailureError {
-                                        Map<String, String> headers = new HashMap<>();
-                                        headers.put("Content-Type", "application.json; charset=utf-8");
-                                        return headers;
-                                    }
-                                };
-                                queue.add(jsonObjectRequest);
-                            } else {
-                                Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getApplicationContext(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        queue.add(jsonObjectRequest);
-
-
-
-
-
-
-    }
-
-    /**
-     * Connects to loginInit endpoint to get user's salt and nonce.
-     */
-    private boolean checkUser() {
-        final boolean[] userExist = {false};
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-18-220-246-27.us-east-2.compute.amazonaws.com:3000/loginInit";
-
-        Map<String, String> params = new HashMap<>();
-        params.put("email", email);
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(params),
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            boolean success = response.getBoolean("success");
-                            if (success) {
-                                userExist[0] = true;
-                                salt = response.getString("salt");
-                                nonce = response.getString("nonce");
-                                userId = response.getString("userId");
-                            } else {
-                                Toast.makeText(getApplicationContext(), response.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getApplicationContext(), "Failure parsing JSON", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        });
-        return userExist[0];
-    }
 
 
     private static char[] randomPassword(int len) {
@@ -231,11 +159,11 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     }
 
     /**
-     * Retrieves the salt and nonce and uses them to hash the password
+     * Uses the salt to hash the password, and then calls change password
      * @param password - password to be hashed
-     * @return String - the hashed password
+     *
      */
-    private String hashPassword(String password) {
+    private void hashPassword(String password, String salt) {
         String concat = password + salt;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -245,19 +173,12 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             for (byte b : digest) {
                 sb.append(String.format("%02x", b & 0xff));
             }
-
-            String nextHash = sb.toString() + nonce;
-            MessageDigest md2 = MessageDigest.getInstance("SHA-256");
-            md2.update(nextHash.getBytes());
-            byte[] digest2 = md2.digest();
-            StringBuilder sb2 = new StringBuilder();
-            for (byte b : digest2) {
-                sb2.append(String.format("%02x", b & 0xff));
-            }
-            return sb2.toString();
+            changePassword(sb.toString());
         } catch (NoSuchAlgorithmException e) {
-            return concat.substring(0,60);
+            changePassword(concat.substring(0,60));
         }
     }
+
+
 
 }
