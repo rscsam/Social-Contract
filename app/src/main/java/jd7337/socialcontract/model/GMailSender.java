@@ -1,4 +1,4 @@
-package jd7337.socialcontract.controller.activity;
+package jd7337.socialcontract.model;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.Security;
 import java.util.Properties;
+
+import jd7337.socialcontract.model.JSSEProvider;
 
 public class GMailSender extends javax.mail.Authenticator {
     private String mailhost = "smtp.gmail.com";
