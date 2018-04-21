@@ -156,7 +156,7 @@ public class AccountSelectFragment extends Fragment {
             @Override
             public void success(Result<User> userResult) {
                 final String photoUrl = userResult.data.profileImageUrl;
-                final String userName = "@" + userResult.data.screenName;
+                final String userName = userResult.data.screenName;
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
