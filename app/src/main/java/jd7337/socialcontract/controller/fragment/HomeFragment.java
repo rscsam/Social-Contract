@@ -193,6 +193,11 @@ public class HomeFragment extends Fragment {
      */
     private void displayTwitterRequest(Long twitterId, final QueueListItem item) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+
+        if (null == activeSession) {
+            return;
+        }
+
         UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
         TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
         Call<User> userCall = twitterUserService.show(twitterId);

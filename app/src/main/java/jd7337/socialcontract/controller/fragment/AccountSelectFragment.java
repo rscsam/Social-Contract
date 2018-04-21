@@ -144,6 +144,11 @@ public class AccountSelectFragment extends Fragment {
      */
     private void setTwitterProfile(Long twitterId, final ViewGroup container, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+
+        if (null == activeSession) {
+            return;
+        }
+
         UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
         TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
         Call<User> userCall = twitterUserService.show(twitterId);

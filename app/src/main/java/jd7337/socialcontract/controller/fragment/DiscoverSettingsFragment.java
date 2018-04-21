@@ -149,77 +149,7 @@ public class DiscoverSettingsFragment extends Fragment {
      */
     private void setTwitterProfile(final Long twitterId, final ViewGroup container, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if (null == activeSession) {
-            Toast.makeText(getContext(), "Please log in with the account you intend to use",
-                    Toast.LENGTH_LONG);
-            client = new TwitterAuthClient();
-            client.authorize(getActivity(), new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    //feedback
-                    TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                    UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
-                    TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
-                    Call<User> userCall = twitterUserService.show(twitterId);
-                    userCall.enqueue(new Callback<User>() {
-                        @Override
-                        public void success(Result<User> userResult) {
-                            final String photoUrl = userResult.data.profileImageUrl;
-                            final String userName = userResult.data.screenName;
-                            Thread thread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        URL picUrl = new URL(photoUrl);
-                                        final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                twProfilePicList.add(profilePic);
-                                                twUserNameList.add(userName);
-                                                if (lastProfile) {
-                                                    getInstagramAccount(container);
-                                                }
-                                            }
-                                        });
-                                    } catch (MalformedURLException e) {
-                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
-                                        // Continue chain of calls if there's a failure
-                                        if (lastProfile) {
-                                            getInstagramAccount(container);
-                                        }
-                                    } catch (java.io.IOException e) {
-                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
-                                        // Continue chain of calls if there's a failure
-                                        if (lastProfile) {
-                                            getInstagramAccount(container);
-                                        }
-                                    }
-                                }
-                            });
-                            thread.start();
-                        }
-
-                        @Override
-                        public void failure(TwitterException e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.d("TwitterKit", "Set Twitter Image Error", e);
-                            // Continue chain of calls if there's a failure
-                            if (lastProfile) {
-                                getInstagramAccount(container);
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void failure(TwitterException exception) {
-
-                }
-            });
-        } else {
+        if (null != activeSession) {
             UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
             TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
             Call<User> userCall = twitterUserService.show(twitterId);
