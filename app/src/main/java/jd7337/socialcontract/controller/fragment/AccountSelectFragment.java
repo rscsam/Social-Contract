@@ -105,6 +105,7 @@ public class AccountSelectFragment extends Fragment {
             @Override
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray accounts = response.getJSONArray("accounts");
+
                 twUserNameList = new String[accounts.length()];
                 twIdList = new String[accounts.length()];
                 twProfilePicList = new Bitmap[accounts.length()];
