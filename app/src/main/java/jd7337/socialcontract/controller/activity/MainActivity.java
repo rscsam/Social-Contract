@@ -456,7 +456,7 @@ public class MainActivity extends AppCompatActivity implements
                 discoverFragment.onActivityResult(requestCode, resultCode, data);
             else if (currFragment instanceof DiscoverSettingsFragment)
                 discoverSettingsFragment.onActivityResult(requestCode, resultCode, data);
-            else {
+            else if (currFragment instanceof HomeFragment){
                 client.onActivityResult(requestCode, resultCode, data);
             }
         }
