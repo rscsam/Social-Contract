@@ -338,7 +338,7 @@ public class AccountManagementFragment extends Fragment {
             instructionTextView.setText(R.string.no_accounts_connected);
         } else {
             // Change instruction text back
-            instructionTextView.setText(R.string.choose_which_account_to_grow);
+            instructionTextView.setText(R.string.connected_accounts);
         }
     }
 

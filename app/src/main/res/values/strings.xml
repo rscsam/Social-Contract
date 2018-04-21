@@ -42,6 +42,7 @@
     <string name="save_changes">Save Changes</string>
     <string name="loading_accounts">Loading accounts&#8230;</string>
     <string name="choose_which_account_to_grow">Choose which account to grow.</string>
+    <string name="connected_accounts">Your connected accounts:</string>
     <string name="no_accounts_connected">No accounts connected</string>
     <string name="instagram_media_picture">Instagram Media Picture</string>
     <string name="enter_your_email_address">Enter your Email address:</string>
