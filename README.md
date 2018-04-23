@@ -11,18 +11,22 @@ The code for the Social Contract server is located at https://github.com/rscsam/
 <h2>Release Notes version SocialContract 1.0</h2>
 
 <h4>Features in this release</h4>
-  Added a “Forgot Password” feature
+<ul>
+  <li>Added a “Forgot Password” feature</li>
+  </ul>
 
 <h4>Bug fixes</h4>
-  Application no longer crashes on Twitter call if there is no active Twitter session
-  Fixed incorrect text on account management screen
-  Grow keyboard no longer stays on screen if a follow is requested
-  Fixed bug where account profile picture and name did not match account ID
-
+<ul>
+  <li>Application no longer crashes on Twitter call if there is no active Twitter session</li>
+  <li>Fixed incorrect text on account management screen</li>
+  <li>Grow keyboard no longer stays on screen if a follow is requested</li>
+  <li>Fixed bug where account profile picture and name did not match account ID</li>
+</ul>
 <h4>Known Bugs</h4>
-  Keyboard stays open when switching between certain fragments
-  In some conditions, Discover will display no content even when applicable content exists
-
+<ul>
+  <li>Keyboard stays open when switching between certain fragments</li>
+  <li>In some conditions, Discover will display no content even when applicable content exists</li>
+</ul>
 <h2>Installation</h2>
 Social Contract uses a client-server architecture, meaning the installation will be twofold.
 <h3>Android client</h3>
