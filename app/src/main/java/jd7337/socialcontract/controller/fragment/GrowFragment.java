@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -56,9 +57,9 @@ public class GrowFragment extends Fragment {
                 view = inflater.inflate(R.layout.fragment_instagram_grow, container, false);
                 interactionTypesRG = view.findViewById(R.id.instagram_interaction_type_rg);
                 break;
-            // If for some reason the type is different, inflate the facebook view instead.
+            // If for some reason the type is different, inflate the twitter view instead.
             default:
-                view = inflater.inflate(R.layout.fragment_facebook_grow, container, false);
+                view = inflater.inflate(R.layout.fragment_twitter_grow, container, false);
                 break;
         }
         View connectAccountButton = view.findViewById(R.id.purchase_button);

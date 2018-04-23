@@ -17,7 +17,14 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterException;
+import com.twitter.sdk.android.core.TwitterSession;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
+import com.twitter.sdk.android.core.models.User;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -44,6 +51,9 @@ import jd7337.socialcontract.controller.fragment.EditInterestProfileFragment;
 import jd7337.socialcontract.controller.fragment.GrowFragment;
 import jd7337.socialcontract.controller.fragment.HomeFragment;
 import jd7337.socialcontract.controller.fragment.ProfileFragment;
+import jd7337.socialcontract.model.TwitterUserService;
+import jd7337.socialcontract.model.UserQueryTwitterApiClient;
+import retrofit2.Call;
 
 public class MainActivity extends AppCompatActivity implements
     HomeFragment.HomeFListener, DiscoverSettingsFragment.DiscoverSettingsFListener,
@@ -74,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements
     private int numCoins;
     private String email;
     private String userId;
+
+    private TwitterAuthClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +144,8 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         updateCoinNumber();
+
+        confirmTwitterSession();
     }
 
     @Override
@@ -442,6 +456,9 @@ public class MainActivity extends AppCompatActivity implements
                 discoverFragment.onActivityResult(requestCode, resultCode, data);
             else if (currFragment instanceof DiscoverSettingsFragment)
                 discoverSettingsFragment.onActivityResult(requestCode, resultCode, data);
+            else if (currFragment instanceof HomeFragment){
+                client.onActivityResult(requestCode, resultCode, data);
+            }
         }
 
         String url = ServerDelegate.SERVER_URL + "/getQueue";
@@ -551,5 +568,19 @@ public class MainActivity extends AppCompatActivity implements
         return userId;
     }
 
+    private void confirmTwitterSession() {
+        TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
 
+        if (null == activeSession) {
+            Toast.makeText(this, "Please log in with the account you intend to use",
+                    Toast.LENGTH_LONG).show();
+            client = new TwitterAuthClient();
+            client.authorize(this, new Callback<TwitterSession>() {
+                @Override
+                public void success(Result<TwitterSession> result) {}
+                @Override
+                public void failure(TwitterException exception) {}
+            });
+        }
+    }
 }

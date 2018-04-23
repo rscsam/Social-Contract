@@ -67,9 +67,9 @@ public class DiscoverSettingsFragment extends Fragment {
     }
 
     private String userId;
-    private List<String> twUserNameList = new ArrayList<>();
-    private List<String> twIdList = new ArrayList<>();
-    private List<Bitmap> twProfilePicList = new ArrayList<>();
+    private String[] twUserNameList;
+    private String[] twIdList;
+    private Bitmap[] twProfilePicList;
     private List<String> inUserNameList = new ArrayList<>();
     private List<String> inIdList = new ArrayList<>();
     private List<Bitmap> inProfilePicList = new ArrayList<>();
@@ -83,9 +83,9 @@ public class DiscoverSettingsFragment extends Fragment {
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
         }
-        twUserNameList.clear();
-        twIdList.clear();
-        twProfilePicList.clear();
+        twUserNameList = new String[0];
+        twIdList = new String[0];
+        twProfilePicList = new Bitmap[0];
         inUserNameList.clear();
         inIdList.clear();
         inProfilePicList.clear();
@@ -110,14 +110,20 @@ public class DiscoverSettingsFragment extends Fragment {
             @Override
             public void onResult(boolean success, JSONObject response) throws JSONException {
                 JSONArray accounts = response.getJSONArray("accounts");
+
+                twUserNameList = new String[accounts.length()];
+                twIdList = new String[accounts.length()];
+                twProfilePicList = new Bitmap[accounts.length()];
+
                 for (int i = 0; i < accounts.length(); i++) {
                     JSONObject account = accounts.getJSONObject(i);
+
                     String twitterIdString = account.getString("twitterId");
                     Long twitterId = Long.parseLong(twitterIdString);
                     // retrieves the profile picture and account name
                     // sends true if this is the last Twitter profile
-                    setTwitterProfile(twitterId, container, i == accounts.length() - 1);
-                    twIdList.add(twitterIdString);
+                    setTwitterProfile(twitterId, container, i, i == accounts.length() - 1);
+                    twIdList[i] = twitterIdString;
                 }
                 if (accounts.length() == 0) {
                     getInstagramAccount(container);
@@ -147,79 +153,9 @@ public class DiscoverSettingsFragment extends Fragment {
      * @param container - view group for the layout
      * @param lastProfile - true if this is the last Twitter profile and Instagram should be called next
      */
-    private void setTwitterProfile(final Long twitterId, final ViewGroup container, final boolean lastProfile) {
+    private void setTwitterProfile(final Long twitterId, final ViewGroup container, final int location, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if (null == activeSession) {
-            Toast.makeText(getContext(), "Please log in with the account you intend to use",
-                    Toast.LENGTH_LONG);
-            client = new TwitterAuthClient();
-            client.authorize(getActivity(), new Callback<TwitterSession>() {
-                @Override
-                public void success(Result<TwitterSession> result) {
-                    //feedback
-                    TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-                    UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
-                    TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
-                    Call<User> userCall = twitterUserService.show(twitterId);
-                    userCall.enqueue(new Callback<User>() {
-                        @Override
-                        public void success(Result<User> userResult) {
-                            final String photoUrl = userResult.data.profileImageUrl;
-                            final String userName = userResult.data.screenName;
-                            Thread thread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    try {
-                                        URL picUrl = new URL(photoUrl);
-                                        final Bitmap profilePic = BitmapFactory.decodeStream(picUrl.openStream());
-                                        getActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                twProfilePicList.add(profilePic);
-                                                twUserNameList.add(userName);
-                                                if (lastProfile) {
-                                                    getInstagramAccount(container);
-                                                }
-                                            }
-                                        });
-                                    } catch (MalformedURLException e) {
-                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
-                                        // Continue chain of calls if there's a failure
-                                        if (lastProfile) {
-                                            getInstagramAccount(container);
-                                        }
-                                    } catch (java.io.IOException e) {
-                                        Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        e.printStackTrace();
-                                        // Continue chain of calls if there's a failure
-                                        if (lastProfile) {
-                                            getInstagramAccount(container);
-                                        }
-                                    }
-                                }
-                            });
-                            thread.start();
-                        }
-
-                        @Override
-                        public void failure(TwitterException e) {
-                            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-                            Log.d("TwitterKit", "Set Twitter Image Error", e);
-                            // Continue chain of calls if there's a failure
-                            if (lastProfile) {
-                                getInstagramAccount(container);
-                            }
-                        }
-                    });
-                }
-
-                @Override
-                public void failure(TwitterException exception) {
-
-                }
-            });
-        } else {
+        if (null != activeSession) {
             UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
             TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
             Call<User> userCall = twitterUserService.show(twitterId);
@@ -237,8 +173,8 @@ public class DiscoverSettingsFragment extends Fragment {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        twProfilePicList.add(profilePic);
-                                        twUserNameList.add(userName);
+                                        twProfilePicList[location] = profilePic;
+                                        twUserNameList[location] = userName;
                                         if (lastProfile) {
                                             getInstagramAccount(container);
                                         }
@@ -364,13 +300,13 @@ public class DiscoverSettingsFragment extends Fragment {
     }
 
     private void settleAccounts(final ViewGroup container) {
-        int numAccounts = twUserNameList.size();
+        int numAccounts = twUserNameList.length;
         numAccounts += inUserNameList.size();
         final AccountListItem[] accounts = new AccountListItem[numAccounts];
         int i = 0;
-        for (int x = 0; x < twUserNameList.size(); x++) {
-            accountsList.add(new SocialMediaAccount(twIdList.get(x), twUserNameList.get(x), SocialMediaAccount.AccountType.TWITTER));
-            accounts[i] = new AccountListItem(twProfilePicList.get(x), twUserNameList.get(x), twIdList.get(x), SocialMediaAccount.AccountType.TWITTER);
+        for (int x = 0; x < twUserNameList.length; x++) {
+            accountsList.add(new SocialMediaAccount(twIdList[x], twUserNameList[x], SocialMediaAccount.AccountType.TWITTER));
+            accounts[i] = new AccountListItem(twProfilePicList[x], twUserNameList[x], twIdList[x], SocialMediaAccount.AccountType.TWITTER);
             i++;
         }
         for (int x = 0; x < inUserNameList.size(); x++) {

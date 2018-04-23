@@ -168,6 +168,11 @@ public class AccountManagementFragment extends Fragment {
      */
     private void setTwitterProfile(Long twitterId, final ViewGroup container, final boolean lastProfile) {
         TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+
+        if (null == activeSession) {
+            return;
+        }
+
         UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
         TwitterUserService twitterUserService = userQueryTwitterApiClient.getTwitterUserService();
         Call<User> userCall = twitterUserService.show(twitterId);
@@ -333,7 +338,7 @@ public class AccountManagementFragment extends Fragment {
             instructionTextView.setText(R.string.no_accounts_connected);
         } else {
             // Change instruction text back
-            instructionTextView.setText(R.string.choose_which_account_to_grow);
+            instructionTextView.setText(R.string.connected_accounts);
         }
     }
 
