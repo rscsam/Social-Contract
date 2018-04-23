@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Map;
 
 import jd7337.socialcontract.R;
+import jd7337.socialcontract.controller.delegate.FollowClient;
 import jd7337.socialcontract.controller.delegate.ServerDelegate;
 import jd7337.socialcontract.model.QueueItem;
 import jd7337.socialcontract.model.SocialMediaAccount;
@@ -167,6 +168,55 @@ public class DiscoverFragment extends Fragment {
             } else if (typeStr.equals("FOLLOW")) {
                 interactionIv.setImageResource(R.drawable.follow_transparent);
                 ((TextView) getActivity().findViewById(R.id.like_text)).setText("Follow for 10");
+                interactionIv.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+                        FollowClient client = new FollowClient(activeSession);
+                        FollowClient.FollowService service = client.getCustomService();
+                        final QueueItem curr = queue.get(index);
+                        Call<User> call = service.follow(Long.parseLong(curr.getMediaId()), true);
+                        call.enqueue(new Callback<User>() {
+                            @Override
+                            public void success(Result<User> result) {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("requestId", curr.getRequestId());
+                                params.put("socialContractId", mListener.getSocialContractId());
+                                params.put("mediaId", curr.getMediaId());
+                                params.put("type", type.toString());
+                                params.put("coins", "" + (mListener.getNumCoins() + 10));
+                                ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                        params, new ServerDelegate.OnResultListener() {
+                                            @Override
+                                            public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                mListener.updateCoinNumber();
+                                            }
+                                        });
+                                index++;
+                                setIndex();
+                            }
+
+                            @Override
+                            public void failure(TwitterException exception) {
+                                Map<String, String> params = new HashMap<>();
+                                params.put("requestId", curr.getRequestId());
+                                params.put("socialContractId", mListener.getSocialContractId());
+                                params.put("mediaId", curr.getMediaId());
+                                params.put("type", type.toString());
+                                params.put("coins", "" + (mListener.getNumCoins() + 10));
+                                ServerDelegate.postRequest(getContext(), ServerDelegate.SERVER_URL + "/discover",
+                                        params, new ServerDelegate.OnResultListener() {
+                                            @Override
+                                            public void onResult(boolean success, JSONObject response) throws JSONException {
+                                                mListener.updateCoinNumber();
+                                            }
+                                        });
+                                index++;
+                                setIndex();
+                            }
+                        });
+                    }
+                });
                 TwitterSession activeSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
                 UserQueryTwitterApiClient userQueryTwitterApiClient = new UserQueryTwitterApiClient(activeSession);
                 TwitterUserService service = userQueryTwitterApiClient.getTwitterUserService();
