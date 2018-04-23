@@ -63,3 +63,13 @@ to indicate the proper DNS server location for your new AWS instance.</li>
 </ol>
 Once you have completed these steps, you should be able to connect to your own
 copy of the server via the Android app!
+<h3>Installation troubleshooting</h3>
+<ul>
+<li>If you set up your own AWS instance and are unable to connect to the Android app, ensure
+that you rebuilt (pressed "play") the project after editing the line</li>
+<li>If you are still unable to connect after trying the previous step, it is possible that you have added IP restrictions
+to your server, preventing access.  Go to your EC2 dashboard and edit your
+security groups to allow the IP address of your Android device to connect</li>
+<li>If you are unable to get the app to install on your Android device, ensure
+that your device runs Android api version 21+.  Older versions of Android
+cannot run Social Contract</li>
